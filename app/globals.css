@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --color-velora-paper: #111111;
+  --color-velora-surface: #1A1A1A;
+  --color-velora-ink: #F5F5F5;
+  --color-velora-muted: #888888;
+  --color-velora-rule: #2A2A2A;
+  --color-velora-accent: #3B82F6;
+  --color-velora-accent-2: #60A5FA;
+  --color-velora-accent-soft: rgba(59, 130, 246, 0.12);
+  --color-velora-success: #22C55E;
+  --color-velora-success-soft: rgba(34, 197, 94, 0.12);
+  --color-velora-danger: #EF4444;
+  --color-velora-danger-soft: rgba(239, 68, 68, 0.12);
+  --color-velora-warning: #F59E0B;
+  --color-velora-warning-soft: rgba(245, 158, 11, 0.12);
+
+  --color-paper: var(--color-velora-paper);
+  --color-paper-2: var(--color-velora-surface);
+  --color-ink: var(--color-velora-ink);
+  --color-muted: var(--color-velora-muted);
+  --color-rule: var(--color-velora-rule);
+  --color-accent: var(--color-velora-accent);
+  --color-accent-2: var(--color-velora-accent-2);
+  --color-accent-soft: var(--color-velora-accent-soft);
+  --color-success: var(--color-velora-success);
+  --color-success-soft: var(--color-velora-success-soft);
+  --color-danger: var(--color-velora-danger);
+  --color-danger-soft: var(--color-velora-danger-soft);
+  --color-warning: var(--color-velora-warning);
+  --color-warning-soft: var(--color-velora-warning-soft);
+  --shadow-card: 0 1px 3px 0 rgba(0,0,0,0.04), 0 1px 2px -1px rgba(0,0,0,0.06);
+  --shadow-card-hover: 0 10px 15px -3px rgba(0,0,0,0.06), 0 4px 6px -4px rgba(0,0,0,0.08);
+  --shadow-sidebar: 0 0 0 1px rgba(0,0,0,0.02), 4px 0 12px rgba(0,0,0,0.04);
+
+  --font-display: var(--font-sans);
+  --font-body: var(--font-sans);
+  --font-code: var(--font-mono);
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-display-s: 2rem;
+  --text-display: 2.75rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 150ms;
+  --dur-med: 220ms;
+  --rule-hairline: 1px solid var(--color-velora-rule);
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  background: var(--color-velora-paper);
+  color: var(--color-velora-ink);
+  font-feature-settings: "cv11", "ss01";
+  overflow-x: clip;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background-color: var(--color-velora-accent);
+  color: white;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-velora-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

@@ -1,0 +1,139 @@
+[
+  {
+    "type": "function",
+    "name": "createPolicy",
+    "stateMutability": "payable",
+    "inputs": [
+      { "name": "name", "type": "string" },
+      { "name": "allowedDestination", "type": "address" },
+      { "name": "allowedAction", "type": "uint8" },
+      { "name": "expiration", "type": "uint256" },
+      { "name": "maxExecutions", "type": "uint256" }
+    ],
+    "outputs": [{ "name": "policyId", "type": "uint256" }]
+  },
+  {
+    "type": "function",
+    "name": "executeRequest",
+    "stateMutability": "nonpayable",
+    "inputs": [
+      { "name": "policyId", "type": "uint256" },
+      { "name": "amount", "type": "uint256" },
+      { "name": "destination", "type": "address" },
+      { "name": "action", "type": "uint8" }
+    ],
+    "outputs": [{ "name": "approved", "type": "bool" }]
+  },
+  {
+    "type": "function",
+    "name": "cancelPolicy",
+    "stateMutability": "nonpayable",
+    "inputs": [{ "name": "policyId", "type": "uint256" }],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "withdrawRemainingBudget",
+    "stateMutability": "nonpayable",
+    "inputs": [{ "name": "policyId", "type": "uint256" }],
+    "outputs": []
+  },
+  {
+    "type": "function",
+    "name": "getPolicy",
+    "stateMutability": "view",
+    "inputs": [{ "name": "policyId", "type": "uint256" }],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "components": [
+          { "name": "id", "type": "uint256" },
+          { "name": "owner", "type": "address" },
+          { "name": "name", "type": "string" },
+          { "name": "remainingBudget", "type": "uint256" },
+          { "name": "totalBudget", "type": "uint256" },
+          { "name": "allowedDestination", "type": "address" },
+          { "name": "allowedAction", "type": "uint8" },
+          { "name": "expiration", "type": "uint256" },
+          { "name": "maxExecutions", "type": "uint256" },
+          { "name": "executionCount", "type": "uint256" },
+          { "name": "status", "type": "uint8" }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": "getPoliciesByOwner",
+    "stateMutability": "view",
+    "inputs": [{ "name": "owner", "type": "address" }],
+    "outputs": [{ "name": "", "type": "uint256[]" }]
+  },
+  {
+    "type": "event",
+    "name": "PolicyCreated",
+    "anonymous": false,
+    "inputs": [
+      { "name": "policyId", "type": "uint256", "indexed": true },
+      { "name": "owner", "type": "address", "indexed": true },
+      { "name": "name", "type": "string", "indexed": false },
+      { "name": "budget", "type": "uint256", "indexed": false },
+      { "name": "allowedDestination", "type": "address", "indexed": false },
+      { "name": "allowedAction", "type": "uint8", "indexed": false },
+      { "name": "expiration", "type": "uint256", "indexed": false },
+      { "name": "maxExecutions", "type": "uint256", "indexed": false }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "ExecutionApproved",
+    "anonymous": false,
+    "inputs": [
+      { "name": "policyId", "type": "uint256", "indexed": true },
+      { "name": "destination", "type": "address", "indexed": true },
+      { "name": "amount", "type": "uint256", "indexed": false },
+      { "name": "remainingBudget", "type": "uint256", "indexed": false },
+      { "name": "executionCount", "type": "uint256", "indexed": false }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "ExecutionRejected",
+    "anonymous": false,
+    "inputs": [
+      { "name": "policyId", "type": "uint256", "indexed": true },
+      { "name": "reason", "type": "uint8", "indexed": false },
+      { "name": "attemptedDestination", "type": "address", "indexed": false },
+      { "name": "attemptedAmount", "type": "uint256", "indexed": false }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "PolicyCancelled",
+    "anonymous": false,
+    "inputs": [
+      { "name": "policyId", "type": "uint256", "indexed": true },
+      { "name": "owner", "type": "address", "indexed": true }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "BudgetWithdrawn",
+    "anonymous": false,
+    "inputs": [
+      { "name": "policyId", "type": "uint256", "indexed": true },
+      { "name": "owner", "type": "address", "indexed": true },
+      { "name": "amount", "type": "uint256", "indexed": false }
+    ]
+  },
+  { "type": "error", "name": "PolicyNotFound", "inputs": [] },
+  { "type": "error", "name": "NotPolicyOwner", "inputs": [] },
+  { "type": "error", "name": "ZeroDeposit", "inputs": [] },
+  { "type": "error", "name": "InvalidExpiration", "inputs": [] },
+  { "type": "error", "name": "InvalidDestination", "inputs": [] },
+  { "type": "error", "name": "InvalidMaxExecutions", "inputs": [] },
+  { "type": "error", "name": "PolicyNotActive", "inputs": [] },
+  { "type": "error", "name": "NothingToWithdraw", "inputs": [] },
+  { "type": "error", "name": "WithdrawTransferFailed", "inputs": [] }
+]
