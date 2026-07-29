@@ -94,14 +94,38 @@ export default function AgentPage() {
     [policies]
   );
 
-  const [logs, setLogs] = useState<string[]>([
-    `[${new Date().toISOString()}] Agent ready. Run a cycle to evaluate active policies.`,
-  ]);
-  const [results, setResults] = useState<AgentPolicyResult[]>([]);
+  const [logs, setLogs] = useState<string[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("velora_agent_logs");
+      return saved ? JSON.parse(saved) : [`[${new Date().toISOString()}] Agent ready. Run a cycle to evaluate active policies.`];
+    }
+    return [`[${new Date().toISOString()}] Agent ready. Run a cycle to evaluate active policies.`];
+  });
+  const [results, setResults] = useState<AgentPolicyResult[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("velora_agent_results");
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
+  });
   const [lastError, setLastError] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
-  const [autoRun, setAutoRun] = useState(false);
+  const [autoRun, setAutoRun] = useState(() => {
+    if (typeof window !== "undefined") return localStorage.getItem("velora_auto_run") === "true";
+    return false;
+  });
+  const [autoRunInterval, setAutoRunInterval] = useState(() => {
+    if (typeof window !== "undefined") return Number(localStorage.getItem("velora_auto_run_interval")) || 60000;
+    return 60000;
+  });
   const logsEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    localStorage.setItem("velora_agent_logs", JSON.stringify(logs.slice(-30)));
+    localStorage.setItem("velora_agent_results", JSON.stringify(results));
+    localStorage.setItem("velora_auto_run", String(autoRun));
+    localStorage.setItem("velora_auto_run_interval", String(autoRunInterval));
+  }, [logs, results, autoRun, autoRunInterval]);
 
   const readyCount = results.filter((p) => p.isDue).length;
   const notDueCount = results.filter((p) => !p.isDue).length;
@@ -113,14 +137,14 @@ export default function AgentPage() {
   }, [logs]);
 
   useEffect(() => {
-    if (!autoRun || isRunning) return;
+    if (!autoRun) return;
 
     const interval = setInterval(() => {
       runAgent();
-    }, 60000);
+    }, autoRunInterval);
 
     return () => clearInterval(interval);
-  }, [autoRun, isRunning]);
+  }, [autoRun, autoRunInterval]);
 
   const runAgent = async () => {
     setIsRunning(true);
@@ -206,15 +230,27 @@ export default function AgentPage() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Button
-                  variant={autoRun ? "primary" : "secondary"}
-                  size="sm"
-                  onClick={() => setAutoRun((value) => !value)}
-                  className={autoRun ? "bg-[var(--color-success)] hover:opacity-90" : ""}
-                >
-                  <Timer size={15} />
-                  {autoRun ? "Auto-Run ON" : "Auto-Run OFF"}
-                </Button>
+                <div className="flex items-center gap-1">
+                  <select
+                    className="h-8 rounded-lg border border-[var(--color-rule)] bg-[var(--color-paper-2)] px-2 text-xs text-[var(--color-ink)] outline-none focus:border-[var(--color-accent)]"
+                    value={autoRunInterval}
+                    onChange={(e) => setAutoRunInterval(Number(e.target.value))}
+                    disabled={autoRun}
+                  >
+                    <option value={5000}>5s (Demo)</option>
+                    <option value={60000}>1m (Normal)</option>
+                    <option value={300000}>5m</option>
+                  </select>
+                  <Button
+                    variant={autoRun ? "primary" : "secondary"}
+                    size="sm"
+                    onClick={() => setAutoRun((value) => !value)}
+                    className={autoRun ? "bg-[var(--color-success)] hover:opacity-90" : ""}
+                  >
+                    <Timer size={15} />
+                    {autoRun ? "Auto-Run ON" : "Auto-Run OFF"}
+                  </Button>
+                </div>
                 <Button
                   variant="secondary"
                   size="sm"
@@ -270,6 +306,13 @@ export default function AgentPage() {
             {lastError && (
               <div className="mt-5 rounded-xl border border-[var(--color-danger)] bg-[var(--color-danger-soft)] px-4 py-3 text-sm text-[var(--color-danger)]">
                 {lastError}
+              </div>
+            )}
+
+            {autoRun && (
+              <div className="mt-5 flex items-center gap-2 rounded-xl border border-[var(--color-accent)] bg-[var(--color-accent-soft)] px-4 py-3 text-sm text-[var(--color-accent)]">
+                <Bot size={16} />
+                <span className="font-medium">Auto-Run is currently active and will persist across refreshes.</span>
               </div>
             )}
 

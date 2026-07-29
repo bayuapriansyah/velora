@@ -2,129 +2,80 @@
 
 **Delegate tasks, not your wallet.**
 
-Velora lets a user grant an AI Agent the ability to *request* on-chain execution,
-while a Solidity smart contract remains the sole authority that approves or rejects
-that request against an immutable, user-defined policy. The wallet's private key is
-never shared, delegated, or exposed to the agent.
+---
 
-Built for **BOT Chain Build Week**.
+## 💡 The Problem: "The Trust-Delegation Paradox"
+
+Current AI agents require full access to your assets to be useful. If you give an agent your private key, you risk everything (catastrophic loss). If you don't, the agent cannot perform actions on your behalf (crippled utility). There is no middle ground between **maximum utility** and **maximum security**.
+
+## 🚀 The Solution: "On-Chain Guardrails"
+
+Velora breaks this paradox by introducing **On-Chain Policy Enforcement**. You define granular, immutable rules in a Solidity smart contract (budget, destination, timing). The AI Agent is then granted the power to *propose* actions, but the Smart Contract acts as the ultimate gatekeeper, autonomously rejecting any request that violates your pre-defined rules. 
+
+You no longer have to trust the AI's intent—you only have to trust the code.
 
 ---
 
-## 1. Smart contract — deploy first
+## 🚀 Why Velora is Unique
 
-`contracts/Velora.sol` is the single source of truth. Deploy it before touching the
-frontend, since the frontend needs its address.
+*   **Trustless AI Execution:** We do not trust the AI. AI agents can hallucinate or be compromised; Velora uses Solidity smart contracts as an immutable judge that enforces spending limits, destinations, and timing rules regardless of AI decisions.
+*   **Zero-Backend, Zero-Privilege Security:** 100% Client-to-Contract architecture. No servers, no exposed API keys, and no database. Your policies live purely on the blockchain, ensuring maximum transparency and security.
+*   **Autonomous Agent Governance:** The built-in "Agent Control Panel" enables true on-chain automation, allowing agents to monitor and execute policies autonomously 24/7 without manual intervention.
+*   **Rapid Simulation Mode:** A developer-first "Demo Mode" that allows toggling between production intervals (days) and testing intervals (seconds), perfect for showcasing full execution flows in seconds.
 
-### Deploy via Remix
+---
 
-1. Open [Remix IDE](https://remix.ethereum.org).
-2. Create `Velora.sol` and paste the contents of `contracts/Velora.sol`.
-3. In the File Explorer, also install the OpenZeppelin dependency: Remix resolves
-   `@openzeppelin/contracts/security/ReentrancyGuard.sol` automatically via its GitHub
-   import resolver — no extra step needed as long as you're online in the Remix
-   workspace.
-4. Compiler tab → select `0.8.24` (or any `^0.8.24`-compatible version) → **Compile**.
-5. Deploy & Run tab → Environment: **Injected Provider - MetaMask**, network switched
-   to **BOT Chain** in MetaMask.
-6. Deploy `Velora`. Confirm the transaction in MetaMask.
-7. Copy the deployed contract address.
-8. Verify the contract on the BOT Chain block explorer (flatten if the explorer needs
-   a single file, or verify with the OpenZeppelin import as-is if it supports it).
+## 🛠 Tech Stack
 
-### Wire the address into the frontend
+| Layer | Technology |
+|---|---|
+| **Frontend** | Next.js 15, Tailwind CSS, Framer Motion, Radix UI |
+| **Smart Contract** | Solidity 0.8.24, OpenZeppelin Security |
+| **Agent Logic** | Google Gemini (via client-side SDK) |
+| **Blockchain** | BOT Chain (Ethers.js provider) |
 
-Edit `contracts/addresses.ts`:
+---
 
-```ts
-export const VELORA_ADDRESSES: Record<number, `0x${string}`> = {
-  <BOT_CHAIN_CHAIN_ID>: "0xYourDeployedAddress",
-};
+## 🏗 Project Structure
+
+```text
+velora/
+├── app/                # Next.js App Router (Dashboard, Create Policy, Simulation, Agent)
+├── components/         # Modular UI (Landing, Dashboard, Agent Control, Create-Policy)
+├── hooks/              # Smart contract interaction and wallet management
+├── lib/                # Ethers provider and network utilities
+├── contracts/          # Velora Solidity source and ABI
+└── types/              # TS definitions mirrored from Solidity enums
 ```
 
-Also confirm the real BOT Chain network parameters in `lib/network.ts`
-(`chainIdHex`, `chainIdDecimal`, `rpcUrls`, `blockExplorerUrls`) — placeholders are
-marked clearly in that file.
+---
 
-If you regenerate the ABI from Remix's compiled artifact instead of using the
-hand-written `contracts/Velora.abi.json` included here, drop the new ABI JSON in the
-same place; every hook reads from that one file.
+## 🚀 Demo Script (Under 5 Minutes)
+
+1.  **Connect & Create:** Connect MetaMask on the Dashboard. Click **Create Policy** → Define your rules (budget, destination, interval).
+2.  **Enable Demo Mode:** In the "Limits" step, toggle **"Use seconds (Demo Mode)"** to allow for instant, rapid-fire simulations.
+3.  **Autonomous Cycle:** Go to the **Agent Control Panel**. Toggle **"Auto-Run ON"**. Watch as the agent autonomously evaluates policies, fetches AI decisions, and submits transactions to the chain in real-time.
+4.  **On-chain Validation:** Observe logs marked with 🚀, 📄, 💰, and ✅. Every single movement is confirmed by the smart contract's `ExecutionApproved` events.
 
 ---
 
-## 2. Frontend — local development
+## 🛡 Security Highlights
 
+- **Checks-Effects-Interactions:** Implemented on all fund-transferring functions.
+- **Reentrancy Protection:** `nonReentrant` modifiers on `executeRequest` and `withdrawRemainingBudget`.
+- **Structurally Immutable:** Policies cannot be modified once deployed; only the agent can trigger allowed actions, and the contract holds the funds in escrow.
+- **Machine-Readable Rejections:** Instead of silent failures, the contract emits specific `RejectReason` events for transparent debugging.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Contract Deployment
+Deploy `contracts/Velora.sol` via [Remix IDE](https://remix.ethereum.org) on the BOT Chain. Copy the deployed address and update `contracts/addresses.ts`.
+
+### 2. Frontend Setup
 ```bash
 npm install
 npm run dev
 ```
-
-Open `http://localhost:3000`. MetaMask must be installed in the browser, and switched
-(or willing to switch, via the built-in network guard) to BOT Chain.
-
-### Project structure`
-
-```
-velora/
-├── app/                # Next.js App Router pages (Landing, Dashboard, Create Policy, Simulation)
-├── components/          # landing/ dashboard/ create-policy/ simulation/ ui/
-├── hooks/                # useWallet, useVeloraContract, usePolicies, usePolicyEvents
-├── lib/                  # ethers.ts, network.ts, format.ts, utils.ts
-├── contracts/            # Velora.sol, Velora.abi.json, addresses.ts
-├── types/                # policy.ts — mirrors the Solidity enums/struct exactly
-└── utils/                # validation.ts — client-side UX prediction only, never authoritative
-```
-
-**Key principle:** the frontend has zero authority. `utils/validation.ts` predicts a
-verdict for instant UI feedback, but the Simulation page always renders its final
-result from the emitted `ExecutionApproved` / `ExecutionRejected` event, never from
-the prediction.
-
----
-
-## 3. Deploy the frontend — Vercel
-
-```bash
-npm i -g vercel
-vercel
-```
-
-Or connect the GitHub repo directly in the Vercel dashboard → Import Project → deploy.
-No environment variables are required — the deployed contract address lives in
-`contracts/addresses.ts`, committed to the repo, since Velora has no backend and no
-secrets to hide (100% client-to-contract, per design).
-
-Attach a custom domain in Vercel's Project → Settings → Domains once deployed.
-
----
-
-## 4. Demo script (under 5 minutes)
-
-1. **Connect MetaMask** on the Landing page or Dashboard.
-2. **Create a policy** — e.g. name "Purchase API Credits", budget 10 BOT, destination
-   set to any test address, action "Send BOT", expiration 24 hours, max executions 3.
-   Deploy — one signed transaction creates and funds it atomically.
-3. Policy appears **Active** on the Dashboard with remaining budget 10 BOT.
-4. On the **Simulation** page, select the policy, set amount to 3 BOT, click
-   **Simulate AI request** → watch the rule-by-rule checklist animate → **Approved**,
-   remaining budget drops to 7 BOT.
-5. Click **Simulate invalid request** → the amount deliberately exceeds the remaining
-   budget → **Rejected**, reason: Insufficient Budget.
-6. Back on the Dashboard, **Cancel** the policy, then **Withdraw** the remaining BOT.
-   Policy closes.
-7. Use **Share on X** on either simulation result to post a ready-made summary.
-
----
-
-## 5. Security notes carried from the design doc
-
-- Checks-Effects-Interactions on every fund-moving function; `ReentrancyGuard` on
-  `executeRequest` and `withdrawRemainingBudget`.
-- Legitimate "policy said no" outcomes return `false` + emit `ExecutionRejected` with
-  a machine-readable reason instead of reverting — structurally invalid calls
-  (nonexistent policy, wrong owner) still revert.
-- No agent address binding in v1 (documented v2 improvement) — anyone able to call
-  `executeRequest` referencing a policy ID can trigger it, which is why the deposit
-  is escrowed by the contract and every rule is still enforced regardless of caller.
-- `ownerPolicyIds` is an unbounded array per address — fine at hackathon scale,
-  flagged as a v2 pagination concern.
+Open `http://localhost:3000` and switch MetaMask to BOT Chain.
