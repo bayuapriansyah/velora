@@ -9,6 +9,7 @@ import { formatBot } from "@/lib/format";
 export interface SimulationResult {
   approved: boolean;
   reason?: RejectReason;
+  aiReason?: string;
   amountWei: bigint;
   remainingBudgetWei?: bigint;
   txHash: string;
@@ -37,14 +38,16 @@ export function ResultPanel({ result }: { result: SimulationResult | null }) {
               </p>
             ) : (
               <p className="text-sm text-[var(--color-ink)]">
-                Reason: {result.reason !== undefined ? REJECT_REASON_LABELS[result.reason] : "Unknown"}
+                Reason: {result.aiReason ? result.aiReason : (result.reason !== undefined ? REJECT_REASON_LABELS[result.reason] : "Unknown")}
               </p>
             )}
           </div>
         </div>
-        {result.txHash && (
+        {result.txHash && result.txHash !== "AI_SIMULATION" && (
           <a
-            href={`#`}
+            href={`https://scan.bohr.life/tx/${result.txHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
             className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-muted)] hover:text-[var(--color-ink)]"
             title="View on the BOT Chain explorer"
           >

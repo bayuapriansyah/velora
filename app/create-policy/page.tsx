@@ -28,6 +28,8 @@ function validateStep(step: number, form: PolicyFormState): string | null {
   if (step === 3) {
     if (form.expirationHours <= 0) return "Expiration must be in the future.";
     if (form.maxExecutions <= 0) return "Max executions must be at least 1.";
+    if (!form.amountPerExecution || Number(form.amountPerExecution) <= 0) return "Amount per execution must be greater than 0.";
+    if (form.paymentIntervalDays <= 0) return form.useSeconds ? "Payment frequency must be at least 1 second." : "Payment frequency must be at least 1 day.";
   }
   return null;
 }
@@ -73,6 +75,8 @@ export default function CreatePolicyPage() {
         allowedAction: form.action,
         expiration: expirationUnix,
         maxExecutions: form.maxExecutions,
+        amountPerExecution: form.amountPerExecution,
+        paymentInterval: form.useSeconds ? form.paymentIntervalDays : form.paymentIntervalDays * 24 * 3600,
         depositWei: botToWei(form.budget),
       });
       setDeployed(true);
@@ -123,7 +127,7 @@ export default function CreatePolicyPage() {
       <div className="lg:lg:ml-[280px] flex flex-1 flex-col">
         <TopBar title="Create Policy" />
         <div className="flex flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-2xl px-4 py-6 md:px-6 md:py-8 lg:px-6 lg:py-12">
+          <div className="mx-auto w-full max-w-3xl px-4 py-6 md:px-6 lg:px-8">
             <h1 className="text-3xl font-semibold tracking-tight text-[var(--color-ink)]">Create policy</h1>
             <p className="mt-1 text-[var(--color-muted)]">Define exactly what an agent is allowed to do. One transaction, immutable.</p>
 

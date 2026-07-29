@@ -2,7 +2,7 @@
 // Fill in VELORA_ADDRESS after deploying via Remix and verifying on the BOT Chain explorer.
 
 export const VELORA_ADDRESSES: Record<number, `0x${string}`> = {
-  968: "0x1893bd849B656fE9eBFf8392340C30FE04268C37",
+  968: "0x99149274E0f92146935833b5E814C83aE1a2bCaF",
 };
 
 export function getVeloraAddress(chainId: number): `0x${string}` {

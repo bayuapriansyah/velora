@@ -13,6 +13,8 @@ import {
   Check,
   Menu,
   X,
+  FileText,
+  Bot,
 } from "lucide-react";
 import { useWallet } from "@/hooks/useWallet";
 import { truncateAddress } from "@/lib/format";
@@ -21,8 +23,10 @@ import { useState } from "react";
 
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/policies", label: "Policies", icon: FileText },
   { href: "/create-policy", label: "Create Policy", icon: Plus },
   { href: "/simulation", label: "Simulation", icon: TestTubeDiagonal },
+  { href: "/agent", label: "Agent", icon: Bot },
 ];
 
 export function Sidebar() {
@@ -40,19 +44,19 @@ export function Sidebar() {
   };
 
   const sidebarContent = (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col mx-3">
       <div className="flex h-16 items-center gap-3 border-b border-[var(--color-rule)] px-6">
         <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-accent)] text-white shadow-sm">
           <Shield size={17} strokeWidth={2} />
         </span>
         <div>
-          <span className="text-base font-semibold tracking-tight text-[var(--color-ink)]">Velora</span>
+          <span className="text-base font-semibold text-xl tracking-tight text-[var(--color-ink)]">Velora</span>
           <p className="text-[10px] leading-tight text-[var(--color-muted)]">Security Platform</p>
         </div>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-6">
-        <div className="space-y-0.5">
+        <div className="space-y-3">
           {links.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.href);
@@ -62,7 +66,7 @@ export function Sidebar() {
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
                 className={cn(
-                  "relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
+                  "relative flex items-center gap-3 rounded-lg px-3 py-3 text-lg font-medium transition-all duration-150",
                   active
                     ? "bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
                     : "text-[var(--color-muted)] hover:bg-[var(--color-paper)] hover:text-[var(--color-ink)]"
@@ -150,15 +154,15 @@ export function Sidebar() {
       >
         <div className="flex items-center justify-between border-b border-[var(--color-rule)] px-4 py-3 lg:hidden">
           <span className="text-sm font-semibold text-[var(--color-ink)]">Menu</span>
-          <button
-            onClick={() => setMobileOpen(false)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--color-muted)] hover:bg-[var(--color-paper)]"
-          >
-            <X size={16} />
-          </button>
-        </div>
-        {sidebarContent}
-      </aside>
-    </>
-  );
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--color-muted)] hover:bg-[var(--color-paper)]"
+        >
+          <X size={16} />
+        </button>
+      </div>
+      {sidebarContent}
+    </aside>
+  </>
+);
 }

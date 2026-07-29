@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import { Contract } from "ethers";
+import { Contract, parseEther } from "ethers";
 import { getProvider, getSigner, getVeloraContract } from "@/lib/ethers";
 import { ActionType, Policy } from "@/types/policy";
 
@@ -18,6 +18,9 @@ function mapPolicy(raw: any): Policy {
     maxExecutions: raw.maxExecutions,
     executionCount: raw.executionCount,
     status: Number(raw.status),
+    amountPerExecution: raw.amountPerExecution ?? 0n,
+    paymentInterval: raw.paymentInterval ?? 0n,
+    lastExecutionTime: raw.lastExecutionTime ?? 0n,
   };
 }
 
@@ -39,15 +42,22 @@ export function useVeloraContract() {
       allowedAction: ActionType;
       expiration: number; // unix seconds
       maxExecutions: number;
+      amountPerExecution: string;
+      paymentInterval: number;
       depositWei: bigint;
     }) => {
       const contract = await writeContract();
+      const amountPerExecWei = parseEther(params.amountPerExecution || "0");
+      const paymentIntervalSec = BigInt(params.paymentInterval);
+      
       const tx = await contract.createPolicy(
         params.name,
         params.allowedDestination,
         params.allowedAction,
         params.expiration,
         params.maxExecutions,
+        amountPerExecWei,
+        paymentIntervalSec,
         { value: params.depositWei }
       );
       return tx.wait();

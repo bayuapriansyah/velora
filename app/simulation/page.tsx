@@ -14,17 +14,10 @@ import { useVeloraContract } from "@/hooks/useVeloraContract";
 import { predictExecution } from "@/utils/validation";
 import { botToWei } from "@/lib/format";
 import { ActionType, RejectReason } from "@/types/policy";
-import { Interface } from "ethers";
+import { Interface, parseEther } from "ethers";
 import VeloraAbi from "@/contracts/Velora.abi.json";
 
-const RULE_LABELS = [
-  "Not expired",
-  "Policy active",
-  "Destination matches",
-  "Action matches",
-  "Budget sufficient",
-  "Execution limit not reached",
-];
+
 
 function delay(ms: number) {
   return new Promise((res) => setTimeout(res, ms));
@@ -36,7 +29,7 @@ export default function SimulationPage() {
   const { executeRequest } = useVeloraContract();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [amount, setAmount] = useState("3");
+  const [amount, setAmount] = useState("");
   const [selectedAction, setSelectedAction] = useState<ActionType>(ActionType.Transfer);
   const [rules, setRules] = useState<TimelineRule[]>([]);
   const [isRunning, setIsRunning] = useState(false);
@@ -51,7 +44,12 @@ export default function SimulationPage() {
   function selectPolicy(id: string) {
     setSelectedId(id);
     const p = policies.find((pol) => pol.id.toString() === id);
-    if (p) setSelectedAction(p.allowedAction);
+    if (p) {
+      setSelectedAction(p.allowedAction);
+      // Auto-fill amount from the policy's amountPerExecution
+      const amountBot = p.amountPerExecution ? (Number(p.amountPerExecution) / 1e18).toString() : "";
+      setAmount(amountBot);
+    }
   }
 
   async function runSimulation(overrideAmountBot: string, action: ActionType) {
@@ -63,7 +61,7 @@ export default function SimulationPage() {
     const amountWei = botToWei(overrideAmountBot);
     const prediction = predictExecution(selectedPolicy, amountWei, selectedPolicy.allowedDestination, action);
 
-    const initial: TimelineRule[] = RULE_LABELS.map((label) => ({ label, state: "pending" }));
+    const initial: TimelineRule[] = prediction.ruleResults.map((r) => ({ label: r.rule, state: "pending" }));
     setRules(initial);
 
     for (let i = 0; i < prediction.ruleResults.length; i++) {
@@ -75,6 +73,17 @@ export default function SimulationPage() {
       );
       if (!r.passed) break;
       await delay(150);
+    }
+
+    if (prediction.isAiRejection) {
+      setResult({
+        approved: false,
+        aiReason: prediction.aiReason,
+        amountWei,
+        txHash: "AI_SIMULATION",
+      });
+      setIsRunning(false);
+      return;
     }
 
     try {
@@ -125,14 +134,21 @@ export default function SimulationPage() {
   }
 
   function runValid() {
-    runSimulation(amount, selectedAction);
+    if (!selectedPolicy) return;
+    // Always use the policy's amountPerExecution for the valid simulation
+    const amountBot = selectedPolicy.amountPerExecution
+      ? (Number(selectedPolicy.amountPerExecution) / 1e18).toString()
+      : amount;
+    runSimulation(amountBot, selectedAction);
   }
 
   function runInvalid() {
     if (!selectedPolicy) return;
-    const overspend = (selectedPolicy.remainingBudget * 2n + 1n).toString();
-    setAmount("");
-    runSimulation((Number(overspend) / 1e18).toString(), selectedAction);
+    // Overspend: try to send more than the remaining budget
+    const overspendWei = selectedPolicy.remainingBudget + parseEther("0.001");
+    const overspendBot = (Number(overspendWei) / 1e18).toString();
+    setAmount(overspendBot);
+    runSimulation(overspendBot, selectedAction);
   }
 
   function runWrongAction() {
@@ -183,7 +199,7 @@ export default function SimulationPage() {
       <div className="lg:ml-[280px] flex flex-1 flex-col">
         <TopBar title="Simulation" />
         <div className="flex flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6 md:py-8 lg:px-6 lg:py-12">
+        <div className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6 md:py-8">
         <h1 className="text-3xl font-semibold tracking-tight text-[var(--color-ink)]">Simulation</h1>
         <p className="mt-1 max-w-lg text-[var(--color-muted)]">
           A stand-in for an agent SDK — every request below is a real transaction to Velora.sol on BOT Chain.

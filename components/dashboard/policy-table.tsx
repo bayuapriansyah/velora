@@ -1,10 +1,26 @@
 "use client";
 
+import { Fragment, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Policy, PolicyStatus, STATUS_LABELS, ACTION_LABELS } from "@/types/policy";
-import { formatBot, truncateAddress } from "@/lib/format";
-import { Ban, WalletCards, Send, Clock3, Box, Route, Landmark } from "lucide-react";
+import { formatBot, truncateAddress, formatTimestamp } from "@/lib/format";
+import {
+  Ban,
+  WalletCards,
+  Send,
+  Clock3,
+  Box,
+  Route,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  Zap,
+  CalendarClock,
+  Repeat2,
+  Wallet,
+} from "lucide-react";
+import { Pagination } from "@/components/ui/pagination";
 
 const statusTone: Record<PolicyStatus, "approved" | "neutral" | "rejected"> = {
   [PolicyStatus.Active]: "approved",
@@ -12,6 +28,32 @@ const statusTone: Record<PolicyStatus, "approved" | "neutral" | "rejected"> = {
   [PolicyStatus.Expired]: "neutral",
   [PolicyStatus.Exhausted]: "neutral",
 };
+
+function formatIntervalDays(seconds: bigint): string {
+  const totalSeconds = Number(seconds);
+  if (totalSeconds === 0) return "—";
+  const days = Math.round(totalSeconds / 86400);
+  if (days === 1) return "Daily";
+  if (days === 7) return "Weekly";
+  if (days === 30) return "Monthly";
+  return `Every ${days} days`;
+}
+
+function formatNextExecution(lastExecTime: bigint, interval: bigint): string {
+  if (interval === 0n) return "—";
+  const lastSec = Number(lastExecTime);
+  const intervalSec = Number(interval);
+  const nowSec = Math.floor(Date.now() / 1000);
+  if (lastSec === 0) return "Ready now";
+  const nextSec = lastSec + intervalSec;
+  if (nextSec <= nowSec) return "Ready now";
+  const diffSec = nextSec - nowSec;
+  const diffDays = Math.floor(diffSec / 86400);
+  const diffHours = Math.floor((diffSec % 86400) / 3600);
+  if (diffDays > 0) return `in ${diffDays}d ${diffHours}h`;
+  const diffMin = Math.floor(diffSec / 60);
+  return `in ${diffMin}m`;
+}
 
 interface PolicyTableProps {
   policies: Policy[];
@@ -21,6 +63,17 @@ interface PolicyTableProps {
 }
 
 export function PolicyTable({ policies, onCancel, onWithdraw, busyId }: PolicyTableProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const pageSize = 10;
+
+  const totalPages = Math.ceil(policies.length / pageSize);
+  const paginatedPolicies = policies.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  function toggleExpand(id: string) {
+    setExpandedId((prev) => (prev === id ? null : id));
+  }
+
   if (policies.length === 0) {
     return (
       <div className="col-span-12">
@@ -38,45 +91,53 @@ export function PolicyTable({ policies, onCancel, onWithdraw, busyId }: PolicyTa
   }
 
   return (
-    <div className="col-span-12">
-      <div className="overflow-hidden rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-[var(--color-rule)] bg-[var(--color-paper)]">
-                <th className="px-5 py-3.5 text-left text-xs font-semibold tracking-[0.06em] text-[var(--color-muted)] uppercase">
-                  Policy
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold tracking-[0.06em] text-[var(--color-muted)] uppercase">
-                  Status
-                </th>
-                <th className="px-5 py-3.5 text-right text-xs font-semibold tracking-[0.06em] text-[var(--color-muted)] uppercase">
-                  Budget
-                </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold tracking-[0.06em] text-[var(--color-muted)] uppercase">
-                  Usage
-                </th>
-                <th className="px-5 py-3.5 text-right text-xs font-semibold tracking-[0.06em] text-[var(--color-muted)] uppercase">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--color-rule)]">
-              {policies.map((p) => {
-                const spentPct =
-                  p.totalBudget > 0n
-                    ? Number(((p.totalBudget - p.remainingBudget) * 100n) / p.totalBudget)
-                    : 0;
-                const busy = busyId === p.id.toString();
-                const execPct =
-                  p.maxExecutions > 0n
-                    ? Number((p.executionCount * 100n) / p.maxExecutions)
-                    : 0;
+    <div className="col-span-12 w-full min-w-0">
+      <div className="overflow-x-auto rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] shadow-sm">
+        <table className="w-full min-w-[900px]">
+          <thead>
+            <tr className="border-b border-[var(--color-rule)] bg-[var(--color-paper)]">
+              <th className="px-5 py-3.5 text-left text-xs font-semibold tracking-[0.06em] text-[var(--color-muted)] uppercase">
+                Policy
+              </th>
+              <th className="px-5 py-3.5 text-left text-xs font-semibold tracking-[0.06em] text-[var(--color-muted)] uppercase">
+                Status
+              </th>
+              <th className="px-5 py-3.5 text-right text-xs font-semibold tracking-[0.06em] text-[var(--color-muted)] uppercase">
+                Budget
+              </th>
+              <th className="px-5 py-3.5 text-left text-xs font-semibold tracking-[0.06em] text-[var(--color-muted)] uppercase">
+                Amt/Exec
+              </th>
+              <th className="px-5 py-3.5 text-left text-xs font-semibold tracking-[0.06em] text-[var(--color-muted)] uppercase">
+                Frequency
+              </th>
+              <th className="px-5 py-3.5 text-left text-xs font-semibold tracking-[0.06em] text-[var(--color-muted)] uppercase">
+                Usage
+              </th>
+              <th className="px-5 py-3.5 text-right text-xs font-semibold tracking-[0.06em] text-[var(--color-muted)] uppercase">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[var(--color-rule)]">
+            {paginatedPolicies.map((p) => {
+              const spentPct =
+                p.totalBudget > 0n
+                  ? Number(((p.totalBudget - p.remainingBudget) * 100n) / p.totalBudget)
+                  : 0;
+              const busy = busyId === p.id.toString();
+              const isExpanded = expandedId === p.id.toString();
 
-                return (
+              // Kalkulasi: totalAllocated = amountPerExecution × maxExecutions
+              const amountPerExec = p.amountPerExecution ?? 0n;
+              const totalAllocated = amountPerExec * p.maxExecutions;
+              const totalSpentExec = amountPerExec * p.executionCount;
+
+              return (
+                <Fragment key={p.id.toString()}>
                   <tr
-                    key={p.id.toString()}
-                    className="transition-colors hover:bg-[var(--color-paper)]"
+                    className="cursor-pointer transition-colors hover:bg-[var(--color-paper)]"
+                    onClick={() => toggleExpand(p.id.toString())}
                   >
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
@@ -111,7 +172,17 @@ export function PolicyTable({ policies, onCancel, onWithdraw, busyId }: PolicyTa
                       </div>
                     </td>
                     <td className="px-5 py-4">
-                      <div className="w-40">
+                      <span className="font-mono text-sm font-semibold text-[var(--color-ink)]">
+                        {amountPerExec > 0n ? `${formatBot(amountPerExec)} BOT` : "—"}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className="text-sm text-[var(--color-ink)]">
+                        {formatIntervalDays(p.paymentInterval ?? 0n)}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4">
+                      <div className="w-36">
                         <div className="flex items-center justify-between text-xs text-[var(--color-muted)]">
                           <span className="flex items-center gap-1">
                             <Clock3 size={11} />
@@ -142,7 +213,7 @@ export function PolicyTable({ policies, onCancel, onWithdraw, busyId }: PolicyTa
                               size="sm"
                               variant="secondary"
                               disabled={busy}
-                              onClick={() => onCancel(p.id)}
+                              onClick={(e) => { e.stopPropagation(); onCancel(p.id); }}
                             >
                               <Ban size={13} />
                               Cancel
@@ -156,20 +227,158 @@ export function PolicyTable({ policies, onCancel, onWithdraw, busyId }: PolicyTa
                           <Button
                             size="sm"
                             disabled={busy}
-                            onClick={() => onWithdraw(p.id)}
+                            onClick={(e) => { e.stopPropagation(); onWithdraw(p.id); }}
                           >
                             <WalletCards size={13} />
                             Withdraw
                           </Button>
                         ) : null}
+                        <span className="ml-1 text-[var(--color-muted)]">
+                          {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </span>
                       </div>
                     </td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+
+                  {/* Expanded Detail Row */}
+                  {isExpanded && (
+                    <tr className="bg-[var(--color-paper)]">
+                      <td colSpan={7} className="px-6 py-5">
+                        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                          {/* Budget Breakdown */}
+                          <div className="rounded-xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-4">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--color-muted)] uppercase tracking-wide">
+                              <Wallet size={12} />
+                              Budget Breakdown
+                            </div>
+                            <div className="mt-3 space-y-1.5 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-[var(--color-muted)]">Total budget</span>
+                                <span className="font-mono font-semibold text-[var(--color-ink)]">{formatBot(p.totalBudget)} BOT</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-[var(--color-muted)]">Allocated ({p.maxExecutions.toString()}×)</span>
+                                <span className="font-mono font-semibold text-[var(--color-ink)]">
+                                  {amountPerExec > 0n ? `${formatBot(totalAllocated)} BOT` : "—"}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-[var(--color-muted)]">Spent so far</span>
+                                <span className="font-mono font-semibold text-[var(--color-danger)]">
+                                  {amountPerExec > 0n ? `${formatBot(totalSpentExec)} BOT` : "—"}
+                                </span>
+                              </div>
+                              <div className="flex justify-between border-t border-[var(--color-rule)] pt-1.5">
+                                <span className="text-[var(--color-muted)]">Remaining</span>
+                                <span className="font-mono font-semibold text-[var(--color-success)]">{formatBot(p.remainingBudget)} BOT</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Schedule */}
+                          <div className="rounded-xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-4">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--color-muted)] uppercase tracking-wide">
+                              <Repeat2 size={12} />
+                              Schedule
+                            </div>
+                            <div className="mt-3 space-y-1.5 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-[var(--color-muted)]">Frequency</span>
+                                <span className="font-semibold text-[var(--color-ink)]">{formatIntervalDays(p.paymentInterval ?? 0n)}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-[var(--color-muted)]">Per execution</span>
+                                <span className="font-mono font-semibold text-[var(--color-ink)]">
+                                  {amountPerExec > 0n ? `${formatBot(amountPerExec)} BOT` : "—"}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-[var(--color-muted)]">Next execution</span>
+                                <span className="font-semibold text-[var(--color-accent)]">
+                                  {formatNextExecution(p.lastExecutionTime ?? 0n, p.paymentInterval ?? 0n)}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-[var(--color-muted)]">Last executed</span>
+                                <span className="text-[var(--color-ink)]">
+                                  {(p.lastExecutionTime ?? 0n) > 0n ? formatTimestamp(p.lastExecutionTime!) : "Never"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Execution Stats */}
+                          <div className="rounded-xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-4">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--color-muted)] uppercase tracking-wide">
+                              <Zap size={12} />
+                              Executions
+                            </div>
+                            <div className="mt-3 space-y-1.5 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-[var(--color-muted)]">Completed</span>
+                                <span className="font-semibold text-[var(--color-ink)]">{p.executionCount.toString()}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-[var(--color-muted)]">Max allowed</span>
+                                <span className="font-semibold text-[var(--color-ink)]">{p.maxExecutions.toString()}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-[var(--color-muted)]">Remaining</span>
+                                <span className="font-semibold text-[var(--color-accent)]">
+                                  {(p.maxExecutions - p.executionCount).toString()} left
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Policy Info */}
+                          <div className="rounded-xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-4">
+                            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--color-muted)] uppercase tracking-wide">
+                              <CalendarClock size={12} />
+                              Policy Info
+                            </div>
+                            <div className="mt-3 space-y-1.5 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-[var(--color-muted)]">Policy ID</span>
+                                <span className="font-mono font-semibold text-[var(--color-ink)]">#{p.id.toString()}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-[var(--color-muted)]">Action</span>
+                                <span className="font-semibold text-[var(--color-ink)]">{ACTION_LABELS[p.allowedAction]}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-[var(--color-muted)]">Expires</span>
+                                <span className="text-[var(--color-ink)]">{formatTimestamp(p.expiration)}</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-[var(--color-muted)]">Destination</span>
+                                <a
+                                  href={`https://scan.bohr.life/address/${p.allowedDestination}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center gap-1 font-mono text-[var(--color-accent)] hover:underline"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  {truncateAddress(p.allowedDestination, 4)}
+                                  <ExternalLink size={11} />
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              );
+            })}
+          </tbody>
+        </table>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

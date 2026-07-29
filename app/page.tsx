@@ -20,7 +20,7 @@ export default function LandingPage() {
       <Architecture />
       <Features />
       <DemoPreview />
-      <Faq />
+      {/* <Faq /> */}
       <Footer />
     </main>
   );

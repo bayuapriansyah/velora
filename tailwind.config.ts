@@ -6,15 +6,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        base: "#FAFAF9",
-        surface: "#FFFFFF",
+        base: "#fff3f3ff",
+        surface: "#fcf9f9ff",
         ink: "#111114",
         muted: "#6B6B70", 
         hairline: "#EDEDEB",
         accent: {
-          DEFAULT: "#5B5BF6",
+          DEFAULT: "#fe4d47ff",
           soft: "#EEEEFE",
-          hover: "#4A4AE8",
+          hover: "#e3231cff",
         },
         approved: {
           DEFAULT: "#16A34A",

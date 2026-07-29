@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Wallet } from "lucide-react";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { TopBar } from "@/components/dashboard/top-bar";
@@ -19,7 +19,8 @@ import { PolicyStatus } from "@/types/policy";
 export default function DashboardPage() {
   const { account, isCorrectNetwork, connect } = useWallet();
   const { policies, isLoading, error, refresh } = usePolicies(account);
-  const events = usePolicyEvents(account, isCorrectNetwork);
+  const policyIds = useMemo(() => policies.map((policy) => policy.id), [policies]);
+  const events = usePolicyEvents(account, isCorrectNetwork, policyIds);
   const { cancelPolicy, withdrawRemainingBudget } = useVeloraContract();
   const [balance, setBalance] = useState<bigint | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -139,18 +140,6 @@ export default function DashboardPage() {
 
               <div className="col-span-12">
                 <h2 className="mb-4 text-xs font-semibold tracking-[0.08em] text-[var(--color-muted)] uppercase">
-                  Policies
-                </h2>
-                <PolicyTable
-                  policies={policies}
-                  onCancel={handleCancel}
-                  onWithdraw={handleWithdraw}
-                  busyId={busyId}
-                />
-              </div>
-
-              <div className="col-span-12">
-                <h2 className="mb-4 text-xs font-semibold tracking-[0.08em] text-[var(--color-muted)] uppercase">
                   Activity
                 </h2>
                 <div className="grid grid-cols-12 gap-6">
@@ -169,7 +158,7 @@ export default function DashboardPage() {
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-[var(--color-muted)]">Total events</span>
                           <span className="text-sm font-semibold tabular-nums text-[var(--color-ink)]">
-                            {approvedEvents + rejectedEvents}
+                            {events.length}
                           </span>
                         </div>
                         <div className="flex items-center justify-between border-t border-[var(--color-rule)] pt-4">

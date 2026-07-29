@@ -17,6 +17,46 @@ export function Step3Limits({
   return (
     <div className="space-y-6">
       <div>
+        <label className="text-sm font-medium text-[var(--color-ink)]">Amount per execution (BOT)</label>
+        <p className="mt-1 text-sm text-[var(--color-muted)]">How much BOT to send/use per execution.</p>
+        <input
+          type="number"
+          min="0"
+          step="0.0001"
+          value={form.amountPerExecution}
+          onChange={(e) => onChange({ amountPerExecution: e.target.value })}
+          placeholder="0.02"
+          className="mt-2 w-full rounded-xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] px-4 py-3 text-sm font-mono text-[var(--color-ink)] outline-none focus-visible:border-[var(--color-accent)]"
+        />
+      </div>
+      <div>
+        <label className="text-sm font-medium text-[var(--color-ink)]">Payment frequency (Days)</label>
+        <p className="mt-1 text-sm text-[var(--color-muted)]">How often the agent should execute this policy (1 = Daily, 7 = Weekly, 30 = Monthly).</p>
+        <input
+          type="number"
+          min="1"
+          step="1"
+          value={form.paymentIntervalDays}
+          onChange={(e) => onChange({ paymentIntervalDays: Math.max(1, parseInt(e.target.value || "1", 10)) })}
+          placeholder="30"
+          className="mt-2 w-full rounded-xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] px-4 py-3 text-sm font-mono text-[var(--color-ink)] outline-none focus-visible:border-[var(--color-accent)]"
+        />
+        <label className="mt-3 flex items-center gap-2 text-sm font-medium text-[var(--color-ink)] cursor-pointer">
+          <input
+            type="checkbox"
+            checked={form.useSeconds}
+            onChange={(e) => onChange({ useSeconds: e.target.checked })}
+            className="rounded border-[var(--color-rule)] text-[var(--color-accent)] focus:ring-[var(--color-accent)]"
+          />
+          Use seconds (Demo Mode)
+        </label>
+        {form.useSeconds && (
+          <p className="mt-1 text-xs text-[var(--color-danger)] font-medium">
+            ⚠️ Warning: Demo mode uses seconds. Only for testing purposes!
+          </p>
+        )}
+      </div>
+      <div>
         <label className="text-sm font-medium text-[var(--color-ink)]">Expiration</label>
         <p className="mt-1 text-sm text-[var(--color-muted)]">The policy stops approving requests after this window.</p>
         <div className="mt-2 grid grid-cols-4 gap-2">

@@ -11,6 +11,8 @@ import {
 import type { ActivityEvent } from "@/types/policy";
 import { truncateAddress } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
+import { Pagination } from "@/components/ui/pagination";
+import { useState } from "react";
 
 interface TimelineEvent extends ActivityEvent {
   _timeAgo: string;
@@ -73,29 +75,34 @@ interface ActivityTimelineProps {
 }
 
 export function ActivityTimeline({ events, approvedCount, rejectedCount }: ActivityTimelineProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+  
   const totalEvents = approvedCount + rejectedCount;
-  const approvalPct = totalEvents > 0 ? Math.round((approvedCount / totalEvents) * 100) : 0;
+  const totalPages = Math.ceil(events.length / pageSize);
 
   const enriched: TimelineEvent[] = events
-    .slice(0, 10)
+    .slice((currentPage - 1) * pageSize, currentPage * pageSize)
     .map((e) => ({ ...e, _timeAgo: formatTimeAgo(e.timestamp) }));
 
   return (
     <div className="col-span-12 lg:col-span-8">
       <div className="rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] shadow-sm">
+        {/* ... (Header) */}
         <div className="border-b border-[var(--color-rule)] px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold text-[var(--color-ink)]">Activity Timeline</p>
               <p className="mt-0.5 text-xs text-[var(--color-muted)]">Latest on-chain events</p>
             </div>
-            {enriched.length > 0 && (
+            {events.length > 0 && (
               <span className="rounded-full bg-[var(--color-accent-soft)] px-2.5 py-0.5 text-xs font-medium text-[var(--color-accent)]">
-                {enriched.length}
+                {events.length}
               </span>
             )}
           </div>
         </div>
+
         {enriched.length === 0 ? (
           <div className="px-6 py-10 text-center text-sm text-[var(--color-muted)]">
             No events yet. Activity appears here as it happens on-chain.
@@ -132,7 +139,7 @@ export function ActivityTimeline({ events, approvedCount, rejectedCount }: Activ
                         <div className="mt-1 flex items-center gap-2 text-xs text-[var(--color-muted)]">
                           {e.txHash && (
                             <a
-                              href={`https://botchain.explorer/tx/${e.txHash}`}
+                              href={`https://scan.bohr.life/tx/${e.txHash}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 rounded-md bg-[var(--color-paper)] px-2 py-0.5 font-mono text-[11px] text-[var(--color-accent)] transition-colors hover:bg-[var(--color-accent-soft)]"
@@ -148,6 +155,11 @@ export function ActivityTimeline({ events, approvedCount, rejectedCount }: Activ
                 })}
               </div>
             </div>
+            <Pagination 
+                currentPage={currentPage} 
+                totalPages={totalPages} 
+                onPageChange={setCurrentPage} 
+            />
           </div>
         )}
       </div>

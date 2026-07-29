@@ -10,20 +10,19 @@ interface TopBarProps {
 
 const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
+  "/policies": "Policies",
   "/create-policy": "Create Policy",
   "/simulation": "Simulation",
+  "/agent": "Agent",
 };
 
 export function TopBar({ title }: TopBarProps) {
   const { account } = useWallet();
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-[var(--color-rule)] bg-[var(--color-paper-2)] px-4 md:px-6 lg:px-8">
-      <div className="flex items-center gap-3">
-        <h1 className="text-base font-semibold text-[var(--color-ink)]">{title || "Dashboard"}</h1>
-        <span className="rounded-full border border-[var(--color-rule)] bg-[var(--color-paper)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-muted)]">
-          Beta
-        </span>
+    <header className="sticky top-0 z-30 flex h-16 lg:h-20 items-center justify-between border-b border-[var(--color-rule)] bg-[var(--color-paper-2)] px-4 md:px-6 lg:px-8">
+      <div className="flex items-center gap-3 ml-8 lg:ml-0">
+        <h1 className="text-base text-xl font-semibold text-[var(--color-ink)]">{title || "Dashboard"}</h1>
       </div>
 
       <div className="flex items-center gap-3">

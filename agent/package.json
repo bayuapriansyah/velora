@@ -1,0 +1,16 @@
+{
+  "name": "velora-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Autonomous AI agent that requests execution against a Velora policy — never holds a wallet key beyond its own gas money, and never bypasses the smart contract's validation.",
+  "type": "module",
+  "scripts": {
+    "start": "node agent.js",
+    "once": "node agent.js --once"
+  },
+  "dependencies": {
+    "ethers": "^6.13.4",
+    "@google/generative-ai": "^0.21.0",
+    "dotenv": "^16.4.5"
+  }
+}

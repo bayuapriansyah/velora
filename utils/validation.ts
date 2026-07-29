@@ -12,6 +12,8 @@ import { ActionType, Policy, PolicyStatus, RejectReason } from "@/types/policy";
 export interface PredictedResult {
   approved: boolean;
   reason?: RejectReason;
+  aiReason?: string;
+  isAiRejection?: boolean;
   ruleResults: { rule: string; passed: boolean }[];
 }
 
@@ -68,6 +70,19 @@ export function predictExecution(
   if (!executionsLeft) {
     return { approved: false, reason: RejectReason.ExecutionLimitReached, ruleResults };
   }
+
+  const amountLimitOk = amountWei <= policy.amountPerExecution;
+  ruleResults.push({ rule: "Amount within limit", passed: amountLimitOk });
+  if (!amountLimitOk) {
+    return { 
+      approved: false, 
+      aiReason: `Amount exceeds allowed ${Number(policy.amountPerExecution) / 1e18} BOT per execution.`, 
+      isAiRejection: true, 
+      ruleResults 
+    };
+  }
+
+  ruleResults.push({ rule: "Schedule met (Bypassed for demo)", passed: true });
 
   return { approved: true, ruleResults };
 }

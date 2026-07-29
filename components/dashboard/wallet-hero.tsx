@@ -48,9 +48,9 @@ export function WalletHero({
 
   return (
     <div className="col-span-12">
-      <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-12 lg:col-span-8">
-          <div className="relative overflow-hidden rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] shadow-sm">
+      <div className="flex h-full grid grid-cols-12 gap-6">
+        <div className="col-span-12 lg:col-span-8 flex">
+          <div className="flex-1 relative overflow-hidden rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] shadow-sm">
             <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-[var(--color-accent)]/3 to-transparent" />
             <div className="relative p-6">
               <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
@@ -150,7 +150,7 @@ export function WalletHero({
                 </Button>
               </Link>
               <Link href="/simulation">
-                <Button variant="secondary" size="md" className="w-full justify-start gap-2.5">
+                <Button variant="secondary" size="md" className="w-full mt-2.5 justify-start gap-2.5">
                   <FlaskConical size={16} />
                   Run Simulation
                 </Button>

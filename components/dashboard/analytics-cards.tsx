@@ -73,8 +73,8 @@ export function AnalyticsCards({
   return (
     <div className="col-span-12">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="col-span-1">
-          <div className="rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-6 shadow-sm transition-shadow hover:shadow-md">
+        <div className="col-span-1 flex">
+          <div className="flex-1 rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-6 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center justify-between">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
                 <Shield size={16} />
@@ -88,8 +88,8 @@ export function AnalyticsCards({
           </div>
         </div>
 
-        <div className="col-span-1">
-          <div className="rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-6 shadow-sm transition-shadow hover:shadow-md">
+        <div className="col-span-1 flex">
+          <div className="flex-1 rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-6 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center justify-between">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
                 <Gauge size={16} />
@@ -112,8 +112,8 @@ export function AnalyticsCards({
           </div>
         </div>
 
-        <div className="col-span-1">
-          <div className="rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-6 shadow-sm transition-shadow hover:shadow-md">
+        <div className="col-span-1 flex">
+          <div className="flex-1 rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-6 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center justify-between">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--color-success-soft)] text-[var(--color-success)]">
                 <Coins size={16} />
@@ -139,8 +139,8 @@ export function AnalyticsCards({
           </div>
         </div>
 
-        <div className="col-span-1">
-          <div className="rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-6 shadow-sm transition-shadow hover:shadow-md">
+        <div className="col-span-1 flex">
+          <div className="flex-1 rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-6 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center justify-between">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--color-paper)] text-[var(--color-muted)]">
                 <Activity size={16} />

@@ -6,18 +6,18 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
   --color-velora-paper: #111111;
-  --color-velora-surface: #1A1A1A;
-  --color-velora-ink: #F5F5F5;
+  --color-velora-surface: #1a1a1a;
+  --color-velora-ink: #f5f5f5;
   --color-velora-muted: #888888;
-  --color-velora-rule: #2A2A2A;
-  --color-velora-accent: #3B82F6;
-  --color-velora-accent-2: #60A5FA;
+  --color-velora-rule: #2a2a2a;
+  --color-velora-accent: #3b82f6;
+  --color-velora-accent-2: #60a5fa;
   --color-velora-accent-soft: rgba(59, 130, 246, 0.12);
-  --color-velora-success: #22C55E;
+  --color-velora-success: #22c55e;
   --color-velora-success-soft: rgba(34, 197, 94, 0.12);
-  --color-velora-danger: #EF4444;
+  --color-velora-danger: #ef4444;
   --color-velora-danger-soft: rgba(239, 68, 68, 0.12);
-  --color-velora-warning: #F59E0B;
+  --color-velora-warning: #f59e0b;
   --color-velora-warning-soft: rgba(245, 158, 11, 0.12);
 
   --color-paper: var(--color-velora-paper);
@@ -34,9 +34,12 @@
   --color-danger-soft: var(--color-velora-danger-soft);
   --color-warning: var(--color-velora-warning);
   --color-warning-soft: var(--color-velora-warning-soft);
-  --shadow-card: 0 1px 3px 0 rgba(0,0,0,0.04), 0 1px 2px -1px rgba(0,0,0,0.06);
-  --shadow-card-hover: 0 10px 15px -3px rgba(0,0,0,0.06), 0 4px 6px -4px rgba(0,0,0,0.08);
-  --shadow-sidebar: 0 0 0 1px rgba(0,0,0,0.02), 4px 0 12px rgba(0,0,0,0.04);
+  --shadow-card:
+    0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover:
+    0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+  --shadow-sidebar:
+    0 0 0 1px rgba(0, 0, 0, 0.02), 4px 0 12px rgba(0, 0, 0, 0.04);
 
   --font-display: var(--font-sans);
   --font-body: var(--font-sans);

@@ -21,6 +21,8 @@ export enum RejectReason {
   InsufficientBudget = 3,
   ExecutionLimitReached = 4,
   NotActive = 5,
+  InvalidExecutionAmount = 6,
+  PaymentNotDue = 7,
 }
 
 export interface Policy {
@@ -35,6 +37,9 @@ export interface Policy {
   maxExecutions: bigint;
   executionCount: bigint;
   status: PolicyStatus;
+  amountPerExecution: bigint;
+  paymentInterval: bigint;
+  lastExecutionTime: bigint;
 }
 
 export const ACTION_LABELS: Record<ActionType, string> = {
@@ -57,6 +62,8 @@ export const REJECT_REASON_LABELS: Record<RejectReason, string> = {
   [RejectReason.InsufficientBudget]: "Insufficient remaining budget",
   [RejectReason.ExecutionLimitReached]: "Execution limit reached",
   [RejectReason.NotActive]: "Policy is not active",
+  [RejectReason.InvalidExecutionAmount]: "Invalid execution amount",
+  [RejectReason.PaymentNotDue]: "Payment interval has not elapsed",
 };
 
 export interface ActivityEvent {

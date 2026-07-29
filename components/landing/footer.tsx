@@ -2,7 +2,7 @@ import { Shield } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t border-hairline pt-20 md:pt-32 pb-12 md:pb-16 mt-12 md:mt-20 relative overflow-hidden bg-base">
+    <footer className="border-t border-hairline pt-20 md:pt-32 pb-12 md:pb-16 relative overflow-hidden bg-base">
       <div className="mx-auto max-w-6xl px-6">
         <div className="max-w-2xl mb-20 md:mb-32 text-center md:text-left mx-auto md:mx-0">
           <h2 className="text-3xl md:text-4xl font-medium tracking-tight text-ink mb-6 md:mb-8 leading-snug">

@@ -88,6 +88,15 @@ export function RequestBuilder({
                 onChange={(e) => onAmountChange(e.target.value)}
                 className="mt-2 w-full rounded-xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] px-4 py-3 text-sm font-mono text-[var(--color-ink)] outline-none focus-visible:border-[var(--color-accent)]"
               />
+              {selected.amountPerExecution > 0n && (
+                <p className="mt-1.5 text-xs text-[var(--color-muted)]">
+                  Policy allows max{" "}
+                  <span className="font-semibold text-[var(--color-accent)]">
+                    {(Number(selected.amountPerExecution) / 1e18)} BOT
+                  </span>{" "}
+                  per execution. &ldquo;Simulate AI request&rdquo; will use this exact amount.
+                </p>
+              )}
 
               <label className="mt-5 block text-sm font-medium text-[var(--color-ink)]">Action to request</label>
               <p className="mt-1 text-xs text-[var(--color-muted)]">

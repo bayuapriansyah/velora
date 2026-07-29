@@ -8,6 +8,8 @@ export function Step4Review({ form }: { form: PolicyFormState }) {
     { label: "Budget", value: form.budget ? `${form.budget} BOT` : "—" },
     { label: "Destination", value: form.destination ? truncateAddress(form.destination, 6) : "—" },
     { label: "Action", value: ACTION_LABELS[form.action] },
+    { label: "Amount per exec", value: form.amountPerExecution ? `${form.amountPerExecution} BOT` : "—" },
+    { label: "Frequency", value: `Every ${form.paymentIntervalDays} days` },
     { label: "Expiration", value: `${form.expirationHours} hours from deployment` },
     { label: "Max executions", value: String(form.maxExecutions) },
   ];
