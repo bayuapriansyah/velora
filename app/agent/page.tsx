@@ -119,6 +119,8 @@ export default function AgentPage() {
     return 60000;
   });
   const logsEndRef = useRef<HTMLDivElement>(null);
+  const isRunningRef = useRef(false);
+  isRunningRef.current = isRunning;
 
   useEffect(() => {
     localStorage.setItem("velora_agent_logs", JSON.stringify(logs.slice(-30)));
@@ -140,7 +142,7 @@ export default function AgentPage() {
     if (!autoRun) return;
 
     const interval = setInterval(() => {
-      runAgent();
+      if (!isRunningRef.current) runAgent();
     }, autoRunInterval);
 
     return () => clearInterval(interval);

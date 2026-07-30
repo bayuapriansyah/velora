@@ -94,7 +94,7 @@ export function Step3Limits({
           Use seconds (Demo Mode)
         </label>
         {form.useSeconds && (
-          <p className="mt-1 text-xs text-[var(--color-danger)] font-medium">
+          <p className="mt-1 text-xs text-[var(--color-warning)] font-medium">
             ⚠️ Warning: Demo mode uses seconds. Only for testing purposes!
           </p>
         )}

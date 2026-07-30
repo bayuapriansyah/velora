@@ -182,6 +182,22 @@ Respond with ONLY a JSON object, no markdown, no explanation outside the JSON:
         continue;
       }
 
+      const fresh = await contract.getPolicy(policyId);
+      if (fresh.executionCount !== p.executionCount) {
+        policyResult.result = "skipped";
+        policyResult.reasoning = `Another cycle already executed this policy (count: ${fresh.executionCount}).`;
+        log(`Policy #${policyId} - Skipping: execution count changed (${p.executionCount} → ${fresh.executionCount}).`);
+        policyId++;
+        continue;
+      }
+      if (Number(fresh.status) !== 0) {
+        policyResult.result = "skipped";
+        policyResult.reasoning = `Policy is no longer active (status: ${STATUS_LABELS[Number(fresh.status)]}).`;
+        log(`Policy #${policyId} - Skipping: status changed to ${STATUS_LABELS[Number(fresh.status)]}.`);
+        policyId++;
+        continue;
+      }
+
       const amountWei = p.amountPerExecution;
       log(`Requesting execution for Policy #${policyId}: ${ethers.formatEther(amountWei)} BOT to ${p.allowedDestination} (action: ${ACTION_LABELS[Number(p.allowedAction)]})...`);
 
