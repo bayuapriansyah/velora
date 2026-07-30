@@ -49,7 +49,7 @@ Velora introduces **on-chain policy enforcement**. You define granular, immutabl
 
 ### Key principles
 
-- **Agent-agnostic** — works with Gemini, GPT, Claude, or any LLM
+- **AI-powered agent** — uses Google Gemini for execution decisions
 - **Zero-backend** — 100% client-to-contract, no server secrets
 - **Gross-up fee** — SafetyNet fee (1%) included in pre-funded deposit, agent never needs `msg.value`
 - **Policy SafetyNet** — on-chain insurance pool, policy owners can claim compensation
@@ -74,7 +74,7 @@ flowchart LR
     end
 
     subgraph "AI"
-        LLM[Gemini / GPT / Claude]
+        LLM[Google Gemini]
     end
 
     subgraph "Standalone"
