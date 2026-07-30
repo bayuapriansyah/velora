@@ -28,7 +28,6 @@ const {
   CONTRACT_ADDRESS,
   AGENT_PRIVATE_KEY,
   GEMINI_API_KEY,
-  REQUEST_AMOUNT_BOT,
   INTERVAL_MINUTES,
 } = process.env;
 
@@ -63,14 +62,13 @@ requireEnv("CONTRACT_ADDRESS", CONTRACT_ADDRESS);
 requireEnv("AGENT_PRIVATE_KEY", AGENT_PRIVATE_KEY);
 requireEnv("GEMINI_API_KEY", GEMINI_API_KEY);
 
-const suggestedAmountBot = REQUEST_AMOUNT_BOT ?? "0.01";
 const intervalMs = Number(INTERVAL_MINUTES ?? "2") * 60 * 1000;
 
 const provider = new ethers.JsonRpcProvider(RPC_URL);
 const wallet = new ethers.Wallet(AGENT_PRIVATE_KEY, provider);
 const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, wallet);
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
 function log(...args) {
   console.log(`[${new Date().toISOString()}]`, ...args);
@@ -103,7 +101,7 @@ async function getPolicySnapshot(policyId) {
  * actual on-chain request afterward. A "yes" from Gemini never bypasses
  * validation; it only decides whether to try.
  */
-async function askGemini(snapshot) {
+async function askGemini(snapshot, amountBot) {
   const prompt = `You are an autonomous spending agent operating under a strict on-chain policy.
 You may only ever suggest requesting a transaction; a smart contract is the sole authority
 that approves or rejects it based on rules you cannot change.
@@ -111,17 +109,16 @@ that approves or rejects it based on rules you cannot change.
 Current policy state:
 ${JSON.stringify(snapshot, null, 2)}
 
-Suggested request amount if you decide to act: ${suggestedAmountBot} BOT
+The mandatory execution amount is exactly ${amountBot} BOT — this cannot be changed.
 
 Decide whether the agent should attempt an execution request right now. Consider:
 - Is the policy still Active?
-- Is there enough remaining budget for the suggested amount?
+- Is there enough remaining budget for the execution amount?
 - Have executions already reached the maximum?
-- Is the current time past (lastExecutionTime + paymentIntervalSeconds)? Current time in seconds is ${Math.floor(Date.now() / 1000)}. (If lastExecutionTime is 0, it means it has never executed, so it's ready now).
-- Is the suggested request amount exactly equal to amountPerExecutionBot?
+- Is the current time past (lastExecutionTime + paymentIntervalSeconds)? Current time in seconds is ${Math.floor(Date.now() / 1000)}. (If lastExecutionTime is 0, it means it has never executed, so it is ready now).
 
 Respond with ONLY a JSON object, no markdown, no explanation outside the JSON:
-{"shouldRequest": true|false, "amountBot": "<number as string, must be exactly amountPerExecutionBot>", "reasoning": "<one short sentence>"}`;
+{"shouldRequest": true|false, "reasoning": "<one short sentence>"}`;
 
   const result = await model.generateContent(prompt);
   const text = result.response.text().trim();
@@ -135,7 +132,6 @@ Respond with ONLY a JSON object, no markdown, no explanation outside the JSON:
     );
     return {
       shouldRequest: false,
-      amountBot: "0",
       reasoning: "Failed to parse model response.",
     };
   }
@@ -161,7 +157,10 @@ async function actOnce() {
 
     log(`Analyzing Policy #${policyId} (${snapshot.name})...`);
 
-    const decision = await askGemini(snapshot);
+    const amountBot = snapshot.rawPolicy.amountPerExecution;
+    const amountWei = amountBot;
+
+    const decision = await askGemini(snapshot, ethers.formatEther(amountWei));
     log(`Gemini decision for Policy #${policyId}:`, decision);
 
     if (!decision.shouldRequest) {
@@ -173,39 +172,43 @@ async function actOnce() {
       continue;
     }
 
-    const amountWei = ethers.parseEther(
-      String(decision.amountBot || suggestedAmountBot),
-    );
-    
-    // Calculate fee (Opsi B: Fee as additional cost)
-    // Fetch safetyNetFeeBps and minFeeThreshold from contract to be precise
-    const feeBps = await contract.safetyNetFeeBps();
-    const minThreshold = await contract.minFeeThreshold();
-    
-    let feeWei = 0n;
-    if (amountWei >= minThreshold) {
-      feeWei = (amountWei * feeBps) / 10000n;
+    // Re-check policy state before submitting
+    try {
+      const fresh = await contract.getPolicy(policyId);
+      if (fresh.executionCount !== snapshot.rawPolicy.executionCount) {
+        log(`Policy #${policyId} - Skipping: execution count changed (another cycle already executed).`);
+        policyId++;
+        continue;
+      }
+      if (Number(fresh.status) !== 0) {
+        const labels = ["Active", "Cancelled", "Expired", "Exhausted"];
+        log(`Policy #${policyId} - Skipping: status changed to ${labels[Number(fresh.status)]}.`);
+        policyId++;
+        continue;
+      }
+    } catch (recheckErr) {
+      log(`Policy #${policyId} - Re-check failed, skipping.`, recheckErr.message || String(recheckErr));
+      policyId++;
+      continue;
     }
-    
+
     const actionType = ACTION_LABELS.indexOf(snapshot.allowedAction);
 
     log(
-      `Requesting execution for Policy #${policyId}: ${ethers.formatEther(amountWei)} BOT (plus ${ethers.formatEther(feeWei)} BOT fee) to ${snapshot.allowedDestination} (action: ${snapshot.allowedAction})...`,
+      `Requesting execution for Policy #${policyId}: ${ethers.formatEther(amountWei)} BOT to ${snapshot.allowedDestination} (action: ${snapshot.allowedAction})...`,
     );
 
     try {
-      // Send amount + fee to the contract
-      const tx = await contract.executeRequest(
-        policyId,
-        amountWei,
-        snapshot.allowedDestination,
-        actionType,
-        { value: amountWei + feeWei }
-      );
+      const iface = new ethers.Interface(ABI);
+      const data = iface.encodeFunctionData("executeRequest", [policyId, amountWei, snapshot.allowedDestination, actionType]);
+      const tx = await wallet.sendTransaction({
+        to: CONTRACT_ADDRESS,
+        data,
+        gasLimit: 300000,
+      });
       log(`Transaction submitted for Policy #${policyId}:`, tx.hash);
       const receipt = await tx.wait();
 
-      const iface = new ethers.Interface(ABI);
       for (const eventLog of receipt.logs ?? []) {
         try {
           const parsed = iface.parseLog(eventLog);

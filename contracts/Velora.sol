@@ -4,8 +4,10 @@ pragma solidity ^0.8.24;
 contract Velora {
     uint256 private _locked = 1;
 
+    error ReentrantCall();
+
     modifier nonReentrant() {
-        require(_locked == 1, "Reentrant call");
+        if (_locked != 1) revert ReentrantCall();
         _locked = 2;
         _;
         _locked = 1;
