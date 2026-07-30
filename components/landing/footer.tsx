@@ -12,9 +12,7 @@ export function Footer() {
         
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-hairline text-sm text-muted text-center md:text-left">
           <div className="flex items-center gap-2 font-medium text-ink">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-accent text-white">
-              <Shield size={12} strokeWidth={2.5} />
-            </span>
+            <img src="/velora.png" alt="Velora Logo" className="h-6 w-6 rounded-full" />
             Velora
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">

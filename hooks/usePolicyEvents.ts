@@ -116,8 +116,10 @@ export function usePolicyEvents(owner: string | null, isCorrectNetwork: boolean,
         };
 
         const scanQuery = async ({ name, filter }: EventQuery) => {
-          for (let end = currentBlock; end >= 0 && !cancelled; end -= CHUNK_SIZE) {
-            const start = Math.max(0, end - CHUNK_SIZE + 1);
+          const scanDepth = 50000;
+          const startBlock = Math.max(0, currentBlock - scanDepth);
+          for (let end = currentBlock; end >= startBlock && !cancelled; end -= CHUNK_SIZE) {
+            const start = Math.max(startBlock, end - CHUNK_SIZE + 1);
             const logs = await queryLogsInRange(filter, start, end);
             if (logs.length > 0) {
               const nextEvents = await Promise.all(

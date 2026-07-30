@@ -46,9 +46,9 @@ export function Sidebar() {
   const sidebarContent = (
     <div className="flex h-full flex-col mx-3">
       <div className="flex h-16 items-center gap-3 border-b border-[var(--color-rule)] px-6">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-accent)] text-white shadow-sm">
-          <Shield size={17} strokeWidth={2} />
-        </span>
+        <a href="/">
+          <img src="/velora.png" alt="Velora Logo" className="h-8 w-8 rounded-lg shadow-sm" />
+        </a>
         <div>
           <span className="text-base font-semibold text-xl tracking-tight text-[var(--color-ink)]">Velora</span>
           <p className="text-[10px] leading-tight text-[var(--color-muted)]">Security Platform</p>

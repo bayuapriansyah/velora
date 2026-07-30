@@ -1,6 +1,6 @@
 "use client";
 
-import { Shield, Gauge, Coins, Activity, ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
+import { Shield, Gauge, Coins, Activity, ArrowUpRight, ArrowDownRight, Minus, LifeBuoy } from "lucide-react";
 import { formatBot } from "@/lib/format";
 
 interface AnalyticsCardsProps {
@@ -10,6 +10,7 @@ interface AnalyticsCardsProps {
   rejectedEvents: number;
   totalBudget: bigint;
   remainingBudget: bigint;
+  safetyNetPool: bigint;
 }
 
 function TrendBadge({ up, label }: { up: boolean; label: string }) {
@@ -64,6 +65,7 @@ export function AnalyticsCards({
   rejectedEvents,
   totalBudget,
   remainingBudget,
+  safetyNetPool,
 }: AnalyticsCardsProps) {
   const approvalsTotal = approvedEvents + rejectedEvents;
   const approvalPct = approvalsTotal > 0 ? Math.round((approvedEvents / approvalsTotal) * 100) : 0;
@@ -142,31 +144,14 @@ export function AnalyticsCards({
         <div className="col-span-1 flex">
           <div className="flex-1 rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-6 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center justify-between">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--color-paper)] text-[var(--color-muted)]">
-                <Activity size={16} />
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
+                <LifeBuoy size={16} />
               </span>
             </div>
             <p className="mt-4 text-2xl font-semibold tabular-nums text-[var(--color-ink)]">
-              {approvalsTotal}
+              {safetyNetPool > 0n ? formatBot(safetyNetPool, DECIMALS) : "0"}
             </p>
-            <p className="mt-0.5 text-xs text-[var(--color-muted)]">Total executions</p>
-            {approvalsTotal > 0 && (
-              <div className="mt-3 flex h-1.5 w-full overflow-hidden rounded-full bg-[var(--color-paper)]">
-                <div
-                  className="h-full rounded-full bg-[var(--color-success)] transition-all duration-500"
-                  style={{ width: `${approvalPct}%` }}
-                />
-                <div
-                  className="h-full rounded-full bg-[var(--color-danger)] transition-all duration-500"
-                  style={{ width: `${100 - approvalPct}%` }}
-                />
-              </div>
-            )}
-            {approvalsTotal > 0 && (
-              <p className="mt-1 text-[11px] text-[var(--color-muted)]">
-                {Math.round((approvedEvents / approvalsTotal) * 100)}% approved
-              </p>
-            )}
+            <p className="mt-0.5 text-xs text-[var(--color-muted)]">SafetyNet Pool</p>
           </div>
         </div>
       </div>

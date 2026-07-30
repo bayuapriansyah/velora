@@ -17,7 +17,7 @@ import { getProvider } from "@/lib/ethers";
 import { PolicyStatus } from "@/types/policy";
 
 export default function DashboardPage() {
-  const { account, isCorrectNetwork, connect } = useWallet();
+  const { account, isCorrectNetwork, isConnecting, error: walletError, connect } = useWallet();
   const { policies, isLoading, error, refresh } = usePolicies(account);
   const policyIds = useMemo(() => policies.map((policy) => policy.id), [policies]);
   const events = usePolicyEvents(account, isCorrectNetwork, policyIds);
@@ -39,6 +39,21 @@ export default function DashboardPage() {
       }
     })();
   }, [account]);
+
+  const { getSafetyNetStats } = useVeloraContract();
+  const [safetyNetStats, setSafetyNetStats] = useState({ pool: 0n, totalFees: 0n, totalSeeded: 0n, totalClaims: 0n });
+
+  useEffect(() => {
+    if (!account) return;
+    (async () => {
+      try {
+        const stats = await getSafetyNetStats();
+        setSafetyNetStats(stats);
+      } catch (e) {
+        console.error("Failed to fetch safety net stats", e);
+      }
+    })();
+  }, [getSafetyNetStats, account]);
 
   const activePolicies = policies.filter((p) => p.status === PolicyStatus.Active);
   const totalBudget = policies.reduce((s, p) => s + p.totalBudget, 0n);
@@ -79,10 +94,13 @@ export default function DashboardPage() {
             <p className="mt-2 text-sm leading-relaxed text-[var(--color-muted)]">
               Connect your wallet to manage AI agent policies and monitor on-chain activity.
             </p>
-            <Button className="mt-6" onClick={connect}>
+            <Button className="mt-6" onClick={connect} disabled={isConnecting}>
               <Wallet size={16} />
-              Connect Wallet
+              {isConnecting ? "Connecting..." : "Connect Wallet"}
             </Button>
+            {walletError && (
+              <p className="mt-4 text-sm font-medium text-[var(--color-danger)]">{walletError}</p>
+            )}
           </div>
         </div>
       </div>
@@ -135,6 +153,7 @@ export default function DashboardPage() {
                   rejectedEvents={rejectedEvents}
                   totalBudget={totalBudget}
                   remainingBudget={remainingBudget}
+                  safetyNetPool={safetyNetStats.pool}
                 />
               </div>
 

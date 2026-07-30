@@ -2,7 +2,6 @@ import { ActionType } from "@/types/policy";
 
 export interface PolicyFormState {
   name: string;
-  budget: string; // BOT, as typed
   destination: string;
   action: ActionType;
   expirationHours: number;
@@ -14,12 +13,11 @@ export interface PolicyFormState {
 
 export const DEFAULT_FORM_STATE: PolicyFormState = {
   name: "",
-  budget: "",
   destination: "",
   action: ActionType.Transfer,
   expirationHours: 24,
   maxExecutions: 3,
   amountPerExecution: "",
-  paymentIntervalDays: 30, // Default to 30 days (Monthly)
+  paymentIntervalDays: 30,
   useSeconds: false,
 };

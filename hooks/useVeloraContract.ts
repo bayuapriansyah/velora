@@ -21,6 +21,7 @@ function mapPolicy(raw: any): Policy {
     amountPerExecution: raw.amountPerExecution ?? 0n,
     paymentInterval: raw.paymentInterval ?? 0n,
     lastExecutionTime: raw.lastExecutionTime ?? 0n,
+    feeBps: raw.feeBps ?? 0n,
   };
 }
 
@@ -68,7 +69,12 @@ export function useVeloraContract() {
   const executeRequest = useCallback(
     async (policyId: bigint, amountWei: bigint, destination: string, action: ActionType) => {
       const contract = await writeContract();
-      const tx = await contract.executeRequest(policyId, amountWei, destination, action);
+      const signer = await getSigner();
+      const data = contract.interface.encodeFunctionData("executeRequest", [policyId, amountWei, destination, action]);
+      const tx = await signer.sendTransaction({
+        to: await contract.getAddress(),
+        data,
+      });
       return tx.wait();
     },
     [writeContract]
@@ -91,6 +97,46 @@ export function useVeloraContract() {
     },
     [writeContract]
   );
+
+  const seedSafetyNet = useCallback(
+    async (amountWei: bigint) => {
+      const contract = await writeContract();
+      const tx = await contract.seedSafetyNet({ value: amountWei });
+      return tx.wait();
+    },
+    [writeContract]
+  );
+
+  const claimFromSafetyNet = useCallback(
+    async (policyId: bigint, amountWei: bigint, reason: string) => {
+      const contract = await writeContract();
+      const tx = await contract.claimFromSafetyNet(policyId, amountWei, reason);
+      return tx.wait();
+    },
+    [writeContract]
+  );
+
+  const getSafetyNetStats = useCallback(async () => {
+    const contract = await readContract();
+    const stats = await contract.getSafetyNetStats();
+    return {
+      pool: stats[0],
+      totalFees: stats[1],
+      totalSeeded: stats[2],
+      totalClaims: stats[3],
+    };
+  }, [readContract]);
+
+  const getPolicySafetyNetInfo = useCallback(async (policyId: bigint) => {
+    const contract = await readContract();
+    const info = await contract.getPolicySafetyNetInfo(policyId);
+    return {
+      contribution: info[0],
+      claimsPaid: info[1],
+      quota: info[2],
+      cooldownEnds: info[3],
+    };
+  }, [readContract]);
 
   const getPolicy = useCallback(
     async (policyId: bigint): Promise<Policy> => {
@@ -115,11 +161,28 @@ export function useVeloraContract() {
       executeRequest,
       cancelPolicy,
       withdrawRemainingBudget,
+      seedSafetyNet,
+      claimFromSafetyNet,
+      getSafetyNetStats,
+      getPolicySafetyNetInfo,
       getPolicy,
       getPoliciesByOwner,
       readContract,
       writeContract,
     }),
-    [createPolicy, executeRequest, cancelPolicy, withdrawRemainingBudget, getPolicy, getPoliciesByOwner, readContract, writeContract]
+    [
+      createPolicy,
+      executeRequest,
+      cancelPolicy,
+      withdrawRemainingBudget,
+      seedSafetyNet,
+      claimFromSafetyNet,
+      getSafetyNetStats,
+      getPolicySafetyNetInfo,
+      getPolicy,
+      getPoliciesByOwner,
+      readContract,
+      writeContract,
+    ]
   );
 }

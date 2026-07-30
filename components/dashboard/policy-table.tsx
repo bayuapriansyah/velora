@@ -1,6 +1,7 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
+import { useVeloraContract } from "@/hooks/useVeloraContract";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Policy, PolicyStatus, STATUS_LABELS, ACTION_LABELS } from "@/types/policy";
@@ -19,25 +20,9 @@ import {
   CalendarClock,
   Repeat2,
   Wallet,
+  LifeBuoy,
 } from "lucide-react";
 import { Pagination } from "@/components/ui/pagination";
-
-const statusTone: Record<PolicyStatus, "approved" | "neutral" | "rejected"> = {
-  [PolicyStatus.Active]: "approved",
-  [PolicyStatus.Cancelled]: "neutral",
-  [PolicyStatus.Expired]: "neutral",
-  [PolicyStatus.Exhausted]: "neutral",
-};
-
-function formatIntervalDays(seconds: bigint): string {
-  const totalSeconds = Number(seconds);
-  if (totalSeconds === 0) return "—";
-  const days = Math.round(totalSeconds / 86400);
-  if (days === 1) return "Daily";
-  if (days === 7) return "Weekly";
-  if (days === 30) return "Monthly";
-  return `Every ${days} days`;
-}
 
 function formatNextExecution(lastExecTime: bigint, interval: bigint): string {
   if (interval === 0n) return "—";
@@ -62,13 +47,55 @@ interface PolicyTableProps {
   busyId: string | null;
 }
 
+const statusTone: Record<PolicyStatus, "approved" | "neutral" | "rejected"> = {
+  [PolicyStatus.Active]: "approved",
+  [PolicyStatus.Cancelled]: "neutral",
+  [PolicyStatus.Expired]: "neutral",
+  [PolicyStatus.Exhausted]: "neutral",
+};
+
+function formatIntervalDays(seconds: bigint): string {
+  const totalSeconds = Number(seconds);
+  if (totalSeconds === 0) return "—";
+  const days = Math.round(totalSeconds / 86400);
+  if (days === 1) return "Daily";
+  if (days === 7) return "Weekly";
+  if (days === 30) return "Monthly";
+  return `Every ${days} days`;
+}
+
 export function PolicyTable({ policies, onCancel, onWithdraw, busyId }: PolicyTableProps) {
+  const { getPolicySafetyNetInfo, claimFromSafetyNet } = useVeloraContract();
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [safetyNetInfo, setSafetyNetInfo] = useState<Record<string, { quota: bigint; cooldownEnds: bigint }>>({});
   const pageSize = 10;
 
   const totalPages = Math.ceil(policies.length / pageSize);
   const paginatedPolicies = policies.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  useEffect(() => {
+    policies.forEach(async (p) => {
+      try {
+        const info = await getPolicySafetyNetInfo(p.id);
+        setSafetyNetInfo(prev => ({
+          ...prev,
+          [p.id.toString()]: { quota: info.quota, cooldownEnds: info.cooldownEnds }
+        }));
+      } catch (e) {
+        console.error("Error fetching safety net info", e);
+      }
+    });
+  }, [policies, getPolicySafetyNetInfo]);
+
+  async function handleClaim(id: bigint, amount: bigint) {
+    try {
+      await claimFromSafetyNet(id, amount, "Policy SafetyNet Claim");
+      alert("Claim successful!");
+    } catch (e: any) {
+      alert(`Claim failed: ${e.message || "Unknown error"}`);
+    }
+  }
 
   function toggleExpand(id: string) {
     setExpandedId((prev) => (prev === id ? null : id));
@@ -159,7 +186,7 @@ export function PolicyTable({ policies, onCancel, onWithdraw, busyId }: PolicyTa
                       </div>
                     </td>
                     <td className="px-5 py-4">
-                      <Badge tone={statusTone[p.status]}>{STATUS_LABELS[p.status]}</Badge>
+                      <Badge tone={statusTone[p.status] as "approved" | "neutral" | "rejected"}>{STATUS_LABELS[p.status]}</Badge>
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex flex-col items-end">
@@ -268,10 +295,21 @@ export function PolicyTable({ policies, onCancel, onWithdraw, busyId }: PolicyTa
                                   {amountPerExec > 0n ? `${formatBot(totalSpentExec)} BOT` : "—"}
                                 </span>
                               </div>
-                              <div className="flex justify-between border-t border-[var(--color-rule)] pt-1.5">
-                                <span className="text-[var(--color-muted)]">Remaining</span>
-                                <span className="font-mono font-semibold text-[var(--color-success)]">{formatBot(p.remainingBudget)} BOT</span>
+                              <div className="flex justify-between border-t border-[var(--color-rule)] pt-1.5 mt-1.5">
+                                <span className="text-[var(--color-muted)] text-xs">SafetyNet Quota</span>
+                                <span className="font-mono font-semibold text-[var(--color-accent)] text-xs">
+                                  {safetyNetInfo[p.id.toString()] ? formatBot(safetyNetInfo[p.id.toString()].quota) : "0"} BOT
+                                </span>
                               </div>
+                              {safetyNetInfo[p.id.toString()] && safetyNetInfo[p.id.toString()].quota > 0n && (
+                                <Button 
+                                  size="sm" 
+                                  className="w-full mt-2" 
+                                  onClick={(e) => { e.stopPropagation(); handleClaim(p.id, safetyNetInfo[p.id.toString()].quota); }}
+                                >
+                                  Claim Refund
+                                </Button>
+                              )}
                             </div>
                           </div>
 

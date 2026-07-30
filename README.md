@@ -65,6 +65,7 @@ velora/
 - **Reentrancy Protection:** `nonReentrant` modifiers on `executeRequest` and `withdrawRemainingBudget`.
 - **Structurally Immutable:** Policies cannot be modified once deployed; only the agent can trigger allowed actions, and the contract holds the funds in escrow.
 - **Machine-Readable Rejections:** Instead of silent failures, the contract emits specific `RejectReason` events for transparent debugging.
+- **Velora SafetyNet:** An on-chain insurance pool for mitigation of unwanted execution risks. On Level 1, claims are capped at 70% of a policy's own historical contributions (partial refund pool), preventing self-dealing. *Roadmap v2: Oracle-verified claims (Level 2) and Multisig dispute window (Level 3).*
 
 ---
 

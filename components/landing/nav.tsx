@@ -40,17 +40,7 @@ export function Nav() {
           href="/"
           className="flex items-center gap-2.5 shrink-0 group"
         >
-          <span
-            className="
-              flex h-9 w-9 items-center justify-center rounded-xl
-              bg-accent text-white
-              shadow-[0_0_14px_rgba(91,91,246,0.35)]
-              group-hover:shadow-[0_0_22px_rgba(91,91,246,0.55)]
-              transition-shadow duration-300
-            "
-          >
-            <Shield size={16} strokeWidth={2.5} />
-          </span>
+          <img src="/velora.png" alt="Velora Logo" className="h-9 w-9 rounded-xl shadow-[0_0_14px_rgba(91,91,246,0.35)]" />
           <span className="text-base font-semibold tracking-tight text-ink group-hover:text-accent transition-colors duration-200">
             Velora
           </span>

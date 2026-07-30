@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { TopBar } from "@/components/dashboard/top-bar";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import { useWallet } from "@/hooks/useWallet";
 import { usePolicies } from "@/hooks/usePolicies";
 import { useVeloraContract } from "@/hooks/useVeloraContract";
 import { predictExecution } from "@/utils/validation";
-import { botToWei } from "@/lib/format";
+import { formatBot, botToWei } from "@/lib/format";
 import { ActionType, RejectReason } from "@/types/policy";
 import { Interface, parseEther } from "ethers";
 import VeloraAbi from "@/contracts/Velora.abi.json";
@@ -24,9 +24,23 @@ function delay(ms: number) {
 }
 
 export default function SimulationPage() {
-  const { account, isCorrectNetwork, connect } = useWallet();
+  const { account, isCorrectNetwork, isConnecting, error: walletError, connect } = useWallet();
   const { policies, refresh } = usePolicies(account);
   const { executeRequest } = useVeloraContract();
+  const [agentBalance, setAgentBalance] = useState<bigint>(0n);
+  const [agentAddress, setAgentAddress] = useState<string>("");
+
+  useEffect(() => {
+    fetch("/api/agent/status")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.address && data.balance) {
+          setAgentAddress(data.address);
+          setAgentBalance(BigInt(data.balance));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [amount, setAmount] = useState("");
@@ -98,30 +112,32 @@ export default function SimulationPage() {
       let parsed: SimulationResult = {
         approved: false,
         amountWei,
-        txHash: receipt.hash ?? receipt.transactionHash ?? "",
+        txHash: receipt?.hash ?? "",
       };
 
-      for (const log of receipt.logs ?? []) {
-        try {
-          const decoded = iface.parseLog(log);
-          if (decoded?.name === "ExecutionApproved") {
-            parsed = {
-              approved: true,
-              amountWei: decoded.args.amount,
-              remainingBudgetWei: decoded.args.remainingBudget,
-              txHash: receipt.hash ?? receipt.transactionHash ?? "",
-            };
-          } else if (decoded?.name === "ExecutionRejected") {
-            parsed = {
+      if (receipt) {
+        for (const log of receipt.logs ?? []) {
+          try {
+            const decoded = iface.parseLog(log);
+            if (decoded?.name === "ExecutionApproved") {
+              parsed = {
+                approved: true,
+                amountWei: decoded.args.amount,
+                remainingBudgetWei: decoded.args.remainingBudget,
+                txHash: receipt.hash,
+              };
+            } else if (decoded?.name === "ExecutionRejected") {
+              parsed = {
               approved: false,
               reason: Number(decoded.args.reason) as RejectReason,
               amountWei: decoded.args.attemptedAmount,
-              txHash: receipt.hash ?? receipt.transactionHash ?? "",
+              txHash: receipt.hash,
             };
           }
         } catch {
           // not a Velora event, skip
         }
+      }
       }
 
       setResult(parsed);
@@ -169,9 +185,12 @@ export default function SimulationPage() {
           <div className="flex flex-1 items-center justify-center">
           <div className="text-center">
             <p className="font-medium text-[var(--color-ink)]">Connect your wallet to run a simulation.</p>
-            <Button className="mt-4" onClick={connect}>
-              Connect Wallet
+            <Button className="mt-4" onClick={connect} disabled={isConnecting}>
+              {isConnecting ? "Connecting..." : "Connect Wallet"}
             </Button>
+            {walletError && (
+              <p className="mt-3 text-sm font-medium text-[var(--color-danger)]">{walletError}</p>
+            )}
           </div>
         </div>
       </div>
@@ -222,6 +241,13 @@ export default function SimulationPage() {
           />
 
           <div className="space-y-6">
+            <div className="bg-[var(--color-paper-2)] p-5 rounded-xl border border-[var(--color-rule)]">
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-muted)]">Agent Balance</p>
+              <p className="mt-1 text-2xl font-bold text-[var(--color-accent)]">{formatBot(agentBalance)} BOT</p>
+              {agentAddress && (
+                <p className="mt-1 text-xs font-mono text-[var(--color-muted)] truncate">{agentAddress}</p>
+              )}
+            </div>
             <ValidationTimeline rules={rules} isIdle={rules.length === 0} />
             {error && <p className="text-sm font-medium text-[var(--color-danger)]">{error}</p>}
             <ResultPanel result={result} />

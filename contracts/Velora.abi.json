@@ -1,149 +1,825 @@
 [
-  {
-    "type": "function",
-    "name": "createPolicy",
-    "stateMutability": "payable",
-    "inputs": [
-      { "name": "name", "type": "string" },
-      { "name": "allowedDestination", "type": "address" },
-      { "name": "allowedAction", "type": "uint8" },
-      { "name": "expiration", "type": "uint256" },
-      { "name": "maxExecutions", "type": "uint256" },
-      { "name": "amountPerExecution", "type": "uint256" },
-      { "name": "paymentInterval", "type": "uint256" }
-    ],
-    "outputs": [{ "name": "policyId", "type": "uint256" }]
-  },
-  {
-    "type": "function",
-    "name": "executeRequest",
-    "stateMutability": "nonpayable",
-    "inputs": [
-      { "name": "policyId", "type": "uint256" },
-      { "name": "amount", "type": "uint256" },
-      { "name": "destination", "type": "address" },
-      { "name": "action", "type": "uint8" }
-    ],
-    "outputs": [{ "name": "approved", "type": "bool" }]
-  },
-  {
-    "type": "function",
-    "name": "cancelPolicy",
-    "stateMutability": "nonpayable",
-    "inputs": [{ "name": "policyId", "type": "uint256" }],
-    "outputs": []
-  },
-  {
-    "type": "function",
-    "name": "withdrawRemainingBudget",
-    "stateMutability": "nonpayable",
-    "inputs": [{ "name": "policyId", "type": "uint256" }],
-    "outputs": []
-  },
-  {
-    "type": "function",
-    "name": "getPolicy",
-    "stateMutability": "view",
-    "inputs": [{ "name": "policyId", "type": "uint256" }],
-    "outputs": [
-      {
-        "name": "",
-        "type": "tuple",
-        "components": [
-          { "name": "id", "type": "uint256" },
-          { "name": "owner", "type": "address" },
-          { "name": "name", "type": "string" },
-          { "name": "remainingBudget", "type": "uint256" },
-          { "name": "totalBudget", "type": "uint256" },
-          { "name": "allowedDestination", "type": "address" },
-          { "name": "allowedAction", "type": "uint8" },
-          { "name": "expiration", "type": "uint256" },
-          { "name": "maxExecutions", "type": "uint256" },
-          { "name": "executionCount", "type": "uint256" },
-          { "name": "status", "type": "uint8" },
-          { "name": "amountPerExecution", "type": "uint256" },
-          { "name": "paymentInterval", "type": "uint256" },
-          { "name": "lastExecutionTime", "type": "uint256" }
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": "getPoliciesByOwner",
-    "stateMutability": "view",
-    "inputs": [{ "name": "owner", "type": "address" }],
-    "outputs": [{ "name": "", "type": "uint256[]" }]
-  },
-  {
-    "type": "event",
-    "name": "PolicyCreated",
-    "anonymous": false,
-    "inputs": [
-      { "name": "policyId", "type": "uint256", "indexed": true },
-      { "name": "owner", "type": "address", "indexed": true },
-      { "name": "name", "type": "string", "indexed": false },
-      { "name": "budget", "type": "uint256", "indexed": false },
-      { "name": "allowedDestination", "type": "address", "indexed": false },
-      { "name": "allowedAction", "type": "uint8", "indexed": false },
-      { "name": "expiration", "type": "uint256", "indexed": false },
-      { "name": "maxExecutions", "type": "uint256", "indexed": false },
-      { "name": "amountPerExecution", "type": "uint256", "indexed": false },
-      { "name": "paymentInterval", "type": "uint256", "indexed": false }
-    ]
-  },
-  {
-    "type": "event",
-    "name": "ExecutionApproved",
-    "anonymous": false,
-    "inputs": [
-      { "name": "policyId", "type": "uint256", "indexed": true },
-      { "name": "destination", "type": "address", "indexed": true },
-      { "name": "amount", "type": "uint256", "indexed": false },
-      { "name": "remainingBudget", "type": "uint256", "indexed": false },
-      { "name": "executionCount", "type": "uint256", "indexed": false }
-    ]
-  },
-  {
-    "type": "event",
-    "name": "ExecutionRejected",
-    "anonymous": false,
-    "inputs": [
-      { "name": "policyId", "type": "uint256", "indexed": true },
-      { "name": "reason", "type": "uint8", "indexed": false },
-      { "name": "attemptedDestination", "type": "address", "indexed": false },
-      { "name": "attemptedAmount", "type": "uint256", "indexed": false }
-    ]
-  },
-  {
-    "type": "event",
-    "name": "PolicyCancelled",
-    "anonymous": false,
-    "inputs": [
-      { "name": "policyId", "type": "uint256", "indexed": true },
-      { "name": "owner", "type": "address", "indexed": true }
-    ]
-  },
-  {
-    "type": "event",
-    "name": "BudgetWithdrawn",
-    "anonymous": false,
-    "inputs": [
-      { "name": "policyId", "type": "uint256", "indexed": true },
-      { "name": "owner", "type": "address", "indexed": true },
-      { "name": "amount", "type": "uint256", "indexed": false }
-    ]
-  },
-  { "type": "error", "name": "PolicyNotFound", "inputs": [] },
-  { "type": "error", "name": "NotPolicyOwner", "inputs": [] },
-  { "type": "error", "name": "ZeroDeposit", "inputs": [] },
-  { "type": "error", "name": "InvalidExpiration", "inputs": [] },
-  { "type": "error", "name": "InvalidDestination", "inputs": [] },
-  { "type": "error", "name": "InvalidMaxExecutions", "inputs": [] },
-  { "type": "error", "name": "InvalidAmountPerExecution", "inputs": [] },
-  { "type": "error", "name": "InvalidPaymentInterval", "inputs": [] },
-  { "type": "error", "name": "BudgetTooSmall", "inputs": [] },
-  { "type": "error", "name": "PolicyNotActive", "inputs": [] },
-  { "type": "error", "name": "NothingToWithdraw", "inputs": [] },
-  { "type": "error", "name": "WithdrawTransferFailed", "inputs": [] }
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_safetyNetFeeBps",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_minFeeThreshold",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_claimCooldown",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_maxClaimPerTx",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "BudgetTooSmall",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "InvalidAmountPerExecution",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "InvalidDestination",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "InvalidExpiration",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "InvalidMaxExecutions",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "InvalidPaymentInterval",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NotPolicyOwner",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "NothingToWithdraw",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "PolicyNotActive",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "PolicyNotFound",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "WithdrawTransferFailed",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "ZeroDeposit",
+		"type": "error"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "policyId",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "BudgetWithdrawn",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "policyId",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "destination",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "remainingBudget",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "executionCount",
+				"type": "uint256"
+			}
+		],
+		"name": "ExecutionApproved",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "policyId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "enum Velora.RejectReason",
+				"name": "reason",
+				"type": "uint8"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "attemptedDestination",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "attemptedAmount",
+				"type": "uint256"
+			}
+		],
+		"name": "ExecutionRejected",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "policyId",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "PolicyCancelled",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "policyId",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "budget",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "allowedDestination",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "enum Velora.ActionType",
+				"name": "allowedAction",
+				"type": "uint8"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "expiration",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "maxExecutions",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amountPerExecution",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "paymentInterval",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "feeBps",
+				"type": "uint256"
+			}
+		],
+		"name": "PolicyCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "policyId",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "claimant",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "reason",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"name": "SafetyNetClaimPaid",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "policyId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "SafetyNetContribution",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "seeder",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "SafetyNetSeeded",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "policyId",
+				"type": "uint256"
+			}
+		],
+		"name": "cancelPolicy",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "claimCooldown",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "policyId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "reason",
+				"type": "string"
+			}
+		],
+		"name": "claimFromSafetyNet",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "allowedDestination",
+				"type": "address"
+			},
+			{
+				"internalType": "enum Velora.ActionType",
+				"name": "allowedAction",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint256",
+				"name": "expiration",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "maxExecutions",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amountPerExecution",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "paymentInterval",
+				"type": "uint256"
+			}
+		],
+		"name": "createPolicy",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "policyId",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "policyId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "destination",
+				"type": "address"
+			},
+			{
+				"internalType": "enum Velora.ActionType",
+				"name": "action",
+				"type": "uint8"
+			}
+		],
+		"name": "executeRequest",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "approved",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "getPoliciesByOwner",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "policyId",
+				"type": "uint256"
+			}
+		],
+		"name": "getPolicy",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "remainingBudget",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalBudget",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "allowedDestination",
+						"type": "address"
+					},
+					{
+						"internalType": "enum Velora.ActionType",
+						"name": "allowedAction",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint256",
+						"name": "expiration",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "maxExecutions",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "executionCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "enum Velora.PolicyStatus",
+						"name": "status",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amountPerExecution",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "paymentInterval",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lastExecutionTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "feeBps",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct Velora.Policy",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "policyId",
+				"type": "uint256"
+			}
+		],
+		"name": "getPolicySafetyNetInfo",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getSafetyNetStats",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "lastClaimTimestamp",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "maxClaimPerTx",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "minFeeThreshold",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "policyClaimsPaid",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "policyContribution",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "safetyNetFeeBps",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "safetyNetPool",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "seedSafetyNet",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalClaimsPaid",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalSafetyNetFees",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalSeeded",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "policyId",
+				"type": "uint256"
+			}
+		],
+		"name": "withdrawRemainingBudget",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
 ]

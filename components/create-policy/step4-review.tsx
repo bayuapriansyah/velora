@@ -1,14 +1,37 @@
 import { ACTION_LABELS } from "@/types/policy";
 import { truncateAddress } from "@/lib/format";
 import { PolicyFormState } from "./form-types";
+import { parseEther } from "ethers";
+
+function calcFee(amountBot: string, maxExec: number): { feeBot: number; costPerExecBot: number; requiredBudgetBot: number } {
+  try {
+    const FEE_BPS = 100n;
+    const MIN_THRESHOLD_WEI = 100000000000000000n;
+    const wei = parseEther(amountBot || "0");
+    const feeWei = wei >= MIN_THRESHOLD_WEI ? (wei * FEE_BPS) / 10000n : 0n;
+    const costPerExecWei = wei + feeWei;
+    const totalWei = costPerExecWei * BigInt(maxExec);
+    return {
+      feeBot: Number(feeWei) / 1e18,
+      costPerExecBot: Number(costPerExecWei) / 1e18,
+      requiredBudgetBot: Number(totalWei) / 1e18,
+    };
+  } catch {
+    return { feeBot: 0, costPerExecBot: 0, requiredBudgetBot: 0 };
+  }
+}
 
 export function Step4Review({ form }: { form: PolicyFormState }) {
+  const { feeBot, costPerExecBot, requiredBudgetBot } = calcFee(form.amountPerExecution, form.maxExecutions);
+
   const rows = [
     { label: "Name", value: form.name || "—" },
-    { label: "Budget", value: form.budget ? `${form.budget} BOT` : "—" },
+    { label: "Budget (deposit)", value: `${requiredBudgetBot} BOT` },
+    { label: "Amount per execution", value: form.amountPerExecution ? `${form.amountPerExecution} BOT` : "—" },
+    { label: "SafetyNet fee (1%)", value: `${feeBot} BOT` },
+    { label: "Cost per execution", value: `${costPerExecBot} BOT` },
     { label: "Destination", value: form.destination ? truncateAddress(form.destination, 6) : "—" },
     { label: "Action", value: ACTION_LABELS[form.action] },
-    { label: "Amount per exec", value: form.amountPerExecution ? `${form.amountPerExecution} BOT` : "—" },
     { label: "Frequency", value: `Every ${form.paymentIntervalDays} days` },
     { label: "Expiration", value: `${form.expirationHours} hours from deployment` },
     { label: "Max executions", value: String(form.maxExecutions) },

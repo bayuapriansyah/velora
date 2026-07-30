@@ -1,5 +1,11 @@
 import { ActionType, Policy, PolicyStatus, RejectReason } from "@/types/policy";
 
+const MIN_FEE_THRESHOLD_WEI = 100000000000000000n;
+
+function calcFee(amountWei: bigint, feeBps: bigint): bigint {
+  return amountWei >= MIN_FEE_THRESHOLD_WEI ? (amountWei * feeBps) / 10000n : 0n;
+}
+
 /**
  * Predicts how Velora.sol's executeRequest() would rule on a request, using the
  * exact same rule order as the contract (see Velora.sol §3 / SDD §5.4).
@@ -59,8 +65,11 @@ export function predictExecution(
     return { approved: false, reason: RejectReason.ActionMismatch, ruleResults };
   }
 
-  const budgetOk = amountWei <= policy.remainingBudget;
-  ruleResults.push({ rule: "Budget sufficient", passed: budgetOk });
+  const feeBps = policy.feeBps ?? 100n;
+  const fee = calcFee(amountWei, feeBps);
+  const totalCost = amountWei + fee;
+  const budgetOk = totalCost <= policy.remainingBudget;
+  ruleResults.push({ rule: "Budget sufficient (incl. fee)", passed: budgetOk });
   if (!budgetOk) {
     return { approved: false, reason: RejectReason.InsufficientBudget, ruleResults };
   }

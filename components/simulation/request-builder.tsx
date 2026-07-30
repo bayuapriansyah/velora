@@ -1,6 +1,9 @@
 "use client";
 
 import { Bot, Zap, AlertOctagon, ShieldAlert } from "lucide-react";
+import { useState } from "react";
+import { useVeloraContract } from "@/hooks/useVeloraContract";
+import { parseEther } from "ethers";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ActionType, Policy, PolicyStatus, ACTION_LABELS } from "@/types/policy";
@@ -38,6 +41,34 @@ export function RequestBuilder({
 }: RequestBuilderProps) {
   const activePolicies = policies.filter((p) => p.status === PolicyStatus.Active);
   const selected = activePolicies.find((p) => p.id.toString() === selectedId) ?? null;
+  const { executeRequest } = useVeloraContract();
+  const [loading, setLoading] = useState(false);
+
+  async function handleSimulate(invalidAmount = false, wrongAction = false) {
+    setLoading(true);
+    try {
+      const amountWei = parseEther(amount || "0");
+      const feeBps = 100n;
+      const minThreshold = parseEther("0.1");
+      const feeWei = amountWei >= minThreshold ? (amountWei * feeBps) / 10000n : 0n;
+
+      const finalAmount = invalidAmount ? amountWei * 2n : amountWei;
+      const action = wrongAction ? (selectedAction === 0 ? 1 : 0) : selectedAction;
+
+      await executeRequest(
+        BigInt(selectedId!),
+        finalAmount,
+        selected!.allowedDestination,
+        action
+      );
+      
+      alert("Transaction successful!");
+    } catch (e: any) {
+      alert(`Simulation failed: ${e.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <Card>
@@ -88,15 +119,13 @@ export function RequestBuilder({
                 onChange={(e) => onAmountChange(e.target.value)}
                 className="mt-2 w-full rounded-xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] px-4 py-3 text-sm font-mono text-[var(--color-ink)] outline-none focus-visible:border-[var(--color-accent)]"
               />
-              {selected.amountPerExecution > 0n && (
-                <p className="mt-1.5 text-xs text-[var(--color-muted)]">
+              <p className="mt-1.5 text-xs text-[var(--color-muted)]">
                   Policy allows max{" "}
                   <span className="font-semibold text-[var(--color-accent)]">
                     {(Number(selected.amountPerExecution) / 1e18)} BOT
                   </span>{" "}
-                  per execution. &ldquo;Simulate AI request&rdquo; will use this exact amount.
+                  per execution. A 1% SafetyNet fee will be added automatically.
                 </p>
-              )}
 
               <label className="mt-5 block text-sm font-medium text-[var(--color-ink)]">Action to request</label>
               <p className="mt-1 text-xs text-[var(--color-muted)]">

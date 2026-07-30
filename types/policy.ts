@@ -40,6 +40,7 @@ export interface Policy {
   amountPerExecution: bigint;
   paymentInterval: bigint;
   lastExecutionTime: bigint;
+  feeBps: bigint;
 }
 
 export const ACTION_LABELS: Record<ActionType, string> = {

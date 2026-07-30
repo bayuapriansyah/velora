@@ -87,7 +87,7 @@ function formatDate(value: string | null) {
 }
 
 export default function AgentPage() {
-  const { account, isCorrectNetwork, connect } = useWallet();
+  const { account, isCorrectNetwork, isConnecting, error: walletError, connect } = useWallet();
   const { policies, isLoading: policiesLoading } = usePolicies(account);
   const activePolicies = useMemo(
     () => policies.filter((p) => p.status === PolicyStatus.Active),
@@ -189,9 +189,12 @@ export default function AgentPage() {
           <div className="flex flex-1 items-center justify-center">
             <div className="text-center">
               <p className="font-medium text-[var(--color-ink)]">Connect your wallet to manage the agent.</p>
-              <Button className="mt-4" onClick={connect}>
-                Connect Wallet
+              <Button className="mt-4" onClick={connect} disabled={isConnecting}>
+                {isConnecting ? "Connecting..." : "Connect Wallet"}
               </Button>
+              {walletError && (
+                <p className="mt-3 text-sm font-medium text-[var(--color-danger)]">{walletError}</p>
+              )}
             </div>
           </div>
         </div>

@@ -102,7 +102,7 @@ export function WalletHero({
                       {copied ? "Copied" : "Copy address"}
                     </button>
                     <a
-                      href={`https://botchain.explorer/address/${account}`}
+                      href={`https://scan.bohr.life/address/${account}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-rule)] bg-[var(--color-paper)] px-3 py-1.5 text-xs font-medium text-[var(--color-muted)] transition-colors hover:bg-[var(--color-paper-2)] hover:text-[var(--color-ink)]"

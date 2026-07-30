@@ -55,14 +55,12 @@ export async function POST(request: Request) {
       CONTRACT_ADDRESS,
       AGENT_PRIVATE_KEY,
       GEMINI_API_KEY,
-      REQUEST_AMOUNT_BOT,
     } = envConfig;
 
     if (!RPC_URL || !CONTRACT_ADDRESS || !AGENT_PRIVATE_KEY || !GEMINI_API_KEY) {
       throw new Error("Missing required environment variables in agent/.env");
     }
 
-    const suggestedAmountBot = REQUEST_AMOUNT_BOT ?? "0.01";
     const ABI = JSON.parse(readFileSync(join(process.cwd(), "agent", "abi.json"), "utf-8"));
 
     const provider = new ethers.JsonRpcProvider(RPC_URL);
@@ -142,6 +140,7 @@ export async function POST(request: Request) {
         continue;
       }
 
+      const amountPerExecutionBot = ethers.formatEther(p.amountPerExecution);
       const prompt = `You are an autonomous spending agent operating under a strict on-chain policy.
 You may only ever suggest requesting a transaction; a smart contract is the sole authority
 that approves or rejects it based on rules you cannot change.
@@ -149,17 +148,16 @@ that approves or rejects it based on rules you cannot change.
 Current policy state:
 ${JSON.stringify(snapshot, null, 2)}
 
-Suggested request amount if you decide to act: ${suggestedAmountBot} BOT
+The mandatory amount for each execution is exactly ${amountPerExecutionBot} BOT — this cannot be changed.
 
 Decide whether the agent should attempt an execution request right now. Consider:
 - Is the policy still Active?
 - Is there enough remaining budget for amountPerExecutionBot?
 - Have executions already reached the maximum?
 - Is the current time past (lastExecutionTime + paymentIntervalSeconds)? Current time in seconds is ${Math.floor(Date.now() / 1000)}. (If lastExecutionTime is 0, it means it has never executed, so it is ready now).
-- Is the suggested request amount exactly equal to amountPerExecutionBot?
 
 Respond with ONLY a JSON object, no markdown, no explanation outside the JSON:
-{"shouldRequest": true|false, "amountBot": "<number as string, must be exactly amountPerExecutionBot>", "reasoning": "<one short sentence>"}`;
+{"shouldRequest": true|false, "reasoning": "<one short sentence>"}`;
 
       const result = await model.generateContent(prompt);
       const text = result.response.text().trim();
@@ -170,7 +168,7 @@ Respond with ONLY a JSON object, no markdown, no explanation outside the JSON:
         decision = JSON.parse(jsonText);
       } catch {
         log(`[gemini] Policy #${policyId} - Could not parse response, defaulting to no action. Raw response:`, text);
-        decision = { shouldRequest: false, amountBot: "0", reasoning: "Failed to parse model response." };
+        decision = { shouldRequest: false, reasoning: "Failed to parse model response." };
       }
 
       policyResult.decision = decision;
@@ -184,29 +182,36 @@ Respond with ONLY a JSON object, no markdown, no explanation outside the JSON:
         continue;
       }
 
-      const amountWei = ethers.parseEther(String(decision.amountBot || suggestedAmountBot));
+      const amountWei = p.amountPerExecution;
       log(`Requesting execution for Policy #${policyId}: ${ethers.formatEther(amountWei)} BOT to ${p.allowedDestination} (action: ${ACTION_LABELS[Number(p.allowedAction)]})...`);
 
       try {
-        const tx = await contract.executeRequest(policyId, amountWei, p.allowedDestination, Number(p.allowedAction));
+        const iface = new ethers.Interface(ABI);
+        const data = iface.encodeFunctionData("executeRequest", [policyId, amountWei, p.allowedDestination, Number(p.allowedAction)]);
+        const tx = await wallet.sendTransaction({
+          to: CONTRACT_ADDRESS,
+          data,
+          gasLimit: 300000,
+        });
         policyResult.txHash = tx.hash;
         log(`Transaction submitted for Policy #${policyId}:`, tx.hash);
         const receipt = await tx.wait();
 
-        const iface = new ethers.Interface(ABI);
-        for (const eventLog of receipt.logs ?? []) {
-          try {
-            const parsed = iface.parseLog(eventLog);
-            if (parsed?.name === "ExecutionApproved") {
-              policyResult.result = "approved";
-              log(`APPROVED (Policy #${policyId}) - ${ethers.formatEther(parsed.args.amount)} BOT sent. Remaining budget: ${ethers.formatEther(parsed.args.remainingBudget)} BOT.`);
-            } else if (parsed?.name === "ExecutionRejected") {
-              policyResult.result = "rejected";
-              policyResult.rejectReason = REJECT_REASON_LABELS[Number(parsed.args.reason)] ?? "Unknown";
-              log(`REJECTED (Policy #${policyId}) - reason: ${policyResult.rejectReason}`);
+        if (receipt) {
+          for (const eventLog of receipt.logs ?? []) {
+            try {
+              const parsed = iface.parseLog(eventLog);
+              if (parsed?.name === "ExecutionApproved") {
+                policyResult.result = "approved";
+                log(`APPROVED (Policy #${policyId}) - ${ethers.formatEther(parsed.args.amount)} BOT sent. Remaining budget: ${ethers.formatEther(parsed.args.remainingBudget)} BOT.`);
+              } else if (parsed?.name === "ExecutionRejected") {
+                policyResult.result = "rejected";
+                policyResult.rejectReason = REJECT_REASON_LABELS[Number(parsed.args.reason)] ?? "Unknown";
+                log(`REJECTED (Policy #${policyId}) - reason: ${policyResult.rejectReason}`);
+              }
+            } catch {
+              // Ignore logs from other contracts.
             }
-          } catch {
-            // Ignore logs from other contracts.
           }
         }
       } catch (execErr: any) {

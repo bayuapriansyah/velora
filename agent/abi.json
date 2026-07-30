@@ -17,7 +17,7 @@
   {
     "type": "function",
     "name": "executeRequest",
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "inputs": [
       { "name": "policyId", "type": "uint256" },
       { "name": "amount", "type": "uint256" },

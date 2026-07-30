@@ -1,79 +1,75 @@
 # Velora Autonomous Agent
 
-This is the piece that turns Velora's demo from "a UI you click" into an actual
-autonomous agent: a standalone script with its **own wallet**, that decides on
-its own schedule whether to request a transaction, and calls the Velora smart
-contract **without any human clicking anything** after it starts.
+An AI-powered agent with its own wallet that autonomously requests executions against the Velora smart contract — no manual clicking required. The contract remains the sole authority that approves or rejects every request; the agent can only *ask*.
 
-It does not bypass the trust model described in the SDD — it can only ever
-*request* execution. The Velora smart contract is still the sole authority
-that approves or rejects it, using the exact same rules (budget, destination,
-action, expiration, execution count) as every other caller.
+## How It Works
 
-## What it proves
+1. Scans **all policies** on-chain (starting from ID 0 until `getPolicy()` throws)
+2. **Skips** policies that aren't `Active` or aren't due yet (payment interval hasn't elapsed)
+3. For each eligible policy, asks Gemini: *"should I request an execution right now?"*
+4. If Gemini says yes → calls `executeRequest` using the exact `amountPerExecution` from the policy — no manual amount configuration needed
+5. The contract approves or rejects based on the policy's immutable rules (budget, destination, action type, interval, max executions)
 
-| Before (manual approval) | With this agent |
+**Gross-up fee system:** The SafetyNet fee (1%) was already included in the deposited budget when the policy was created. The agent never sends `msg.value` — just the execution request.
+
+## Using the Agent
+
+### Via the Agent Page (recommended)
+
+Open **`/agent`** in your browser. You'll see:
+
+- All active policies with their current status and next eligible time
+- A **Run Cycle** button — click it to trigger one evaluation cycle
+- Live log output showing Gemini's decision and the contract's response
+- Per-policy results: ✅ Approved / ❌ Rejected / ⏭️ Skipped / ⚠️ Error
+
+No terminal, no setup. Just open the page and click.
+
+### Via Standalone Script
+
+```bash
+cd agent
+npm install
+cp .env.example .env
+# configure .env with your values
+npm run once     # single cycle, exits after
+npm start        # runs forever, checking periodically
+```
+
+## Environment Variables (`.env`)
+
+| Variable | Required | Description |
+|---|---|---|
+| `RPC_URL` | ✅ | BOT Chain RPC (`https://rpc.bohr.life`) |
+| `CONTRACT_ADDRESS` | ✅ | Deployed Velora.sol address |
+| `AGENT_PRIVATE_KEY` | ✅ | Agent wallet private key (gas only — fund it with a small amount of BOT) |
+| `GEMINI_API_KEY` | ✅ | Free key from [Google AI Studio](https://aistudio.google.com/app/apikey) |
+
+### How `.env` is loaded
+
+A single `agent/.env` file powers both paths:
+
+| Entry point | Loading mechanism |
 |---|---|
-| Human approves every transaction | Human approves once — when creating the policy |
-| Nothing happens without a click | Agent wakes up, decides, and acts on its own schedule |
+| **API route** (`app/api/agent/route.ts`) | `dotenv.parse(readFileSync("agent/.env"))` — triggered when you click **Run Cycle** in the UI |
+| **Standalone script** (`agent/agent.js`) | `import "dotenv/config"` — loaded at startup via `npm start` / `npm run once` |
 
-## Setup
+Edit once, both work immediately.
 
-1. **Create a separate wallet for the agent** — never reuse your personal wallet's
-   private key here. In MetaMask: Account menu → Add account → copy its private
-   key (Account details → Show private key). Fund it with a *small* amount of
-   BOT (just enough for gas — it never needs the policy's budget itself, the
-   contract releases that on approval).
+## Output Example
 
-2. Get a free Gemini API key: <https://aistudio.google.com/app/apikey>
-
-3. Install and configure:
-   ```bash
-   cd agent
-   npm install
-   cp .env.example .env
-   ```
-   Fill in `.env`:
-   - `CONTRACT_ADDRESS` — your deployed Velora.sol address
-   - `AGENT_PRIVATE_KEY` — the **agent's own** wallet private key (step 1)
-   - `POLICY_ID` — the policy this agent is allowed to act on (see it on your Dashboard)
-   - `DESTINATION` and `ACTION_TYPE` — must match that policy's `allowedDestination` / `allowedAction` exactly, or every request will be rejected with ActionMismatch/DestinationMismatch
-   - `GEMINI_API_KEY` — from step 2
-
-4. Run it:
-   ```bash
-   npm start        # runs forever, checking every INTERVAL_MINUTES
-   npm run once      # runs a single decision cycle then exits — good for a quick demo
-   ```
-
-## What you'll see in the terminal
+As shown in the Agent UI log panel:
 
 ```
-[2026-07-29T10:00:00.000Z] Velora Autonomous Agent starting.
-[2026-07-29T10:00:00.100Z] Agent wallet address: 0x...
-[2026-07-29T10:00:00.300Z] Agent wallet gas balance: 0.05 BOT
-[2026-07-29T10:00:00.500Z] Checking policy state...
-[2026-07-29T10:00:00.700Z] Policy snapshot: { ... }
-[2026-07-29T10:00:01.200Z] Gemini decision: { shouldRequest: true, amountBot: '0.01', reasoning: '...' }
-[2026-07-29T10:00:01.300Z] Requesting execution: 0.01 BOT to 0x... (action: Transfer)...
-[2026-07-29T10:00:03.100Z] Transaction submitted: 0x...
-[2026-07-29T10:00:03.900Z] ✅ APPROVED — 0.01 BOT sent. Remaining budget: 0.04 BOT.
+[2026-07-30T10:00:00.000Z] Checking all policies on-chain...
+[2026-07-30T10:00:01.200Z] Gemini decision: { shouldRequest: true, reason: '...' }
+[2026-07-30T10:00:01.300Z] Requesting execution for Policy #1: 0.6 BOT to 0x... (action: Transfer)...
+[2026-07-30T10:00:03.900Z] ✅ APPROVED — 0.6 BOT sent. Remaining budget: 1.212 BOT.
 ```
 
-For a demo recording: start it with `npm start`, then **step away from the
-keyboard** — let it run a couple of cycles on its own. Refresh the Velora
-Dashboard in another window and watch the remaining budget and activity feed
-update without you touching anything. That's the proof of real automation.
+## Important Notes
 
-## Safety notes
-
-- The agent's own wallet only ever needs enough BOT to pay gas — never fund it
-  with the actual spending budget. The policy's locked budget in the contract
-  is what actually moves.
-- If `DESTINATION` or `ACTION_TYPE` in `.env` don't match the policy exactly,
-  every request will be rejected on-chain (which is correct behavior — it
-  proves the contract's validation works even against a real autonomous
-  caller, not just the UI).
-- Gemini's decision is advisory only. A "yes" from the model can still be
-  rejected by the contract (e.g. if the budget ran out between decision and
-  submission) — that's expected and is the whole point of the trust model.
+- **Agent wallet only needs BOT for gas.** The policy budget was already deposited on-chain when the policy was created. Never fund the agent wallet with the spending budget.
+- **No `msg.value` sent.** The SafetyNet fee is already accounted for in the deposited budget (gross-up system). The agent just calls `executeRequest` with the exact amount from the policy.
+- **Gemini is advisory only.** A "yes" from the model can still be rejected by the contract (e.g., budget depleted between decision and submission). This is expected behavior — the contract is the final authority.
+- **No `POLICY_ID`, `DESTINATION`, or `ACTION_TYPE` in `.env`.** All execution parameters are read directly from the on-chain policy. The agent automatically discovers and evaluates every policy.

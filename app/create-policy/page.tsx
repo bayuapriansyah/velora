@@ -13,14 +13,26 @@ import { Step2Permissions } from "@/components/create-policy/step2-permissions";
 import { Step3Limits } from "@/components/create-policy/step3-limits";
 import { Step4Review } from "@/components/create-policy/step4-review";
 import { DEFAULT_FORM_STATE, PolicyFormState } from "@/components/create-policy/form-types";
+import { parseEther } from "ethers";
 import { useWallet } from "@/hooks/useWallet";
 import { useVeloraContract } from "@/hooks/useVeloraContract";
-import { botToWei } from "@/lib/format";
+
+const FEE_BPS = 100n;
+const MIN_THRESHOLD_WEI = 100000000000000000n;
+
+function calcRequiredBudgetWei(amountBot: string, maxExec: number): bigint {
+  try {
+    const wei = parseEther(amountBot || "0");
+    const feeWei = wei >= MIN_THRESHOLD_WEI ? (wei * FEE_BPS) / 10000n : 0n;
+    return (wei + feeWei) * BigInt(maxExec);
+  } catch {
+    return 0n;
+  }
+}
 
 function validateStep(step: number, form: PolicyFormState): string | null {
   if (step === 1) {
     if (!form.name.trim()) return "Give this policy a name.";
-    if (!form.budget || Number(form.budget) <= 0) return "Enter a budget greater than 0.";
   }
   if (step === 2) {
     if (!/^0x[a-fA-F0-9]{40}$/.test(form.destination)) return "Enter a valid destination address.";
@@ -36,7 +48,7 @@ function validateStep(step: number, form: PolicyFormState): string | null {
 
 export default function CreatePolicyPage() {
   const router = useRouter();
-  const { account, isCorrectNetwork, connect } = useWallet();
+  const { account, isCorrectNetwork, isConnecting, error: walletError, connect } = useWallet();
   const { createPolicy } = useVeloraContract();
 
   const [step, setStep] = useState(1);
@@ -77,7 +89,7 @@ export default function CreatePolicyPage() {
         maxExecutions: form.maxExecutions,
         amountPerExecution: form.amountPerExecution,
         paymentInterval: form.useSeconds ? form.paymentIntervalDays : form.paymentIntervalDays * 24 * 3600,
-        depositWei: botToWei(form.budget),
+        depositWei: calcRequiredBudgetWei(form.amountPerExecution, form.maxExecutions),
       });
       setDeployed(true);
       setTimeout(() => router.push("/dashboard"), 1600);
@@ -97,9 +109,12 @@ export default function CreatePolicyPage() {
           <div className="flex flex-1 items-center justify-center">
             <div className="text-center">
               <p className="font-medium text-[var(--color-ink)]">Connect your wallet to create a policy.</p>
-              <Button className="mt-4" onClick={connect}>
-                Connect Wallet
+              <Button className="mt-4" onClick={connect} disabled={isConnecting}>
+                {isConnecting ? "Connecting..." : "Connect Wallet"}
               </Button>
+              {walletError && (
+                <p className="mt-3 text-sm font-medium text-[var(--color-danger)]">{walletError}</p>
+              )}
             </div>
           </div>
         </div>

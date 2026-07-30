@@ -177,18 +177,30 @@ async function actOnce() {
       String(decision.amountBot || suggestedAmountBot),
     );
     
+    // Calculate fee (Opsi B: Fee as additional cost)
+    // Fetch safetyNetFeeBps and minFeeThreshold from contract to be precise
+    const feeBps = await contract.safetyNetFeeBps();
+    const minThreshold = await contract.minFeeThreshold();
+    
+    let feeWei = 0n;
+    if (amountWei >= minThreshold) {
+      feeWei = (amountWei * feeBps) / 10000n;
+    }
+    
     const actionType = ACTION_LABELS.indexOf(snapshot.allowedAction);
 
     log(
-      `Requesting execution for Policy #${policyId}: ${ethers.formatEther(amountWei)} BOT to ${snapshot.allowedDestination} (action: ${snapshot.allowedAction})...`,
+      `Requesting execution for Policy #${policyId}: ${ethers.formatEther(amountWei)} BOT (plus ${ethers.formatEther(feeWei)} BOT fee) to ${snapshot.allowedDestination} (action: ${snapshot.allowedAction})...`,
     );
 
     try {
+      // Send amount + fee to the contract
       const tx = await contract.executeRequest(
         policyId,
         amountWei,
         snapshot.allowedDestination,
         actionType,
+        { value: amountWei + feeWei }
       );
       log(`Transaction submitted for Policy #${policyId}:`, tx.hash);
       const receipt = await tx.wait();

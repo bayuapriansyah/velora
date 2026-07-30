@@ -20,6 +20,11 @@ export async function getSigner(): Promise<JsonRpcSigner> {
   return provider.getSigner();
 }
 
+export async function getBalance(address: string): Promise<bigint> {
+  const provider = getProvider();
+  return provider.getBalance(address);
+}
+
 export async function getVeloraContract(signerOrProvider: JsonRpcSigner | BrowserProvider) {
   const network = await (signerOrProvider instanceof BrowserProvider
     ? signerOrProvider.getNetwork()

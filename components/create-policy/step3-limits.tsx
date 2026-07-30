@@ -1,4 +1,17 @@
 import { PolicyFormState } from "./form-types";
+import { parseEther } from "ethers";
+
+const FEE_BPS = 100n;
+const MIN_THRESHOLD_WEI = 100000000000000000n;
+
+function calcFee(amountBot: string): bigint {
+  try {
+    const wei = parseEther(amountBot || "0");
+    return wei >= MIN_THRESHOLD_WEI ? (wei * FEE_BPS) / 10000n : 0n;
+  } catch {
+    return 0n;
+  }
+}
 
 const expirationPresets = [
   { label: "1 hour", hours: 1 },
@@ -28,6 +41,36 @@ export function Step3Limits({
           placeholder="0.02"
           className="mt-2 w-full rounded-xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] px-4 py-3 text-sm font-mono text-[var(--color-ink)] outline-none focus-visible:border-[var(--color-accent)]"
         />
+        {form.amountPerExecution && (
+          <div className="mt-2 rounded-lg bg-[var(--color-accent-soft)] px-3 py-2 text-xs text-[var(--color-accent)]">
+            <p>
+              Fee SafetyNet (1%):{" "}
+              <span className="font-semibold">
+                {(() => {
+                  const fee = calcFee(form.amountPerExecution);
+                  return Number(fee) / 1e18;
+                })()} BOT
+              </span>
+              {" "}&middot; Cost per execution:{" "}
+              <span className="font-semibold">
+                {(() => {
+                  const fee = calcFee(form.amountPerExecution);
+                  const amount = parseEther(form.amountPerExecution || "0");
+                  return Number(amount + fee) / 1e18;
+                })()} BOT
+              </span>
+              {" "}&middot; Required budget for {form.maxExecutions} executions:{" "}
+              <span className="font-semibold">
+                {(() => {
+                  const fee = calcFee(form.amountPerExecution);
+                  const amount = parseEther(form.amountPerExecution || "0");
+                  const total = (amount + fee) * BigInt(form.maxExecutions);
+                  return Number(total) / 1e18;
+                })()} BOT
+              </span>
+            </p>
+          </div>
+        )}
       </div>
       <div>
         <label className="text-sm font-medium text-[var(--color-ink)]">Payment frequency (Days)</label>
