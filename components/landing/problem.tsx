@@ -5,7 +5,7 @@ import { ShieldAlert, Bot, Key, User, ArrowRight, XCircle, Clock } from "lucide-
 
 export function Problem() {
   return (
-    <section className="relative overflow-hidden bg-base px-6 py-20 md:py-40 border-t border-hairline">
+    <section className="relative overflow-hidden px-6 py-20 md:py-40 border-t border-hairline bg-black/25 backdrop-blur-[3px]">
       {/* Background glow for contrast */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[800px] h-[400px] bg-accent/5 blur-[120px] pointer-events-none rounded-[100%]" />
 

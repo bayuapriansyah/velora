@@ -47,7 +47,7 @@ export function Sidebar() {
     <div className="flex h-full flex-col mx-3">
       <div className="flex h-16 items-center gap-3 border-b border-[var(--color-rule)] px-6">
         <a href="/">
-          <img src="/velora.png" alt="Velora Logo" className="h-8 w-8 rounded-lg shadow-sm" />
+          <img src="/velora.png" alt="Velora Logo" className="h-10 w-10 rounded-lg shadow-sm scale-[1.5]" />
         </a>
         <div>
           <span className="text-base font-semibold text-xl tracking-tight text-white">Velora</span>

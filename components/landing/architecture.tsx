@@ -1,6 +1,6 @@
 export function Architecture() {
   return (
-    <section className="bg-surface px-6 py-20 md:py-32 border-y border-hairline">
+    <section className="px-6 py-20 md:py-32 border-y border-hairline bg-black/25 backdrop-blur-[3px]">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 md:mb-16 max-w-2xl text-center md:text-left mx-auto md:mx-0">
           <h2 className="text-3xl font-semibold tracking-tight text-ink md:text-5xl mb-4 md:mb-6">

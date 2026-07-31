@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Shield } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { MobileNav } from "./mobile-nav";
 
 const NAV_LINKS = [
   { label: "Home", href: "#hero" },
@@ -68,11 +69,11 @@ export function Nav() {
 
         {/* ── Right actions ── */}
         <div className="flex items-center gap-2 shrink-0">
-          {/* Launch App CTA */}
+          {/* Launch App CTA — desktop only, mobile lives in the hamburger menu */}
           <Link
             href="/dashboard"
             className="
-              inline-flex items-center gap-2
+              hidden md:inline-flex items-center gap-2
               h-10 px-5 rounded-xl
               bg-accent text-white
               text-sm font-medium tracking-tight
@@ -83,6 +84,8 @@ export function Nav() {
           >
             Launch App
           </Link>
+
+          <MobileNav />
         </div>
 
       </div>

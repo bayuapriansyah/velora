@@ -17,9 +17,8 @@ export function HowItWorks() {
   const [activeStep, setActiveStep] = useState(1);
 
   return (
-    <section id="how-it-works" className="relative isolate bg-base px-6 py-20 md:py-32 overflow-hidden border-t border-hairline">
+    <section id="how-it-works" className="relative isolate px-6 py-20 md:py-32 overflow-hidden border-t border-hairline">
       {/* Background styling */}
-      <div className="absolute inset-0 -z-10 bg-base" />
       <div className="absolute top-1/2 left-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[1000px] h-[300px] md:h-[500px] bg-accent/5 blur-[120px] pointer-events-none rounded-[100%]" />
       
       <div className="relative mx-auto max-w-7xl">

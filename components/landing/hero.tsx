@@ -21,7 +21,6 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden pt-32 pb-16 md:pt-44 md:pb-40" id="hero">
       {/* Deep layered atmospheric background */}
-      <div className="absolute inset-0 bg-base -z-20" />
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay -z-10 pointer-events-none" />
       
       <Glow className="top-[-20%] left-[-10%] w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-accent/20" />
