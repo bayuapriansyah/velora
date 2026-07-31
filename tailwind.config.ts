@@ -6,23 +6,24 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        base: "#fff3f3ff",
-        surface: "#fcf9f9ff",
-        ink: "#111114",
-        muted: "#6B6B70", 
-        hairline: "#EDEDEB",
+        base: "#0b0b0b",
+        surface: "#141414",
+        surfaceHover: "#1c1c1c",
+        ink: "#f5f5f5",
+        muted: "#9a9aa2",
+        hairline: "#26262b",
         accent: {
           DEFAULT: "#fe4d47ff",
           soft: "#EEEEFE",
           hover: "#e3231cff",
         },
         approved: {
-          DEFAULT: "#16A34A",
-          soft: "#EAFBF1",
+          DEFAULT: "#34d399",
+          soft: "rgba(52, 211, 153, 0.12)",
         },
         rejected: {
-          DEFAULT: "#E11D48",
-          soft: "#FDECEF",
+          DEFAULT: "#fb7185",
+          soft: "rgba(251, 113, 133, 0.12)",
         },
       },
       fontFamily: {

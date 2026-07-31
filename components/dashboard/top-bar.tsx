@@ -22,7 +22,7 @@ export function TopBar({ title }: TopBarProps) {
   return (
     <header className="sticky top-0 z-30 flex h-16 lg:h-20 items-center justify-between border-b border-[var(--color-rule)] bg-[var(--color-paper-2)] px-4 md:px-6 lg:px-8">
       <div className="flex items-center gap-3 ml-8 lg:ml-0">
-        <h1 className="text-base text-xl font-semibold text-[var(--color-ink)]">{title || "Dashboard"}</h1>
+        <h1 className="text-base text-xl font-semibold text-white">{title || "Dashboard"}</h1>
       </div>
 
       <div className="flex items-center gap-3">

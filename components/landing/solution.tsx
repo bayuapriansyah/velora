@@ -49,7 +49,7 @@ export function Solution() {
         {/* The Policy Engine Diagram */}
         <div className="relative mx-auto max-w-5xl bg-base rounded-[24px] md:rounded-[40px] border border-hairline p-6 md:p-16 shadow-sm overflow-x-hidden md:overflow-visible">
           {/* Animated Background Grid */}
-          <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#2a2a2e_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none md:rounded-[40px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.16)_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none md:rounded-[40px]" />
           
           <div className="relative z-10 flex flex-col items-center">
             

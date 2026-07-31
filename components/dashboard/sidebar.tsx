@@ -50,7 +50,7 @@ export function Sidebar() {
           <img src="/velora.png" alt="Velora Logo" className="h-8 w-8 rounded-lg shadow-sm" />
         </a>
         <div>
-          <span className="text-base font-semibold text-xl tracking-tight text-[var(--color-ink)]">Velora</span>
+          <span className="text-base font-semibold text-xl tracking-tight text-white">Velora</span>
           <p className="text-[10px] leading-tight text-[var(--color-muted)]">Security Platform</p>
         </div>
       </div>

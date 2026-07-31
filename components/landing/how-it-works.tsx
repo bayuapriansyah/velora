@@ -64,7 +64,7 @@ export function HowItWorks() {
                       <s.icon size={18} strokeWidth={isActive ? 2.5 : 2} />
                     </div>
                     <div>
-                      <h3 className={`text-sm md:text-base !text-black font-medium transition-colors ${isActive ? '!text-black' : 'text-muted group-hover:text-ink'}`}>{s.title}</h3>
+                      <h3 className={`text-sm md:text-base !text-ink font-medium transition-colors ${isActive ? '!text-ink' : 'text-muted group-hover:text-ink'}`}>{s.title}</h3>
                       {isActive && (
                         <motion.p 
                           initial={{ opacity: 0, height: 0 }}
@@ -167,7 +167,7 @@ export function HowItWorks() {
                   {activeStep === 4 && (
                     <motion.div key="step4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-lg space-y-3 md:space-y-4">
                       {/* Terminal execution */}
-                      <div className="bg-ink rounded-xl p-3 md:p-4 font-mono text-[10px] md:text-xs shadow-xl">
+                      <div className="bg-base rounded-xl p-3 md:p-4 font-mono text-[10px] md:text-xs shadow-xl">
                         <div className="text-white/55 mb-1.5 md:mb-2">// AI Agent executes transaction</div>
                         <div className="text-white/80 mb-1"><span className="text-accent">agent</span>.requestTransfer(3.00, dest)</div>
                         <div className="text-approved flex items-center gap-2 mt-2 md:mt-3"><CheckCircle2 size={12} /> Execution Approved</div>
@@ -195,7 +195,7 @@ export function HowItWorks() {
                   {activeStep === 5 && (
                     <motion.div key="step5" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-lg space-y-3 md:space-y-4">
                       {/* Terminal execution */}
-                      <div className="bg-ink rounded-xl p-3 md:p-4 font-mono text-[10px] md:text-xs shadow-xl">
+                      <div className="bg-base rounded-xl p-3 md:p-4 font-mono text-[10px] md:text-xs shadow-xl">
                         <div className="text-white/55 mb-1.5 md:mb-2">// AI Agent executes oversized transaction</div>
                         <div className="text-white/80 mb-1"><span className="text-accent">agent</span>.requestTransfer(20.00, dest)</div>
                         <div className="text-rejected flex items-center gap-2 mt-2 md:mt-3"><XCircle size={12} /> Execution Reverted: Exceeds Budget</div>
@@ -219,7 +219,7 @@ export function HowItWorks() {
                   {activeStep === 6 && (
                     <motion.div key="step6" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-md">
                       <div className="bg-base rounded-2xl border border-hairline p-5 md:p-6 shadow-sm relative overflow-hidden border-muted/30">
-                        <div className="absolute top-0 left-0 w-full h-1 bg-muted" />
+                        <div className="absolute top-0 left-0 w-full h-1 bg-accent" />
                         <div className="flex justify-between items-start mb-6 md:mb-8">
                           <div>
                             <h3 className="text-base md:text-lg font-medium text-ink">API Credits Agent</h3>
