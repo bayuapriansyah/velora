@@ -23,7 +23,7 @@ const pulseTick = {
 
 export function Solution() {
   return (
-    <section className="bg-surface px-6 py-20 md:py-32 border-y border-hairline overflow-hidden">
+    <section className="px-6 py-20 md:py-32 border-y border-hairline overflow-hidden bg-black/35 backdrop-blur-md">
       <div className="mx-auto max-w-6xl">
         <div className="mb-16 md:mb-20 max-w-2xl text-center mx-auto">
           <motion.span 

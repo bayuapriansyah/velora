@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "sonner";
+import { ShaderBackground } from "@/components/shader-background";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
@@ -21,6 +22,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${mono.variable}`} suppressHydrationWarning>
       <body className="antialiased">
+        <div className="velora-aurora" aria-hidden="true">
+          <div className="velora-aurora__orb velora-aurora__orb--one" />
+          <div className="velora-aurora__orb velora-aurora__orb--two" />
+        </div>
+        <ShaderBackground />
         {children}
         <Toaster />
       </body>
