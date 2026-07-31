@@ -6,8 +6,9 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const NAV_LINKS = [
+  { label: "Home", href: "#hero" },
   { label: "How it works", href: "#how-it-works" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Features", href: "#features" },
 ];
 
 export function Nav() {
@@ -28,8 +29,8 @@ export function Nav() {
         fixed top-0 left-0 right-0 z-50
         transition-all duration-300
         ${scrolled
-          ? "bg-white/85 backdrop-blur-xl border-b border-black/[0.07] shadow-[0_1px_0_rgba(0,0,0,0.04),0_6px_32px_rgba(0,0,0,0.06)]"
-          : "bg-white/65 backdrop-blur-md border-b border-black/[0.05]"
+          ? "bg-black/70 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_1px_0_rgba(0,0,0,0.5),0_6px_32px_rgba(0,0,0,0.6)]"
+          : "bg-black/50 backdrop-blur-md border-b border-white/[0.05]"
         }
       `}
     >
@@ -40,8 +41,8 @@ export function Nav() {
           href="/"
           className="flex items-center gap-2.5 shrink-0 group"
         >
-          <img src="/velora.png" alt="Velora Logo" className="h-9 w-9 rounded-xl shadow-[0_0_14px_rgba(91,91,246,0.35)]" />
-          <span className="text-base font-semibold tracking-tight text-ink group-hover:text-accent transition-colors duration-200">
+          <img src="/velora.png" alt="Velora Logo" className="h-12 w-12 rounded-xl shadow-[0_0_14px_#0f0f14]" />
+          <span className="text-base text-xl font-semibold tracking-tight text-ink group-hover:text-accent transition-colors duration-200">
             Velora
           </span>
         </Link>
@@ -54,8 +55,8 @@ export function Nav() {
               href={href}
               className="
                 relative px-4 py-2 rounded-lg
-                text-sm font-medium text-muted
-                hover:text-ink hover:bg-black/[0.04]
+                text-lg font-medium text-muted
+                hover:text-ink hover:bg-white/[0.06]
                 transition-all duration-150
               "
             >
@@ -63,15 +64,10 @@ export function Nav() {
             </a>
           ))}
 
-          {/* Divider */}
-          <div className="w-px h-4 bg-hairline mx-2" />
         </nav>
 
         {/* ── Right actions ── */}
         <div className="flex items-center gap-2 shrink-0">
-          {/* Divider — desktop only */}
-          <div className="hidden sm:block w-px h-4 bg-hairline mx-1" />
-
           {/* Launch App CTA */}
           <Link
             href="/dashboard"

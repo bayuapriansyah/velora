@@ -5,7 +5,7 @@ import { Lock, Timer, Database, CheckCircle2, XCircle, ArrowRight, Activity, Shi
 
 export function Features() {
   return (
-    <section style={{ backgroundColor: 'white' }} className="mx-auto max-w-8xl px-6 py-20 md:py-24 relative overflow-hidden">
+    <section className="mx-auto max-w-8xl px-6 py-20 md:py-24 relative overflow-hidden" id="features">
       {/* Ambient background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[1200px] h-[300px] md:h-[600px] bg-accent/5 blur-[100px] md:blur-[150px] pointer-events-none rounded-[100%]" />
       

@@ -19,7 +19,7 @@ const Glow = ({ className }: { className?: string }) => (
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden pt-32 pb-16 md:pt-44 md:pb-40">
+    <section className="relative overflow-hidden pt-32 pb-16 md:pt-44 md:pb-40" id="hero">
       {/* Deep layered atmospheric background */}
       <div className="absolute inset-0 bg-base -z-20" />
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay -z-10 pointer-events-none" />
@@ -49,7 +49,7 @@ export function Hero() {
             className="text-5xl font-medium leading-[1.05] tracking-tighter text-ink md:text-7xl lg:text-[88px]"
           >
             Delegate tasks,<br />
-            <span className="text-muted/60 italic font-serif tracking-tight">not your wallet.</span>
+            <span className="text-muted/80 italic font-serif tracking-tight">not your wallet.</span>
           </motion.h1>
           
           <motion.p 
