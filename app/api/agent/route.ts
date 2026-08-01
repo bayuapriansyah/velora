@@ -4,6 +4,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { readFileSync } from "fs";
 import { join } from "path";
 import * as dotenv from "dotenv";
+import VeloraAbi from "@/contracts/Velora.abi.json";
 
 type AgentPolicyResult = {
   policyId: string;
@@ -43,10 +44,16 @@ function loadAgentEnv(): Record<string, string> {
   if (Object.values(fromProcess).every(Boolean)) {
     return fromProcess as Record<string, string>;
   }
+  const merged: Record<string, string> = {};
   try {
-    return dotenv.parse(readFileSync(join(process.cwd(), "agent", ".env")));
+    const parsed = dotenv.parse(readFileSync(join(process.cwd(), "agent", ".env")));
+    for (const key of Object.keys(fromProcess)) {
+      const value = fromProcess[key] ?? parsed[key];
+      if (value) merged[key] = value;
+    }
+    return merged;
   } catch {
-    return {};
+    return fromProcess as Record<string, string>;
   }
 }
 
@@ -112,7 +119,7 @@ export async function POST(request: Request) {
       throw new Error("Missing contract address: set CONTRACT_ADDRESS env or pass contractAddress in the request body.");
     }
 
-    const ABI = JSON.parse(readFileSync(join(process.cwd(), "agent", "abi.json"), "utf-8"));
+    const ABI = VeloraAbi as any;
 
     const provider = new ethers.JsonRpcProvider(RPC_URL);
     const wallet = new ethers.Wallet(AGENT_PRIVATE_KEY, provider);
