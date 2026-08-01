@@ -298,22 +298,16 @@ The agent has its **own wallet** that only pays transaction gas. Executions are 
    - On approval the contract fires **`ExecutionApproved`** → your destination receives `0.001 BOT`.
    - On rejection you'll see a machine-readable reason (e.g. `DestinationMismatch`, `InsufficientBudget`).
 
-### Step 4 — Run autonomously 24/7 (Railway, optional)
+### Step 4 — Run automatically from the UI (optional)
 
-Want the agent to decide on its own without keeping the browser open? Deploy the standalone daemon (`agent/agent.js`):
+Want the agent to keep evaluating without clicking every time? Use the built-in **Auto Run** toggle on the Agent page — no separate service needed:
 
-1. On **Railway** → **New Project** → **Deploy from GitHub repo** → pick `bayuapriansyah/velora`.
-2. In **Service Settings**, set **Root Directory** = `agent` (so Railway runs `npm start`, not the web app).
-3. Add these variables in **Settings → Variables**:
-   - `RPC_URL` = `https://rpc.botchain.ai`
-   - `CONTRACT_ADDRESS` = `0xcaE9f3569486094b86Fc8b85024050B58815ddFe`
-   - `AGENT_PRIVATE_KEY` = your agent wallet key
-   - `GEMINI_API_KEY` = your Gemini key
-   - `INTERVAL_MINUTES` = `2` (optional, defaults to 2)
-4. **Deploy** → open **Deployments → View logs**. You should see `Velora Autonomous Agent starting.` and the agent wallet address.
-5. Create an **Active** policy — the daemon automatically requests execution within `INTERVAL_MINUTES`, and the log shows `✅ APPROVED`.
+1. Go to the **Agent** page (`/agent`).
+2. Turn on **Auto Run** and choose an interval (default `60s`).
+3. Leave the tab open — while it is open, a cycle runs every interval: it reads your policies, asks Gemini, and submits any due executions.
+4. Create an **Active** policy — the next cycle automatically requests execution and shows `✅ APPROVED`.
 
-> ⚠️ **Don't click Run Cycle while the Railway daemon is running.** Both use the same agent wallet, so they can collide (nonce conflict). Pick one driver per policy: manual (web) **or** autonomous (Railway).
+> ℹ️ **Auto Run runs from the browser tab**, so the page must stay open. It calls the same `/api/agent` endpoint as the **Run Cycle** button — nothing extra to deploy.
 
 ### Step 5 — Verify
 
@@ -333,7 +327,6 @@ Want the agent to decide on its own without keeping the browser open? Deploy the
 | `insufficient funds` on execution | Agent wallet ran out of gas — top it up via **Fund gas** |
 | Execution **Rejected** | Read the reject reason on the Agent page; it mirrors a policy rule (destination, action, amount, interval, max executions, budget) |
 | `BudgetTooSmall` at create | Deposit too low — use the deposit value shown in the review step |
-| Nonce conflict / "replacement" error | You ran the web Run Cycle and the Railway daemon at the same time — wait a moment and retry, or stop one of them |
 | Gemini "shouldRequest: false" | Expected — Gemini is advisory. The contract remains the final authority |
 
 ---

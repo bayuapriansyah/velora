@@ -37,22 +37,11 @@ npm run once     # single cycle, exits after
 npm start        # runs forever, checking periodically
 ```
 
-### Deploying the Agent 24/7 (Railway)
+### Running autonomously
 
-Want the agent to decide on its own schedule **without keeping a browser open**? Deploy the daemon as a background service:
+The easiest way to run the agent on a schedule is the built-in **Auto Run** toggle on the web **Agent** page (`/agent`) — it calls the same `/api/agent` endpoint every interval (default `60s`) from the browser tab. No separate service to deploy; just keep the tab open.
 
-1. **Railway** → **New Project** → **Deploy from GitHub repo** → pick `bayuapriansyah/velora`.
-2. In **Service Settings**, set **Root Directory** = `agent` (so Railway runs `npm start`, not the Next.js web app).
-3. Add these variables in **Settings → Variables**:
-   - `RPC_URL` = `https://rpc.botchain.ai`
-   - `CONTRACT_ADDRESS` = `0xcaE9f3569486094b86Fc8b85024050B58815ddFe`
-   - `AGENT_PRIVATE_KEY` = your agent wallet key
-   - `GEMINI_API_KEY` = your Gemini key
-   - `INTERVAL_MINUTES` = `2` (optional, defaults to 2)
-4. **Deploy** → open **Deployments → View logs**. You should see `Velora Autonomous Agent starting.` followed by the agent wallet address and balance.
-5. Create an **Active** policy — the daemon requests execution automatically within `INTERVAL_MINUTES`, and the log shows `✅ APPROVED`.
-
-> ⚠️ **Don't click "Run Cycle" on the web Agent page while the Railway daemon is running.** Both use the same agent wallet, so simultaneous submissions can collide (nonce conflict). Use manual *or* autonomous, not both.
+> ⚠️ **Auto Run runs from the browser tab**, so the page must stay open while you want it to keep running.
 
 > 💰 The agent only needs BOT for gas (~`0.006 BOT` per execution). Fund its wallet before expecting autonomous executions to succeed.
 
