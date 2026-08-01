@@ -70,8 +70,8 @@ export function Features() {
     reduce ? { y: 0, opacity: 1 } : { y, opacity: op };
 
   return (
-    <section id="features" ref={containerRef} className="relative lg:h-[260vh] mb-12 md:mb-20">
-      <div className="relative mx-auto max-w-7xl px-6 py-20 md:py-28 lg:min-h-screen lg:sticky lg:top-0 lg:flex lg:flex-col lg:justify-center lg:py-0">
+    <section id="features" ref={containerRef} className="relative lg:h-[260vh] mb-24 md:mb-32">
+      <div className="relative mx-auto max-w-7xl px-6 py-20 md:py-28 lg:min-h-screen lg:sticky lg:top-0 lg:flex lg:flex-col lg:justify-center lg:pt-0 lg:pb-12">
         {/* Ambient background glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[1100px] h-[400px] md:h-[600px] bg-accent/5 blur-[120px] md:blur-[160px] pointer-events-none rounded-[100%]" />
 
