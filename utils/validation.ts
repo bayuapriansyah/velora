@@ -1,6 +1,6 @@
 import { ActionType, Policy, PolicyStatus, RejectReason } from "@/types/policy";
 
-const MIN_FEE_THRESHOLD_WEI = 100000000000000000n;
+const MIN_FEE_THRESHOLD_WEI = 100000000000000n;
 
 function calcFee(amountWei: bigint, feeBps: bigint): bigint {
   return amountWei >= MIN_FEE_THRESHOLD_WEI ? (amountWei * feeBps) / 10000n : 0n;

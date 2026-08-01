@@ -12,7 +12,7 @@ export function Footer() {
         
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-hairline text-sm text-muted text-center md:text-left">
           <div className="flex items-center gap-2 font-medium text-ink">
-            <img src="/velora.png" alt="Velora Logo" className="h-10 w-10 rounded-full scale-[1.5]" />
+            <img src="/velora.png" alt="Velora Logo" className="h-9 w-9 rounded-xl" />
             Velora
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">

@@ -21,7 +21,7 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden pt-32 pb-16 md:pt-44 md:pb-40" id="hero">
       {/* Deep layered atmospheric background */}
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay -z-10 pointer-events-none" />
+      <div className="absolute inset-0 velora-noise opacity-20 mix-blend-overlay -z-10 pointer-events-none" />
       
       <Glow className="top-[-20%] left-[-10%] w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-accent/20" />
       <Glow className="bottom-[-20%] right-[-10%] w-[500px] md:w-[800px] h-[500px] md:h-[800px] bg-accent/10" />
@@ -105,7 +105,7 @@ export function Hero() {
                 <div className="flex justify-between items-end mb-6">
                   <div>
                     <h3 className="text-sm font-medium text-muted uppercase tracking-widest mb-1">Active Budget</h3>
-                    <div className="text-3xl font-mono text-ink">45,200 <span className="text-muted text-lg">USDC</span></div>
+                    <div className="text-3xl font-mono text-ink">1,250 <span className="text-muted text-lg">BOT</span></div>
                   </div>
                   <div className="w-16 h-8 rounded-full bg-approved/10 border border-approved/20 flex items-center justify-center text-xs font-medium text-approved">
                     Live
@@ -189,7 +189,7 @@ export function Hero() {
                     </div>
                     <div>
                       <div className="text-sm font-medium text-approved">Action Approved</div>
-                      <div className="text-xs text-approved/60 mt-1 font-mono">budget -= 25.00</div>
+                      <div className="text-xs text-approved/60 mt-1 font-mono">budget -= 10.00 BOT</div>
                     </div>
                   </div>
 

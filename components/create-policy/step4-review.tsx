@@ -6,7 +6,7 @@ import { parseEther } from "ethers";
 function calcFee(amountBot: string, maxExec: number): { feeBot: number; costPerExecBot: number; requiredBudgetBot: number } {
   try {
     const FEE_BPS = 100n;
-    const MIN_THRESHOLD_WEI = 100000000000000000n;
+    const MIN_THRESHOLD_WEI = 100000000000000n;
     const wei = parseEther(amountBot || "0");
     const feeWei = wei >= MIN_THRESHOLD_WEI ? (wei * FEE_BPS) / 10000n : 0n;
     const costPerExecWei = wei + feeWei;

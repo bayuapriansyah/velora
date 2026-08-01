@@ -5,6 +5,7 @@ import { Wallet } from "lucide-react";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { TopBar } from "@/components/dashboard/top-bar";
 import { WalletHero } from "@/components/dashboard/wallet-hero";
+import { AgentWalletCard } from "@/components/dashboard/agent-wallet-card";
 import { AnalyticsCards } from "@/components/dashboard/analytics-cards";
 import { PolicyTable } from "@/components/dashboard/policy-table";
 import { ActivityTimeline } from "@/components/dashboard/activity-timeline";
@@ -18,7 +19,7 @@ import { PolicyStatus } from "@/types/policy";
 
 export default function DashboardPage() {
   const { account, isCorrectNetwork, isConnecting, error: walletError, connect } = useWallet();
-  const { policies, isLoading, error, refresh } = usePolicies(account);
+  const { policies, refresh } = usePolicies(account);
   const policyIds = useMemo(() => policies.map((policy) => policy.id), [policies]);
   const events = usePolicyEvents(account, isCorrectNetwork, policyIds);
   const { cancelPolicy, withdrawRemainingBudget } = useVeloraContract();
@@ -136,11 +137,11 @@ export default function DashboardPage() {
                 account={account}
                 balance={balance}
                 isCorrectNetwork={isCorrectNetwork}
-                activePoliciesCount={activePolicies.length}
-                totalPoliciesCount={policies.length}
-                isLoading={isLoading}
-                onRefresh={refresh}
               />
+
+              <div className="col-span-12 lg:col-span-4">
+                <AgentWalletCard />
+              </div>
 
               <div className="col-span-12">
                 <h2 className="mb-5 text-xs font-semibold tracking-[0.08em] text-[var(--color-muted)] uppercase">

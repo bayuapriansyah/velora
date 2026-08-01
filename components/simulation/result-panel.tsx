@@ -5,6 +5,7 @@ import { CheckCircle2, XCircle, ExternalLink } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { RejectReason, REJECT_REASON_LABELS } from "@/types/policy";
 import { formatBot } from "@/lib/format";
+import { botScanLink } from "@/lib/network";
 
 export interface SimulationResult {
   approved: boolean;
@@ -45,7 +46,7 @@ export function ResultPanel({ result }: { result: SimulationResult | null }) {
         </div>
         {result.txHash && result.txHash !== "AI_SIMULATION" && (
           <a
-            href={`https://scan.bohr.life/tx/${result.txHash}`}
+            href={botScanLink(`tx/${result.txHash}`)}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-muted)] hover:text-[var(--color-ink)]"

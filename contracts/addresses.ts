@@ -3,6 +3,7 @@
 
 export const VELORA_ADDRESSES: Record<number, `0x${string}`> = {
   968: "0xACA2a171D9Aa41Cdeb9109ed22C86fC6B76099D8",
+  677: "0xcaE9f3569486094b86Fc8b85024050B58815ddFe",
 };
 
 export function getVeloraAddress(chainId: number): `0x${string}` {

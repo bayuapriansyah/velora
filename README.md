@@ -50,7 +50,7 @@ Velora introduces **on-chain policy enforcement**. You define granular, immutabl
 ### Key principles
 
 - **AI-powered agent** — uses Google Gemini for execution decisions
-- **Zero-backend** — 100% client-to-contract, no server secrets
+- **Server-side agent** — a small API route hosts the agent's gas wallet and Gemini key; your personal wallet is never touched by the server
 - **Gross-up fee** — SafetyNet fee (1%) included in pre-funded deposit, agent never needs `msg.value`
 - **Policy SafetyNet** — on-chain insurance pool, policy owners can claim compensation
 
@@ -66,7 +66,7 @@ flowchart LR
     end
 
     subgraph Server
-        API[API Route /api/agent<br/>Next.js on Vercel]
+        API[API Route /api/agent<br/>Next.js on Netlify]
     end
 
     subgraph "BOT Chain"
@@ -201,11 +201,11 @@ flowchart TD
 
 | Asset | Link |
 |---|---|
-| **Web App** | [velora.xyz](https://velora.xyz) |
+| **Web App** | TBD (e.g. `velora.xyz`) |
 | **Chain** | BOT Chain Mainnet (Chain ID 677) |
-| **Contract** | `0x...` — [View on BOTScan](https://scan.botchain.ai/address/0x...) |
-| **Repository** | [github.com/your-org/velora](https://github.com/your-org/velora) |
-| **X Post** | [x.com/your-handle/status/...](https://x.com/...) |
+| **Contract** | `0xcaE9f3569486094b86Fc8b85024050B58815ddFe` — [View on BOTScan](https://scan.botchain.ai/address/0xcaE9f3569486094b86Fc8b85024050B58815ddFe) |
+| **Repository** | TBD — replace with your GitHub repo |
+| **X Post** | TBD — replace with your post URL |
 
 ---
 
@@ -215,6 +215,7 @@ flowchart TD
 velora/
 ├── app/
 │   ├── api/agent/           # POST /api/agent — AI agent execution cycle
+│   │                        # GET  /api/agent/status — agent wallet + gas balance
 │   ├── create-policy/        # Multi-step policy creation wizard (4 steps)
 │   ├── dashboard/            # Policy table, SafetyNet stats, analytics
 │   ├── simulation/           # Rule simulation + live on-chain execution
@@ -226,9 +227,10 @@ velora/
 │   ├── Velora.abi.json       # Hand-maintained ABI for frontend
 │   └── addresses.ts          # Contract address per chain ID
 ├── hooks/                    # useWallet, useVeloraContract, usePolicies, usePolicyEvents
-├── lib/                      # ethers.ts, network.ts, format.ts
+├── lib/                      # ethers.ts, network.ts, format.ts, velora-address.ts
 ├── types/                    # policy.ts (enums mirroring Solidity)
 ├── utils/                    # validation.ts — client-side prediction mirroring contract logic
+├── netlify.toml              # Netlify deploy config (Next.js plugin)
 └── agent/                    # Standalone agent script (agent.js) + env
 ```
 
@@ -240,9 +242,12 @@ velora/
 2. Connect MetaMask — switch to BOT Chain Mainnet
 3. Click **Create Policy** → fill in name, destination, amount, interval, max executions
 4. Review + sign the transaction (one gas fee)
-5. Navigate to **Agent** → click **Run Cycle**
-6. Watch the agent evaluate policies, ask Gemini, and submit execution requests
-7. Check **Dashboard** for remaining budget, execution count, and SafetyNet stats
+5. Open **Dashboard** → click **Fund gas** on the agent wallet card (~0.002 BOT) so the agent can pay transaction fees
+6. Navigate to **Agent** → click **Run Cycle**
+7. Watch the agent evaluate policies, ask Gemini, and submit execution requests
+8. Check **Dashboard** for remaining budget, execution count, and SafetyNet stats
+
+> **Optional:** point the app at a different Velora deployment via **Settings → Contract** in the sidebar.
 
 ---
 
@@ -259,7 +264,9 @@ git clone https://github.com/your-org/velora.git
 cd velora
 npm install
 cp agent/.env.example agent/.env
-# fill in: RPC_URL, CONTRACT_ADDRESS, AGENT_PRIVATE_KEY, GEMINI_API_KEY
+# fill in: RPC_URL=https://rpc.botchain.ai, AGENT_PRIVATE_KEY, GEMINI_API_KEY
+# CONTRACT_ADDRESS is optional — falls back to the deployed 0xcaE9…ddFe, or users
+# can set their own via Settings → Contract in the UI.
 npm run dev
 ```
 
@@ -294,9 +301,9 @@ npm start         # loop forever
 | Parameter | Value | Description |
 |---|---|---|
 | `_safetyNetFeeBps` | `100` (1%) | Fee per execution added to SafetyNet pool |
-| `_minFeeThreshold` | `100000000000000000` (0.1 BOT) | Minimum amount for fee to apply |
-| `_claimCooldown` | `86400` (1 day) | Cooldown between claims |
-| `_maxClaimPerTx` | `10000000000000000000` (10 BOT) | Max amount per claim transaction |
+| `_minFeeThreshold` | `100000000000000` (0.0001 BOT) | Minimum amount for fee to apply |
+| `_claimCooldown` | `30` (30 seconds) | Cooldown between claims |
+| `_maxClaimPerTx` | `10000000000000000` (0.01 BOT) | Max amount per claim transaction |
 
 ### Public functions
 
@@ -325,6 +332,7 @@ All revert reasons use Solidity custom errors for gas efficiency:
 - **Pre-flight re-check** — agent re-fetches policy state before submitting to avoid race conditions
 - **Gross-up fee** — agent never sends `msg.value`, reducing attack surface
 - **No admin key** — contract has no owner, no upgrade mechanism, no backdoor
+- **Server secrets, scoped** — the server only holds the agent's gas wallet key + Gemini key; your personal wallet never leaves your browser
 
 ---
 

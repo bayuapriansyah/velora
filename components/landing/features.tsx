@@ -1,201 +1,206 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Lock, Timer, Database, CheckCircle2, XCircle, ArrowRight, Activity, ShieldCheck } from "lucide-react";
+import { useRef } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+  type MotionValue,
+} from "framer-motion";
+import { ShieldCheck, Key, Wallet, LifeBuoy } from "lucide-react";
+
+type Feature = {
+  icon: typeof ShieldCheck;
+  title: string;
+  desc: string;
+  chips: string[];
+};
+
+const FEATURES: Feature[] = [
+  {
+    icon: Key,
+    title: "Zero-Trust Agent Access",
+    desc: "Agents hold a gas-only wallet and can only request executions. Even an AI \"yes\" can still be rejected by the contract on-chain.",
+    chips: ["agent → request only", "contract decides"],
+  },
+  {
+    icon: Wallet,
+    title: "Budget Isolation",
+    desc: "createPolicy deposits (amountPerExecution + fee) × maxExecutions in a single atomic transaction. The agent can never touch your main wallet.",
+    chips: ["deposit = (amt + 1%) × max", "one tx"],
+  },
+  {
+    icon: LifeBuoy,
+    title: "SafetyNet Compensation",
+    desc: "1% of every execution flows into a public, permissionless pool. A policy can reclaim up to 70% of what it contributed after a 30-second cooldown.",
+    chips: ["fee 1%", "quota 70%", "cooldown 30s"],
+  },
+];
 
 export function Features() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  const headerY = useTransform(scrollYProgress, [0, 0.1], [28, 0]);
+  const headerOp = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
+
+  const bandY = useTransform(scrollYProgress, [0.12, 0.28], [44, 0]);
+  const bandOp = useTransform(scrollYProgress, [0.12, 0.28], [0, 1]);
+
+  const cardY0 = useTransform(scrollYProgress, [0.3, 0.42], [44, 0]);
+  const cardOp0 = useTransform(scrollYProgress, [0.3, 0.42], [0, 1]);
+  const cardY1 = useTransform(scrollYProgress, [0.36, 0.48], [44, 0]);
+  const cardOp1 = useTransform(scrollYProgress, [0.36, 0.48], [0, 1]);
+  const cardY2 = useTransform(scrollYProgress, [0.42, 0.54], [44, 0]);
+  const cardOp2 = useTransform(scrollYProgress, [0.42, 0.54], [0, 1]);
+
+  const cardStyles = [
+    { y: cardY0, opacity: cardOp0 },
+    { y: cardY1, opacity: cardOp1 },
+    { y: cardY2, opacity: cardOp2 },
+  ];
+
+  const s = (y: MotionValue<number>, op: MotionValue<number>) =>
+    reduce ? { y: 0, opacity: 1 } : { y, opacity: op };
+
   return (
-    <section className="mx-auto max-w-8xl px-6 py-20 md:py-24 relative overflow-hidden" id="features">
-      {/* Ambient background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[1200px] h-[300px] md:h-[600px] bg-accent/5 blur-[100px] md:blur-[150px] pointer-events-none rounded-[100%]" />
-      
-      <div className="mb-12 md:mb-16 max-w-2xl text-center mx-auto relative z-10">
-        <motion.span 
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-[10px] md:text-[11px] font-semibold tracking-widest text-muted uppercase"
-        >
-          Active Constraints
-        </motion.span>
-        <motion.h2 
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="mt-4 md:mt-6 text-3xl font-semibold tracking-tight text-ink md:text-5xl"
-        >
-          Everything the contract enforces.
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="mt-4 md:mt-6 text-base md:text-lg text-muted"
-        >
-          Velora acts as an on-chain firewall. Once a policy is deployed, the agent operates strictly within the mathematical limits you set.
-        </motion.p>
-      </div>
-      
-      {/* Policy Inspector Container */}
-      <motion.div 
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 mx-auto max-w-5xl rounded-[24px] md:rounded-[32px] bg-surface border border-hairline shadow-2xl overflow-hidden flex flex-col md:flex-row"
-      >
-        {/* Left Column: Live Constraints */}
-        <div className="w-full md:w-5/12 bg-[var(--color-paper)] p-6 md:p-10 border-b md:border-b-0 md:border-r border-[var(--color-rule)]">
-          <div className="flex items-center justify-between mb-6 md:mb-8">
-            <div>
-              <h3 className="text-lg md:text-xl font-medium text-[var(--color-ink)] flex items-center gap-2">
-                <ShieldCheck size={18} className="text-[var(--color-accent)] md:w-5 md:h-5" />
-                Policy Inspector
+    <section id="features" ref={containerRef} className="relative lg:h-[260vh]">
+      <div className="relative mx-auto max-w-8xl px-6 py-20 md:py-28 lg:h-screen lg:sticky lg:top-0 lg:overflow-hidden lg:flex lg:flex-col lg:justify-center lg:py-0">
+        {/* Ambient background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[1100px] h-[400px] md:h-[600px] bg-accent/5 blur-[120px] md:blur-[160px] pointer-events-none rounded-[100%]" />
+
+        <div className="relative z-10 mx-auto max-w-7xl w-full">
+          {/* Intro — left aligned */}
+          <motion.div style={s(headerY, headerOp)} className="max-w-3xl">
+            <span className="text-[10px] md:text-[11px] font-semibold tracking-widest text-muted uppercase">
+              Capabilities
+            </span>
+            <h2 className="mt-4 md:mt-6 text-3xl font-semibold tracking-tight text-ink md:text-5xl">
+              Everything the contract enforces.
+            </h2>
+            <p className="mt-4 md:mt-6 text-base md:text-lg text-muted max-w-xl leading-relaxed">
+              Velora is an on-chain firewall. Once a policy is deployed, the agent
+              operates strictly within the mathematical limits you set — nothing
+              is decided in the browser.
+            </p>
+          </motion.div>
+
+          {/* Featured band — the policy engine */}
+          <motion.div
+            style={s(bandY, bandOp)}
+            className="mt-8 md:mt-12 relative overflow-hidden rounded-[24px] md:rounded-[28px] bg-surface border border-hairline shadow-2xl flex flex-col lg:flex-row"
+          >
+            <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-accent/5 blur-3xl pointer-events-none" />
+
+            <div className="relative p-6 md:p-10 lg:w-3/5 flex flex-col justify-center">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="w-10 h-10 rounded-xl bg-base border border-hairline flex items-center justify-center text-accent shadow-sm">
+                  <ShieldCheck size={18} />
+                </span>
+                <span className="text-[10px] md:text-[11px] font-semibold tracking-widest text-muted uppercase">
+                  Core Engine
+                </span>
+              </div>
+              <h3 className="text-xl md:text-3xl font-semibold tracking-tight text-ink">
+                On-Chain Policy Engine
               </h3>
-              <p className="text-[10px] md:text-xs font-mono text-[var(--color-muted)] mt-1">ID: pol_0x9b4f2...1a8c</p>
-            </div>
-            <div className="bg-[var(--color-success-soft)] text-[var(--color-success)] border border-[var(--color-success)]/20 text-[9px] md:text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded-full flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-success)] animate-pulse" /> Live
-            </div>
-          </div>
-
-          <div className="space-y-6 md:space-y-8">
-            {/* Budget Usage */}
-            <div>
-              <div className="flex justify-between items-end mb-2">
-                <div className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm font-medium text-[var(--color-ink)]">
-                  <Database size={14} className="text-[var(--color-muted)] md:w-4 md:h-4" /> Budget Usage
-                </div>
-                <div className="text-xs md:text-sm font-mono text-[var(--color-ink)]">750 <span className="text-[var(--color-muted)] text-[10px] md:text-xs">/ 1000 USDC</span></div>
-              </div>
-              <div className="h-2 w-full bg-[var(--color-paper-2)] rounded-full overflow-hidden border border-[var(--color-rule)]/50">
-                <motion.div 
-                  initial={{ width: 0 }}
-                  whileInView={{ width: "75%" }}
-                  transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
-                  className="h-full bg-[var(--color-accent)] rounded-full relative"
+              <p className="mt-3 md:mt-4 text-sm md:text-base leading-relaxed max-w-lg" style={{ color: "#9a9aa2" }}>
+                Policies are Solidity on BOT Chain — no owner, no admin key, no
+                upgrade path. The contract holds the budget, enforces every rule,
+                and is the single source of truth for approve and reject.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <span className="px-2.5 py-1 rounded-md bg-base border border-hairline font-mono text-[10px] md:text-[11px] text-muted">
+                  BOT Chain · chainId 677
+                </span>
+                <a
+                  href="https://scan.botchain.ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 rounded-md bg-base border border-hairline font-mono text-[10px] md:text-[11px] text-accent hover:border-accent/40 transition-colors"
                 >
-                  <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/30" />
-                </motion.div>
+                  scan.botchain.ai
+                </a>
               </div>
             </div>
 
-            {/* Execution Count */}
-            <div>
-              <div className="flex justify-between items-end mb-2">
-                <div className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm font-medium text-[var(--color-ink)]">
-                  <Activity size={14} className="text-[var(--color-muted)] md:w-4 md:h-4" /> Execution Limit
-                </div>
-                <div className="text-xs md:text-sm font-mono text-[var(--color-ink)]">3 <span className="text-[var(--color-muted)] text-[10px] md:text-xs">/ 10 txs</span></div>
+            {/* Mono readout */}
+            <div className="relative lg:w-2/5 border-t lg:border-t-0 lg:border-l border-hairline bg-base p-6 md:p-10 font-mono text-xs md:text-[13px] leading-6">
+              <div className="text-[10px] md:text-[11px] font-semibold tracking-wider uppercase text-muted mb-3">
+                policy · velora.sol
               </div>
-              <div className="flex gap-1">
-                {[...Array(10)].map((_, i) => (
-                  <div key={i} className={`h-1.5 md:h-2 flex-1 rounded-full ${i < 3 ? 'bg-[var(--color-accent)]' : 'bg-[var(--color-paper-2)] border border-[var(--color-rule)]/50'}`} />
-                ))}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[var(--color-rule)]/50">
-              {/* Expiration */}
-              <div>
-                <div className="text-[9px] md:text-[10px] font-semibold tracking-wider uppercase text-[var(--color-muted)] mb-1 flex items-center gap-1.5">
-                  <Timer size={10} className="md:w-3 md:h-3" /> Expires In
-                </div>
-                <div className="text-base md:text-lg font-mono text-[var(--color-ink)]">14h 22m</div>
-              </div>
-
-              {/* Destination Lock */}
-              <div>
-                <div className="text-[9px] md:text-[10px] font-semibold tracking-wider uppercase text-[var(--color-muted)] mb-1 flex items-center gap-1.5">
-                  <Lock size={10} className="md:w-3 md:h-3" /> Destination
-                </div>
-                <div className="text-xs md:text-sm font-mono text-[var(--color-ink)] truncate bg-[var(--color-paper-2)] px-2 py-1 rounded border border-[var(--color-rule)]">
-                  0x7A2...4B19
-                </div>
+              <div className="space-y-1.5 text-ink/85">
+                <Row k="owner" v="0x7A2…4B19" />
+                <Row k="destination" v="0x9b4…1a8c" />
+                <Row k="action" v="Transfer" accent />
+                <Row k="amount / exec" v="5.00 BOT" />
+                <Row k="executions" v="0 / 10" />
+                <Row k="interval" v="Daily" />
+                <Row k="expiration" v="14h 22m" />
+                <Row k="fee" v="1% → SafetyNet" accent />
               </div>
             </div>
+          </motion.div>
+
+          {/* Feature grid */}
+          <div className="mt-4 md:mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+            {FEATURES.map(({ icon: Icon, title, desc, chips }, i) => (
+              <motion.div
+                key={title}
+                style={s(cardStyles[i].y, cardStyles[i].opacity)}
+                className="group relative overflow-hidden rounded-2xl bg-surface border border-hairline p-6 md:p-7 transition-colors duration-300 hover:border-hairline/70"
+              >
+                <div className="absolute -top-16 -right-16 w-44 h-44 rounded-full bg-accent/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                <div className="flex items-center gap-3 mb-3 md:mb-4">
+                  <span className="w-9 h-9 rounded-lg bg-base border border-hairline flex items-center justify-center text-accent shrink-0">
+                    <Icon size={16} />
+                  </span>
+                  <h3 className="text-base md:text-lg font-medium text-ink leading-snug">
+                    {title}
+                  </h3>
+                </div>
+
+                <p className="text-sm text-muted leading-relaxed">{desc}</p>
+
+                <div className="mt-4 md:mt-5 flex flex-wrap gap-1.5">
+                  {chips.map((chip) => (
+                    <span
+                      key={chip}
+                      className="px-2 py-0.5 rounded-md bg-base border border-hairline font-mono text-[10px] text-muted"
+                    >
+                      {chip}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
-
-        {/* Right Column: Execution Log */}
-        <div className="w-full md:w-7/12 bg-[var(--color-paper-2)] p-6 md:p-10 flex flex-col">
-          <div className="flex items-center justify-between mb-4 md:mb-6">
-            <h3 className="text-xs md:text-sm font-medium text-[var(--color-ink)] uppercase tracking-wider">On-Chain Audit Trail</h3>
-            <span className="text-[10px] md:text-xs text-[var(--color-muted)] font-mono">Last 3 requests</span>
-          </div>
-
-          <div className="flex-1 space-y-3 md:space-y-4">
-            
-            {/* Blocked Request (Most Recent) */}
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.6 }}
-              className="bg-[var(--color-paper)] rounded-xl border border-[var(--color-danger)]/30 p-3 md:p-4 relative overflow-hidden group"
-            >
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--color-danger)]" />
-              <div className="flex justify-between items-start mb-2">
-                <div className="flex items-center gap-1.5 md:gap-2 text-[var(--color-danger)] text-xs md:text-sm font-medium">
-                  <XCircle size={14} className="md:w-4 md:h-4" /> Execution Reverted
-                </div>
-                <div className="text-[10px] md:text-xs font-mono text-[var(--color-muted)]">Just now</div>
-              </div>
-              <div className="font-mono text-[10px] md:text-xs text-[var(--color-ink)]/80 mb-2 md:mb-3 bg-[var(--color-paper-2)] p-2 rounded border border-[var(--color-rule)]/50 overflow-x-auto whitespace-nowrap">
-                agent.execute(0x7A2...4B19, <span className="text-[var(--color-danger)]">500 USDC</span>)
-              </div>
-              <div className="text-[10px] md:text-xs text-[var(--color-danger)]/80 font-medium leading-relaxed">
-                Reason: Amount exceeds remaining budget (250 USDC).
-              </div>
-            </motion.div>
-
-            {/* Allowed Request */}
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.8 }}
-              className="bg-[var(--color-paper)] rounded-xl border border-[var(--color-rule)] p-3 md:p-4 relative"
-            >
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--color-success)] opacity-50" />
-              <div className="flex justify-between items-start mb-2">
-                <div className="flex items-center gap-1.5 md:gap-2 text-[var(--color-success)] text-xs md:text-sm font-medium">
-                  <CheckCircle2 size={14} className="md:w-4 md:h-4" /> Execution Approved
-                </div>
-                <div className="text-[10px] md:text-xs font-mono text-[var(--color-muted)]">2 hrs ago</div>
-              </div>
-              <div className="font-mono text-[10px] md:text-xs text-[var(--color-ink)]/80 bg-[var(--color-paper-2)] p-2 rounded border border-[var(--color-rule)]/50 flex justify-between items-center overflow-x-auto whitespace-nowrap gap-4">
-                <span>agent.execute(0x7A2...4B19, 250 USDC)</span>
-                <a href="#" className="text-[var(--color-accent)] hover:underline flex items-center gap-1 shrink-0">Tx <ArrowRight size={10} /></a>
-              </div>
-            </motion.div>
-
-            {/* Allowed Request 2 */}
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 1.0 }}
-              className="bg-[var(--color-paper)] rounded-xl border border-[var(--color-rule)] p-3 md:p-4 relative opacity-60"
-            >
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--color-success)] opacity-50" />
-              <div className="flex justify-between items-start mb-2">
-                <div className="flex items-center gap-1.5 md:gap-2 text-[var(--color-success)] text-xs md:text-sm font-medium">
-                  <CheckCircle2 size={14} className="md:w-4 md:h-4" /> Execution Approved
-                </div>
-                <div className="text-[10px] md:text-xs font-mono text-[var(--color-muted)]">12 hrs ago</div>
-              </div>
-              <div className="font-mono text-[10px] md:text-xs text-[var(--color-ink)]/80 bg-[var(--color-paper-2)] p-2 rounded border border-[var(--color-rule)]/50 flex justify-between items-center overflow-x-auto whitespace-nowrap gap-4">
-                <span>agent.execute(0x7A2...4B19, 500 USDC)</span>
-                <a href="#" className="text-[var(--color-accent)] hover:underline flex items-center gap-1 shrink-0">Tx <ArrowRight size={10} /></a>
-              </div>
-            </motion.div>
-
-          </div>
-        </div>
-      </motion.div>
+      </div>
     </section>
+  );
+}
+
+function Row({
+  k,
+  v,
+  accent,
+}: {
+  k: string;
+  v: string;
+  accent?: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <span className="text-muted">{k}</span>
+      <span className={accent ? "text-accent" : "text-ink/90"}>{v}</span>
+    </div>
   );
 }

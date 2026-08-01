@@ -1,10 +1,34 @@
 import { BrowserProvider, Contract, JsonRpcSigner } from "ethers";
 import VeloraAbi from "@/contracts/Velora.abi.json";
-import { getVeloraAddress } from "@/contracts/addresses";
+import { resolveVeloraAddress } from "@/lib/velora-address";
+
+let sdkProvider: any | undefined;
 
 export function getEthereum(): any | undefined {
   if (typeof window === "undefined") return undefined;
-  return (window as any).ethereum;
+  return (window as any).ethereum ?? sdkProvider;
+}
+
+export async function getMetaMaskSDKProvider(): Promise<any | undefined> {
+  if (typeof window === "undefined") return undefined;
+  if ((window as any).ethereum) return (window as any).ethereum;
+  if (sdkProvider) return sdkProvider;
+  try {
+    const { MetaMaskSDK } = await import("@metamask/sdk");
+    const sdk = new MetaMaskSDK({
+      dappMetadata: {
+        name: "Velora",
+        url: window.location.origin,
+      },
+      useDeeplink: true,
+      checkInstallationImmediately: false,
+      enableAnalytics: false,
+    });
+    sdkProvider = sdk.getProvider();
+    return sdkProvider;
+  } catch {
+    return undefined;
+  }
 }
 
 export function getProvider(): BrowserProvider {
@@ -29,6 +53,6 @@ export async function getVeloraContract(signerOrProvider: JsonRpcSigner | Browse
   const network = await (signerOrProvider instanceof BrowserProvider
     ? signerOrProvider.getNetwork()
     : signerOrProvider.provider!.getNetwork());
-  const address = getVeloraAddress(Number(network.chainId));
+  const address = resolveVeloraAddress(Number(network.chainId));
   return new Contract(address, VeloraAbi, signerOrProvider);
 }

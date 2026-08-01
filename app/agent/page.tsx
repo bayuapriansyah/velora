@@ -20,6 +20,8 @@ import { TopBar } from "@/components/dashboard/top-bar";
 import { Button } from "@/components/ui/button";
 import { useWallet } from "@/hooks/useWallet";
 import { usePolicies } from "@/hooks/usePolicies";
+import { botScanLink } from "@/lib/network";
+import { getConfiguredVeloraAddress } from "@/lib/velora-address";
 import { PolicyStatus } from "@/types/policy";
 
 type AgentPolicyResult = {
@@ -160,7 +162,9 @@ export default function AgentPage() {
       const res = await fetch("/api/agent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        body: JSON.stringify({
+          contractAddress: getConfiguredVeloraAddress() ?? undefined,
+        }),
       });
       const data = (await res.json()) as AgentResponse;
 
@@ -358,15 +362,14 @@ export default function AgentPage() {
                               <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">
                                 {policy.result === "skipped" && !policy.isDue
                                   ? "No transaction submitted, so no on-chain activity event was emitted."
+                                  : policy.result === "error"
+                                  ? policy.error || policy.reasoning || "Execution failed."
                                   : policy.reasoning || policy.rejectReason || policy.error || "Cycle completed."}
                               </p>
                               {policy.rejectReason && (
                                 <p className="mt-1 text-sm font-medium text-[var(--color-danger)]">
                                   Contract reject reason: {policy.rejectReason}
                                 </p>
-                              )}
-                              {policy.error && (
-                                <p className="mt-1 text-sm font-medium text-[var(--color-danger)]">{policy.error}</p>
                               )}
                             </div>
                             <div className="shrink-0 text-left md:text-right">
@@ -384,7 +387,7 @@ export default function AgentPage() {
 
                           {policy.txHash && (
                             <a
-                              href={`https://scan.bohr.life/tx/${policy.txHash}`}
+                              href={botScanLink(`tx/${policy.txHash}`)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="mt-3 inline-flex items-center gap-1 rounded-md bg-[var(--color-paper)] px-2 py-1 font-mono text-xs text-[var(--color-accent)] hover:bg-[var(--color-accent-soft)]"

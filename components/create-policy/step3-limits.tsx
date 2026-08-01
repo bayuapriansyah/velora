@@ -2,7 +2,7 @@ import { PolicyFormState } from "./form-types";
 import { parseEther } from "ethers";
 
 const FEE_BPS = 100n;
-const MIN_THRESHOLD_WEI = 100000000000000000n;
+const MIN_THRESHOLD_WEI = 100000000000000n;
 
 function calcFee(amountBot: string): bigint {
   try {
