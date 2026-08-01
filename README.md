@@ -427,7 +427,7 @@ All revert reasons use Solidity custom errors for gas efficiency:
 
 Built for the **BOTChain Build Week** Hackathon by:
 
-- **Your Name** — Full-stack developer
+- **Velora** — Full-stack developer
 
 ---
 
