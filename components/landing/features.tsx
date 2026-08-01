@@ -71,7 +71,7 @@ export function Features() {
 
   return (
     <section id="features" ref={containerRef} className="relative lg:h-[260vh]">
-      <div className="relative mx-auto max-w-8xl px-6 py-20 md:py-28 lg:h-screen lg:sticky lg:top-0 lg:overflow-hidden lg:flex lg:flex-col lg:justify-center lg:py-0">
+      <div className="relative mx-auto max-w-7xl px-6 py-20 md:py-28 lg:min-h-screen lg:sticky lg:top-0 lg:flex lg:flex-col lg:justify-center lg:py-0">
         {/* Ambient background glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[1100px] h-[400px] md:h-[600px] bg-accent/5 blur-[120px] md:blur-[160px] pointer-events-none rounded-[100%]" />
 
