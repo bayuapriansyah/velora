@@ -1,12 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { AlertTriangle, Bot, Check, Copy, ExternalLink, RefreshCw } from "lucide-react";
+import { Bot, Check, Copy, ExternalLink, RefreshCw } from "lucide-react";
 import { formatBot, truncateAddress } from "@/lib/format";
 import { botScanLink } from "@/lib/network";
 import { FundAgentDialog } from "@/components/dashboard/fund-agent-dialog";
-
-const LOW_GAS_THRESHOLD = BigInt("10000000000000000"); // 0.01 BOT — ~2 executions at 20 gwei
 
 export function AgentWalletCard() {
   const [address, setAddress] = useState<string | null>(null);
@@ -45,8 +43,6 @@ export function AgentWalletCard() {
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
-
-  const lowGas = balance !== null && balance < LOW_GAS_THRESHOLD;
 
   return (
     <div className="flex h-full flex-col justify-between rounded-2xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-6 shadow-sm">
@@ -104,12 +100,6 @@ export function AgentWalletCard() {
                 <span className="ml-1 text-xs font-normal text-[var(--color-muted)]">BOT</span>
               </span>
             </div>
-            {lowGas && (
-              <div className="flex items-center gap-1.5 rounded-lg bg-[var(--color-danger-soft)] px-3 py-2 text-xs font-medium text-[var(--color-danger)]">
-                <AlertTriangle size={12} />
-                Low gas — fund this wallet
-              </div>
-            )}
             <p className="text-[11px] leading-relaxed text-[var(--color-muted)]">
               The agent signs executions with this gas-only wallet. It never touches policy
               budgets.
