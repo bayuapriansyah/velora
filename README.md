@@ -1,10 +1,14 @@
-# Velora
+<p align="center">
+  <img src="public/velora.png" alt="Velora Logo" width="96" />
+</p>
 
-**Delegate tasks, not your wallet.**
+<h1 align="center">Velora</h1>
 
-Trust-minimized AI agent execution on BOT Chain — create on-chain policies, deploy autonomous agents, and stay in full control.
+<p align="center"><b>Delegate tasks, not your wallet.</b></p>
 
-> Built for the **BOTChain Build Week** Hackathon
+<p align="center">Trust-minimized AI agent execution on BOT Chain — create on-chain policies, deploy autonomous agents, and stay in full control.</p>
+
+<p align="center">Built for the <b>BOTChain Build Week</b> Hackathon</p>
 
 ---
 
@@ -202,7 +206,7 @@ flowchart TD
 
 | Asset | Link |
 |---|---|
-| **Web App** | https://velora-policies.netlify.app |
+| **Web App** | https://velora-policies.my.id (alias: `velora-policies.netlify.app`) |
 | **Chain** | BOT Chain Mainnet (Chain ID 677) |
 | **Contract** | `0xcaE9f3569486094b86Fc8b85024050B58815ddFe` — [View on BOTScan](https://scan.botchain.ai/address/0xcaE9f3569486094b86Fc8b85024050B58815ddFe) |
 | **Repository** | https://github.com/bayuapriansyah/velora |
@@ -243,7 +247,7 @@ velora/
 2. Connect MetaMask — switch to BOT Chain Mainnet
 3. Click **Create Policy** → fill in name, destination, amount, interval, max executions
 4. Review + sign the transaction (one gas fee)
-5. Open **Dashboard** → click **Fund gas** on the agent wallet card (~0.002 BOT) so the agent can pay transaction fees
+5. Open **Dashboard** → click **Fund gas** on the agent wallet card (~`0.006 BOT` per execution) so the agent can pay transaction fees
 6. Navigate to **Agent** → click **Run Cycle**
 7. Watch the agent evaluate policies, ask Gemini, and submit execution requests
 8. Check **Dashboard** for remaining budget, execution count, and SafetyNet stats
@@ -262,7 +266,7 @@ This guide walks you through the **full Velora flow** — from an empty wallet t
 |---|---|
 | MetaMask | With **BOT Chain Mainnet** added (chain ID `677`, RPC `https://rpc.botchain.ai`, symbol `BOT`) |
 | BOT balance | A small amount for gas + deposit (~`0.02 BOT` is comfortable for this guide) |
-| Web app | https://velora-policies.netlify.app |
+| Web app | https://velora-policies.my.id |
 | Contract | Default `0xcaE9f3569486094b86Fc8b85024050B58815ddFe` (changeable via **Settings → Contract**) |
 
 ### Step 1 — Create a policy
