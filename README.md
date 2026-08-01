@@ -201,10 +201,10 @@ flowchart TD
 
 | Asset | Link |
 |---|---|
-| **Web App** | TBD (e.g. `velora.xyz`) |
+| **Web App** | https://velora-policies.netlify.app |
 | **Chain** | BOT Chain Mainnet (Chain ID 677) |
 | **Contract** | `0xcaE9f3569486094b86Fc8b85024050B58815ddFe` — [View on BOTScan](https://scan.botchain.ai/address/0xcaE9f3569486094b86Fc8b85024050B58815ddFe) |
-| **Repository** | TBD — replace with your GitHub repo |
+| **Repository** | https://github.com/bayuapriansyah/velora |
 | **X Post** | TBD — replace with your post URL |
 
 ---
