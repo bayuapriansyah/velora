@@ -19,6 +19,7 @@ Trust-minimized AI agent execution on BOT Chain — create on-chain policies, de
 - [Live Deployment](#-live-deployment)
 - [Repository Structure](#-repository-structure)
 - [Getting Started (User)](#-getting-started-user)
+- [End-to-End Try-It Guide](#-end-to-end-try-it-guide)
 - [Getting Started (Developer)](#-getting-started-developer)
 - [Smart Contract](#-smart-contract)
 - [Security](#-security)
@@ -248,6 +249,92 @@ velora/
 8. Check **Dashboard** for remaining budget, execution count, and SafetyNet stats
 
 > **Optional:** point the app at a different Velora deployment via **Settings → Contract** in the sidebar.
+
+---
+
+## 🧪 End-to-End Try-It Guide
+
+This guide walks you through the **full Velora flow** — from an empty wallet to a live on-chain policy executing autonomously. Every transaction below is real: nothing here is mocked.
+
+### What you'll need
+
+| Item | Details |
+|---|---|
+| MetaMask | With **BOT Chain Mainnet** added (chain ID `677`, RPC `https://rpc.botchain.ai`, symbol `BOT`) |
+| BOT balance | A small amount for gas + deposit (~`0.02 BOT` is comfortable for this guide) |
+| Web app | https://velora-policies.netlify.app |
+| Contract | Default `0xcaE9f3569486094b86Fc8b85024050B58815ddFe` (changeable via **Settings → Contract**) |
+
+### Step 1 — Create a policy
+
+1. Open the web app and connect MetaMask (make sure the network is BOT Chain).
+2. Go to **Create Policy** and fill in:
+   - **Name** — anything, e.g. `Auto-test`
+   - **Destination** — your own wallet address (so the payout comes back to you)
+   - **Action** — `Transfer`
+   - **Amount per execution** — `0.001 BOT`
+   - **Max executions** — `1`
+   - **Interval** — `10s`
+3. Review. Deposit = `(amount + 1% fee) × max executions` ≈ `0.00101 BOT`.
+4. Sign the transaction. The policy becomes **Active** on-chain.
+
+> ℹ️ The UI auto-calculates the minimum required deposit. If you ever see a `BudgetTooSmall` revert, raise the deposit to the value shown.
+
+### Step 2 — Fund the agent's gas wallet
+
+The agent has its **own wallet** that only pays transaction gas. Executions are paid from the policy budget, but the agent needs BOT to submit them.
+
+1. Open **Dashboard** → find the **Agent wallet** card.
+2. Click **Fund gas** and send a little BOT (e.g. `0.01 BOT`).
+3. Each execution needs ~`0.006 BOT` in gas, so `0.01` covers one run with buffer.
+
+### Step 3 — Run a cycle (manual)
+
+1. Go to the **Agent** page (`/agent`).
+2. Click **Run Cycle**.
+3. Watch the log panel:
+   - The agent reads your Active policy and checks if it is due.
+   - Gemini answers `{ shouldRequest: true/false, reasoning }`.
+   - On approval the contract fires **`ExecutionApproved`** → your destination receives `0.001 BOT`.
+   - On rejection you'll see a machine-readable reason (e.g. `DestinationMismatch`, `InsufficientBudget`).
+
+### Step 4 — Run autonomously 24/7 (Railway, optional)
+
+Want the agent to decide on its own without keeping the browser open? Deploy the standalone daemon (`agent/agent.js`):
+
+1. On **Railway** → **New Project** → **Deploy from GitHub repo** → pick `bayuapriansyah/velora`.
+2. In **Service Settings**, set **Root Directory** = `agent` (so Railway runs `npm start`, not the web app).
+3. Add these variables in **Settings → Variables**:
+   - `RPC_URL` = `https://rpc.botchain.ai`
+   - `CONTRACT_ADDRESS` = `0xcaE9f3569486094b86Fc8b85024050B58815ddFe`
+   - `AGENT_PRIVATE_KEY` = your agent wallet key
+   - `GEMINI_API_KEY` = your Gemini key
+   - `INTERVAL_MINUTES` = `2` (optional, defaults to 2)
+4. **Deploy** → open **Deployments → View logs**. You should see `Velora Autonomous Agent starting.` and the agent wallet address.
+5. Create an **Active** policy — the daemon automatically requests execution within `INTERVAL_MINUTES`, and the log shows `✅ APPROVED`.
+
+> ⚠️ **Don't click Run Cycle while the Railway daemon is running.** Both use the same agent wallet, so they can collide (nonce conflict). Pick one driver per policy: manual (web) **or** autonomous (Railway).
+
+### Step 5 — Verify
+
+- **Dashboard** → remaining budget, execution count, and policy status (`Exhausted` once max executions is reached).
+- **Destination wallet** → received the payout amount.
+- **BOTScan** → [contract activity](https://scan.botchain.ai/address/0xcaE9f3569486094b86Fc8b85024050B58815ddFe) shows `ExecutionApproved` events.
+
+### Step 6 — Clean up
+
+- **Cancel policy** → stops future executions.
+- **Withdraw remaining budget** → returns the leftover deposit to your wallet.
+
+### Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| `insufficient funds` on execution | Agent wallet ran out of gas — top it up via **Fund gas** |
+| Execution **Rejected** | Read the reject reason on the Agent page; it mirrors a policy rule (destination, action, amount, interval, max executions, budget) |
+| `BudgetTooSmall` at create | Deposit too low — use the deposit value shown in the review step |
+| Nonce conflict / "replacement" error | You ran the web Run Cycle and the Railway daemon at the same time — wait a moment and retry, or stop one of them |
+| Gemini "shouldRequest: false" | Expected — Gemini is advisory. The contract remains the final authority |
 
 ---
 
