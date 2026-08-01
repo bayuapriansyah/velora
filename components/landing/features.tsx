@@ -70,7 +70,7 @@ export function Features() {
     reduce ? { y: 0, opacity: 1 } : { y, opacity: op };
 
   return (
-    <section id="features" ref={containerRef} className="relative lg:h-[260vh]">
+    <section id="features" ref={containerRef} className="relative lg:h-[260vh] mb-12 md:mb-20">
       <div className="relative mx-auto max-w-7xl px-6 py-20 md:py-28 lg:min-h-screen lg:sticky lg:top-0 lg:flex lg:flex-col lg:justify-center lg:py-0">
         {/* Ambient background glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[1100px] h-[400px] md:h-[600px] bg-accent/5 blur-[120px] md:blur-[160px] pointer-events-none rounded-[100%]" />
@@ -81,10 +81,10 @@ export function Features() {
             <span className="text-[10px] md:text-[11px] font-semibold tracking-widest text-muted uppercase">
               Capabilities
             </span>
-            <h2 className="mt-4 md:mt-6 text-3xl font-semibold tracking-tight text-ink md:text-5xl">
+            <h2 className="mt-3 md:mt-4 text-3xl font-semibold tracking-tight text-ink md:text-4xl">
               Everything the contract enforces.
             </h2>
-            <p className="mt-4 md:mt-6 text-base md:text-lg text-muted max-w-xl leading-relaxed">
+            <p className="mt-3 md:mt-4 text-base md:text-lg text-muted max-w-xl leading-relaxed">
               Velora is an on-chain firewall. Once a policy is deployed, the agent
               operates strictly within the mathematical limits you set — nothing
               is decided in the browser.
@@ -94,12 +94,12 @@ export function Features() {
           {/* Featured band — the policy engine */}
           <motion.div
             style={s(bandY, bandOp)}
-            className="mt-8 md:mt-12 relative overflow-hidden rounded-[24px] md:rounded-[28px] bg-surface border border-hairline shadow-2xl flex flex-col lg:flex-row"
+            className="mt-6 md:mt-8 relative overflow-hidden rounded-[24px] md:rounded-[28px] bg-surface border border-hairline shadow-2xl flex flex-col lg:flex-row"
           >
             <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-accent/5 blur-3xl pointer-events-none" />
 
-            <div className="relative p-6 md:p-10 lg:w-3/5 flex flex-col justify-center">
-              <div className="flex items-center gap-3 mb-4">
+            <div className="relative p-6 md:p-8 lg:w-3/5 flex flex-col justify-center">
+              <div className="flex items-center gap-3 mb-3">
                 <span className="w-10 h-10 rounded-xl bg-base border border-hairline flex items-center justify-center text-accent shadow-sm">
                   <ShieldCheck size={18} />
                 </span>
@@ -107,15 +107,15 @@ export function Features() {
                   Core Engine
                 </span>
               </div>
-              <h3 className="text-xl md:text-3xl font-semibold tracking-tight text-ink">
+              <h3 className="text-xl md:text-2xl font-semibold tracking-tight text-ink">
                 On-Chain Policy Engine
               </h3>
-              <p className="mt-3 md:mt-4 text-sm md:text-base leading-relaxed max-w-lg" style={{ color: "#9a9aa2" }}>
+              <p className="mt-2 md:mt-3 text-sm md:text-base leading-relaxed max-w-lg" style={{ color: "#9a9aa2" }}>
                 Policies are Solidity on BOT Chain — no owner, no admin key, no
                 upgrade path. The contract holds the budget, enforces every rule,
                 and is the single source of truth for approve and reject.
               </p>
-              <div className="mt-5 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 <span className="px-2.5 py-1 rounded-md bg-base border border-hairline font-mono text-[10px] md:text-[11px] text-muted">
                   BOT Chain · chainId 677
                 </span>
@@ -131,11 +131,11 @@ export function Features() {
             </div>
 
             {/* Mono readout */}
-            <div className="relative lg:w-2/5 border-t lg:border-t-0 lg:border-l border-hairline bg-base p-6 md:p-10 font-mono text-xs md:text-[13px] leading-6">
-              <div className="text-[10px] md:text-[11px] font-semibold tracking-wider uppercase text-muted mb-3">
+            <div className="relative lg:w-2/5 border-t lg:border-t-0 lg:border-l border-hairline bg-base p-6 md:p-8 font-mono text-[11px] md:text-xs leading-5">
+              <div className="text-[10px] md:text-[11px] font-semibold tracking-wider uppercase text-muted mb-2">
                 policy · velora.sol
               </div>
-              <div className="space-y-1.5 text-ink/85">
+              <div className="space-y-1 text-ink/85">
                 <Row k="owner" v="0x7A2…4B19" />
                 <Row k="destination" v="0x9b4…1a8c" />
                 <Row k="action" v="Transfer" accent />
@@ -154,22 +154,22 @@ export function Features() {
               <motion.div
                 key={title}
                 style={s(cardStyles[i].y, cardStyles[i].opacity)}
-                className="group relative overflow-hidden rounded-2xl bg-surface border border-hairline p-6 md:p-7 transition-colors duration-300 hover:border-hairline/70"
+                className="group relative overflow-hidden rounded-2xl bg-surface border border-hairline p-5 md:p-6 transition-colors duration-300 hover:border-hairline/70"
               >
                 <div className="absolute -top-16 -right-16 w-44 h-44 rounded-full bg-accent/5 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                <div className="flex items-center gap-3 mb-3 md:mb-4">
+                <div className="flex items-center gap-3 mb-2 md:mb-3">
                   <span className="w-9 h-9 rounded-lg bg-base border border-hairline flex items-center justify-center text-accent shrink-0">
                     <Icon size={16} />
                   </span>
-                  <h3 className="text-base md:text-lg font-medium text-ink leading-snug">
+                  <h3 className="text-base font-medium text-ink leading-snug">
                     {title}
                   </h3>
                 </div>
 
                 <p className="text-sm text-muted leading-relaxed">{desc}</p>
 
-                <div className="mt-4 md:mt-5 flex flex-wrap gap-1.5">
+                <div className="mt-3 md:mt-4 flex flex-wrap gap-1.5">
                   {chips.map((chip) => (
                     <span
                       key={chip}
