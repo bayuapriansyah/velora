@@ -10,12 +10,15 @@
 
 <p align="center">Built for the <b>BOTChain Build Week</b> Hackathon</p>
 
+<p align="center">🛡️ Built-in on-chain insurance — the SafetyNet compensates you if an execution fails</p>
+
 ---
 
 ## 📌 Table of Contents
 
 - [The Problem](#-the-problem)
 - [The Solution](#-the-solution)
+- [SafetyNet Insurance](#-safetynet--built-in-on-chain-insurance)
 - [System Architecture](#-system-architecture)
 - [Policy Execution Flow](#-policy-execution-flow)
 - [Contract Decision Tree](#-contract-decision-tree)
@@ -58,6 +61,38 @@ Velora introduces **on-chain policy enforcement**. You define granular, immutabl
 - **Server-side agent** — a small API route hosts the agent's gas wallet and Gemini key; your personal wallet is never touched by the server
 - **Gross-up fee** — SafetyNet fee (1%) included in pre-funded deposit, agent never needs `msg.value`
 - **Policy SafetyNet** — on-chain insurance pool, policy owners can claim compensation
+
+---
+
+## 🛡️ SafetyNet — Built-In On-Chain Insurance
+
+AI agents can still fail — edge cases, unexpected conditions, or a depleted budget. Velora adds a **compensation layer** so a failed execution is not a total loss.
+
+```mermaid
+flowchart LR
+    A[ExecutionApproved] -->|"1% gross-up fee"| P[(SafetyNet Pool)]
+    B[Anyone] -->|seedSafetyNet| P
+    C[Policy Owner] -->|claimFromSafetyNet| P
+    P -->|"up to 70% of contributions<br/>after 30s cooldown"| C
+```
+
+### How it works
+
+1. **Every execution funds the pool.** A 1% fee (grossed up inside the deposit at policy creation) is routed to the SafetyNet pool on each `ExecutionApproved`.
+2. **You can claim compensation.** If something goes wrong, the policy owner calls `claimFromSafetyNet` and receives up to **70% of what their policy contributed** (minus claims already paid).
+3. **Anyone can seed the pool.** `seedSafetyNet` lets anyone deposit into the pool to boost coverage for all policies.
+
+| Rule | Value |
+|---|---|
+| Funding | 1% gross-up fee per execution |
+| Claim quota | Up to 70% of policy's contributions |
+| Claim cooldown | 30 seconds |
+| Max per claim tx | 0.01 BOT |
+| Pool access | Policy owner only |
+
+**The guarantee:** you no longer need to fully trust the AI — the contract enforces every rule, and if things still go wrong, the SafetyNet compensates you.
+
+> ⚠️ SafetyNet is compensation within the pool's balance, not full insurance — claims are paid up to the available pool and your 70% quota.
 
 ---
 
