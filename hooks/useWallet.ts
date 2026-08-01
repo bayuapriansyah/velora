@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { BrowserProvider } from "ethers";
-import { getEthereum } from "@/lib/ethers";
+import { getEthereum, getMetaMaskSDKProvider } from "@/lib/ethers";
 import { BOT_CHAIN, switchToBotChain } from "@/lib/network";
 
 interface WalletState {
@@ -83,10 +83,18 @@ export function useWallet() {
   }, []);
 
   const connect = useCallback(async () => {
-    const ethereum = getEthereum();
+    let ethereum = getEthereum();
     if (!ethereum) {
-      setGlobalState({ error: "MetaMask not found. Install it to use Velora." });
-      return;
+      ethereum = await getMetaMaskSDKProvider();
+      if (!ethereum) {
+        setGlobalState({
+          error:
+            "MetaMask not found. Install the MetaMask extension, or open this app on a device with MetaMask.",
+        });
+        return;
+      }
+      ethereum.on?.("accountsChanged", performRefresh);
+      ethereum.on?.("chainChanged", performRefresh);
     }
     setGlobalState({ isConnecting: true, error: null });
     try {

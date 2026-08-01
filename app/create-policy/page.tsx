@@ -18,7 +18,7 @@ import { useWallet } from "@/hooks/useWallet";
 import { useVeloraContract } from "@/hooks/useVeloraContract";
 
 const FEE_BPS = 100n;
-const MIN_THRESHOLD_WEI = 100000000000000000n;
+const MIN_THRESHOLD_WEI = 100000000000000n;
 
 function calcRequiredBudgetWei(amountBot: string, maxExec: number): bigint {
   try {

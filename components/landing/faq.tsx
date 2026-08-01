@@ -18,8 +18,8 @@ const faqs = [
     a: "No — policies are immutable by design. You can cancel a policy and withdraw the remaining budget, then create a new one.",
   },
   {
-    q: "Is the 'AI Agent' in this demo a real model?",
-    a: "For the hackathon build, the Simulation page stands in for an agent SDK — it sends the same executeRequest() call a real agent integration would. The trust model and validation are fully real; the caller is simulated.",
+    q: "Is the 'AI agent' real?",
+    a: "Yes. Velora ships a real autonomous agent — it holds its own gas-only wallet, scans your active policies, asks Gemini whether to act, and submits the executeRequest() call. Even then, the contract alone decides: the AI's \"yes\" can still be rejected on-chain. The Simulation page replays the same calls from the browser so you can test rules without the agent.",
   },
   {
     q: "What chain does this run on?",

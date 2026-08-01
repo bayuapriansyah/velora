@@ -154,7 +154,7 @@ export function Solution() {
                   </div>
                   
                   <div className="flex justify-between items-center pt-1 md:pt-2">
-                    <span className="text-ink truncate">1. Check Signature</span>
+                    <span className="text-ink truncate">1. Policy Active</span>
                     <motion.div variants={pulseTick} custom={0} initial="hidden" animate="visible" className="shrink-0 ml-2">
                       <ShieldCheck size={12} className="text-approved md:w-3.5 md:h-3.5" />
                     </motion.div>
@@ -162,7 +162,7 @@ export function Solution() {
                   <div className="w-full h-px bg-hairline/50" />
                   
                   <div className="flex justify-between items-center">
-                    <span className="text-ink truncate">2. Verify Budget</span>
+                    <span className="text-ink truncate">2. Destination &amp; Action</span>
                     <motion.div variants={pulseTick} custom={1} initial="hidden" animate="visible" className="shrink-0 ml-2">
                       <ShieldCheck size={12} className="text-approved md:w-3.5 md:h-3.5" />
                     </motion.div>
@@ -170,7 +170,7 @@ export function Solution() {
                   <div className="w-full h-px bg-hairline/50" />
                   
                   <div className="flex justify-between items-center">
-                    <span className="text-ink truncate">3. Enforce Limits</span>
+                    <span className="text-ink truncate">3. Budget &amp; Limits</span>
                     <motion.div variants={pulseTick} custom={2} initial="hidden" animate="visible" className="shrink-0 ml-2">
                       <ShieldCheck size={12} className="text-approved md:w-3.5 md:h-3.5" />
                     </motion.div>

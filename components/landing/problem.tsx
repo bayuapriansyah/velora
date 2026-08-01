@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { color, motion } from "framer-motion";
 import { ShieldAlert, Bot, Key, User, ArrowRight, XCircle, Clock } from "lucide-react";
 
 export function Problem() {
@@ -81,7 +81,7 @@ export function Problem() {
               </div>
             </div>
 
-            <p className="text-sm md:text-base leading-relaxed mb-6" style={{ color: '#5a5a5cff' }}>
+            <p className="text-sm md:text-base leading-relaxed mb-6" style={{ color: '#9a9aa2' }}>
               Hand the agent your private key or a session with unlimited spend. You get full automation, but one bug or prompt injection empties your wallet.
             </p>
             <div className="flex items-center gap-2 text-sm font-medium text-red-500/80">
@@ -137,7 +137,7 @@ export function Problem() {
               </div>
             </div>
 
-            <p className="text-sm md:text-base leading-relaxed mb-6" style={{ color: '#5a5a5cff' }}>
+            <p className="text-sm md:text-base leading-relaxed mb-6" style={{ color: '#9a9aa2' }}>
               Confirm every single transaction yourself in MetaMask. You get total security, but it's exactly the babysitting automation was supposed to remove.
             </p>
             <div className="flex items-center gap-2 text-sm font-medium text-accent/80">

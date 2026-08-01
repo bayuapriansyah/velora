@@ -33,6 +33,47 @@ const REJECT_REASON_LABELS = [
   "PaymentNotDue",
 ];
 
+function loadAgentEnv(): Record<string, string> {
+  const fromProcess: Record<string, string | undefined> = {
+    RPC_URL: process.env.RPC_URL,
+    CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS,
+    AGENT_PRIVATE_KEY: process.env.AGENT_PRIVATE_KEY,
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+  };
+  if (Object.values(fromProcess).every(Boolean)) {
+    return fromProcess as Record<string, string>;
+  }
+  try {
+    return dotenv.parse(readFileSync(join(process.cwd(), "agent", ".env")));
+  } catch {
+    return {};
+  }
+}
+
+function toFriendlyError(err: any): string {
+  const raw = String(err?.message ?? err ?? "");
+  if (/insufficient funds/i.test(raw)) {
+    return "Agent wallet has insufficient BOT for gas — top it up via Fund gas.";
+  }
+  if (/insufficient balance/i.test(raw)) {
+    return "Agent wallet has insufficient BOT for gas — top it up via Fund gas.";
+  }
+  if (/execution reverted/i.test(raw)) {
+    const short = typeof err?.shortMessage === "string" ? err.shortMessage : "";
+    return short || "Execution reverted by the contract — see agent logs.";
+  }
+  if (/nonce too low/i.test(raw)) {
+    return "Transaction nonce conflict — run the cycle again.";
+  }
+  if (/replaced/i.test(raw)) {
+    return "Transaction was replaced — check status and retry.";
+  }
+  if (/already known|already imported/i.test(raw)) {
+    return "Transaction already submitted — check status.";
+  }
+  return "Execution failed — see agent logs.";
+}
+
 export async function POST(request: Request) {
   const logs: string[] = [];
   const policies: AgentPolicyResult[] = [];
@@ -45,10 +86,9 @@ export async function POST(request: Request) {
   };
 
   try {
-    await request.json().catch(() => ({}));
+    const body = await request.json().catch(() => ({}));
 
-    const envPath = join(process.cwd(), "agent", ".env");
-    const envConfig = dotenv.parse(readFileSync(envPath));
+    const envConfig = loadAgentEnv();
 
     const {
       RPC_URL,
@@ -57,15 +97,26 @@ export async function POST(request: Request) {
       GEMINI_API_KEY,
     } = envConfig;
 
-    if (!RPC_URL || !CONTRACT_ADDRESS || !AGENT_PRIVATE_KEY || !GEMINI_API_KEY) {
-      throw new Error("Missing required environment variables in agent/.env");
+    if (!RPC_URL || !AGENT_PRIVATE_KEY || !GEMINI_API_KEY) {
+      throw new Error("Missing required environment variables (process.env or agent/.env)");
+    }
+
+    const isValidAddress = (a: any): a is string =>
+      typeof a === "string" && /^0x[a-fA-F0-9]{40}$/.test(a.trim());
+
+    const contractAddress = isValidAddress(body?.contractAddress)
+      ? body.contractAddress.trim()
+      : CONTRACT_ADDRESS;
+
+    if (!contractAddress) {
+      throw new Error("Missing contract address: set CONTRACT_ADDRESS env or pass contractAddress in the request body.");
     }
 
     const ABI = JSON.parse(readFileSync(join(process.cwd(), "agent", "abi.json"), "utf-8"));
 
     const provider = new ethers.JsonRpcProvider(RPC_URL);
     const wallet = new ethers.Wallet(AGENT_PRIVATE_KEY, provider);
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, wallet);
+    const contract = new ethers.Contract(contractAddress, ABI, wallet);
     const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
 
@@ -205,7 +256,7 @@ Respond with ONLY a JSON object, no markdown, no explanation outside the JSON:
         const iface = new ethers.Interface(ABI);
         const data = iface.encodeFunctionData("executeRequest", [policyId, amountWei, p.allowedDestination, Number(p.allowedAction)]);
         const tx = await wallet.sendTransaction({
-          to: CONTRACT_ADDRESS,
+          to: contractAddress,
           data,
           gasLimit: 300000,
         });
@@ -231,9 +282,10 @@ Respond with ONLY a JSON object, no markdown, no explanation outside the JSON:
           }
         }
       } catch (execErr: any) {
+        const raw = execErr?.message || String(execErr);
         policyResult.result = "error";
-        policyResult.error = execErr.message || String(execErr);
-        log(`Failed to execute request for Policy #${policyId}:`, policyResult.error);
+        policyResult.error = toFriendlyError(execErr);
+        log(`Failed to execute request for Policy #${policyId}:`, raw);
       }
 
       policyId++;

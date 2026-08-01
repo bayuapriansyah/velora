@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Policy, PolicyStatus, STATUS_LABELS, ACTION_LABELS } from "@/types/policy";
 import { formatBot, truncateAddress, formatTimestamp } from "@/lib/format";
+import { botScanLink } from "@/lib/network";
 import {
   Ban,
   WalletCards,
@@ -104,11 +105,11 @@ export function PolicyTable({ policies, onCancel, onWithdraw, busyId }: PolicyTa
   if (policies.length === 0) {
     return (
       <div className="col-span-12">
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--color-rule)] bg-[var(--color-paper-2)] py-16">
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dnashed border-[var(--color-rule)] bg-[var(--color-paper-2)] py-16">
           <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
             <Box size={22} />
           </span>
-          <p className="mt-4 text-base font-semibold text-[var(--color-ink)]">No policies yet</p>
+          <p className="mt-4 text-base font-semibold" style={{ color : '#fff' }}>No policies yet</p>
           <p className="mt-1 text-sm text-[var(--color-muted)]">
             Create a policy to start authorizing agent requests.
           </p>
@@ -391,7 +392,7 @@ export function PolicyTable({ policies, onCancel, onWithdraw, busyId }: PolicyTa
                               <div className="flex justify-between items-center">
                                 <span className="text-[var(--color-muted)]">Destination</span>
                                 <a
-                                  href={`https://scan.bohr.life/address/${p.allowedDestination}`}
+                                  href={botScanLink(`address/${p.allowedDestination}`)}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="flex items-center gap-1 font-mono text-[var(--color-accent)] hover:underline"

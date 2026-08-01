@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import type { ActivityEvent } from "@/types/policy";
 import { truncateAddress } from "@/lib/format";
+import { botScanLink } from "@/lib/network";
 import { Badge } from "@/components/ui/badge";
 import { Pagination } from "@/components/ui/pagination";
 import { useState } from "react";
@@ -139,7 +140,7 @@ export function ActivityTimeline({ events, approvedCount, rejectedCount }: Activ
                         <div className="mt-1 flex items-center gap-2 text-xs text-[var(--color-muted)]">
                           {e.txHash && (
                             <a
-                              href={`https://scan.bohr.life/tx/${e.txHash}`}
+                              href={botScanLink(`tx/${e.txHash}`)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 rounded-md bg-[var(--color-paper)] px-2 py-0.5 font-mono text-[11px] text-[var(--color-accent)] transition-colors hover:bg-[var(--color-accent-soft)]"

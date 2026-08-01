@@ -108,7 +108,7 @@ export function HowItWorks() {
                       </div>
                       <h3 className="text-lg md:text-xl font-medium text-ink mb-2">Connect to BOT Chain</h3>
                       <p className="text-xs md:text-sm text-muted mb-6 md:mb-8">Authenticate with MetaMask to begin.</p>
-                      <button className="w-full h-10 md:h-12 bg-accent hover:bg-accent-hover text-white rounded-xl text-sm md:text-base font-medium transition-colors shadow-md shadow-accent/20">
+                      <button className="w-full h-10 md:h-12 bg-accent hover:bg-accent-hover rounded-xl text-sm md:text-base font-medium transition-colors shadow-md shadow-accent/20" style={{ color : '#ffffff' }}>
                         Connect Wallet
                       </button>
                     </motion.div>
@@ -134,7 +134,7 @@ export function HowItWorks() {
                           </div>
                         </div>
                       </div>
-                      <button className="w-full h-10 md:h-12 bg-accent text-white text-sm md:text-base rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+                      <button className="w-full h-10 md:h-12 bg-accent text-sm md:text-base rounded-xl font-medium transition-colors flex items-center justify-center gap-2" style={{ color : '#ffffff' }}>
                         Sign Tx <ChevronRight size={16} />
                       </button>
                     </motion.div>

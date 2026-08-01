@@ -22,6 +22,7 @@ Open **`/agent`** in your browser. You'll see:
 - A **Run Cycle** button — click it to trigger one evaluation cycle
 - Live log output showing Gemini's decision and the contract's response
 - Per-policy results: ✅ Approved / ❌ Rejected / ⏭️ Skipped / ⚠️ Error
+- The agent wallet address (derived from `AGENT_PRIVATE_KEY`) and its BOT balance are shown on the **Dashboard** — top it up with **Fund gas** (~0.002 BOT) before running a cycle
 
 No terminal, no setup. Just open the page and click.
 
@@ -40,8 +41,8 @@ npm start        # runs forever, checking periodically
 
 | Variable | Required | Description |
 |---|---|---|
-| `RPC_URL` | ✅ | BOT Chain RPC (`https://rpc.bohr.life`) |
-| `CONTRACT_ADDRESS` | ✅ | Deployed Velora.sol address |
+| `RPC_URL` | ✅ | BOT Chain RPC (`https://rpc.botchain.ai`) |
+| `CONTRACT_ADDRESS` | ⚠️ | Only needed for the **standalone script**. The web app can be pointed at any deployed contract via **Settings → Contract** in the UI (empty = default `0xcaE9…ddFe`). |
 | `AGENT_PRIVATE_KEY` | ✅ | Agent wallet private key (gas only — fund it with a small amount of BOT) |
 | `GEMINI_API_KEY` | ✅ | Free key from [Google AI Studio](https://aistudio.google.com/app/apikey) |
 
