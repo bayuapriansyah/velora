@@ -13,6 +13,11 @@ interface WalletState {
   error: string | null;
 }
 
+function isMobileDevice(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
 let globalState: WalletState = {
   account: null,
   chainId: null,
@@ -85,6 +90,11 @@ export function useWallet() {
   const connect = useCallback(async () => {
     let ethereum = getEthereum();
     if (!ethereum) {
+      if (isMobileDevice()) {
+        localStorage.setItem("velora_auto_connect", "1");
+        window.location.href = `https://metamask.app.link/dapp/${window.location.host}`;
+        return;
+      }
       ethereum = await getMetaMaskSDKProvider();
       if (!ethereum) {
         setGlobalState({
@@ -111,6 +121,14 @@ export function useWallet() {
       setGlobalState({ isConnecting: false });
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (localStorage.getItem("velora_auto_connect") === "1") {
+      localStorage.removeItem("velora_auto_connect");
+      if (getEthereum()) connect();
+    }
+  }, [connect]);
 
   const disconnect = useCallback(() => {
     if (typeof window !== "undefined") {
