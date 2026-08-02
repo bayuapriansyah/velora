@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import { ArrowRight, ShieldCheck, Activity, Key, Cpu, Zap, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -26,7 +26,7 @@ const Glow = ({ className }: { className?: string }) => {
   const mobile = useIsMobile();
 
   return (
-    <motion.div
+    <m.div
       animate={
         reduce
           ? { scale: 1, opacity: 0.24 }
@@ -55,7 +55,7 @@ export function Hero() {
         
         {/* Left Column: Editorial Typography & Copy */}
         <div className="lg:col-span-6 flex flex-col items-start text-left">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -63,9 +63,9 @@ export function Hero() {
             <span className="mb-6 md:mb-8 inline-flex items-center gap-2 rounded-full bg-surface/80 border border-hairline px-4 py-1.5 text-[11px] font-semibold tracking-widest text-muted backdrop-blur-xl uppercase shadow-sm">
               <ShieldCheck size={14} className="text-accent" /> Built for BOT Chain
             </span>
-          </motion.div>
+          </m.div>
           
-          <motion.h1 
+          <m.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
@@ -73,9 +73,9 @@ export function Hero() {
           >
             Delegate tasks,<br />
             <span className="text-muted/80 italic font-serif tracking-tight">not your wallet.</span>
-          </motion.h1>
+          </m.h1>
           
-          <motion.p 
+          <m.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
@@ -84,9 +84,9 @@ export function Hero() {
             Safely authorize AI agents through programmable blockchain policies. Your
             private key stays yours — a smart contract independently validates what an agent
             is allowed to do.
-          </motion.p>
+          </m.p>
           
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
@@ -98,7 +98,7 @@ export function Hero() {
                 <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-          </motion.div>
+          </m.div>
         </div>
 
         {/* Right Column: Complex Asymmetric Composition */}
@@ -106,7 +106,7 @@ export function Hero() {
           
           <div className="absolute inset-0 origin-top-left sm:origin-top lg:origin-center scale-[0.65] sm:scale-75 lg:scale-100 w-[500px] lg:w-full">
             {/* Animated Dashboard Preview (Back Layer) */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, x: 40, rotateY: -10, rotateX: 5 }}
               animate={{ opacity: 1, x: 0, rotateY: -15, rotateX: 5 }}
               transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
@@ -138,7 +138,7 @@ export function Hero() {
                 
                 <div className="space-y-3">
                   {[1, 2, 3].map((i) => (
-                    <motion.div 
+                    <m.div 
                       key={i}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -153,14 +153,14 @@ export function Hero() {
                         <div className="h-2 w-16 bg-muted/10 rounded-full" />
                       </div>
                       <div className="text-xs font-mono text-muted">{i * 2.5}s ago</div>
-                    </motion.div>
+                    </m.div>
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Animated Blockchain Policy Flow (Front Layer) */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 40, x: -40 }}
               animate={{ opacity: 1, y: 0, x: -40 }}
               transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
@@ -174,7 +174,7 @@ export function Hero() {
               <div className="relative">
                 {/* Animated connection line */}
                   <div className="absolute left-[27px] top-6 bottom-6 w-0.5 bg-hairline overflow-hidden">
-                  <motion.div 
+                  <m.div 
                     animate={{ y: [0, 144] }}
                     transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
                     className="absolute top-0 w-full h-12 bg-gradient-to-b from-transparent via-accent to-transparent"
@@ -220,7 +220,7 @@ export function Hero() {
 
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           </div>
 
         </div>

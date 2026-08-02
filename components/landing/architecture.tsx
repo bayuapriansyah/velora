@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { User, Cpu, Database, ShieldCheck, LifeBuoy } from "lucide-react";
 
 type Layer = {
@@ -78,15 +78,15 @@ export function Architecture() {
     <section className="px-6 py-20 md:py-32 border-y border-hairline bg-black/25 backdrop-blur-[3px]">
       <div className="mx-auto max-w-5xl">
         <div className="mb-12 md:mb-16 max-w-2xl">
-          <motion.span
+          <m.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-[10px] md:text-[11px] font-semibold tracking-widest text-muted uppercase"
           >
             System Architecture
-          </motion.span>
-          <motion.h2
+          </m.span>
+          <m.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -94,8 +94,8 @@ export function Architecture() {
             className="mt-4 md:mt-6 text-3xl font-semibold tracking-tight text-ink md:text-5xl"
           >
             Five layers. One source of truth.
-          </motion.h2>
-          <motion.p
+          </m.h2>
+          <m.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -105,13 +105,13 @@ export function Architecture() {
             Every layer exists to enforce one idea: the contract is the only
             authority. The frontend and the agent can request, but only
             Velora.sol decides.
-          </motion.p>
+          </m.p>
         </div>
 
         <div className="relative">
           {LAYERS.map(({ id, label, title, icon: Icon, role, chips, tag, tone }, i) => (
             <div key={id}>
-              <motion.div
+              <m.div
                 custom={i}
                 initial="hidden"
                 whileInView="visible"
@@ -168,7 +168,7 @@ export function Architecture() {
                     ))}
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
 
               {i < LAYERS.length - 1 && (
                 <div className="ml-[20px] h-5 w-px bg-hairline" aria-hidden="true" />

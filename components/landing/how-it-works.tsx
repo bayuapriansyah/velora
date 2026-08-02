@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Wallet, Settings, Activity, CheckCircle2, XCircle, LogOut, ChevronRight, ArrowRight } from "lucide-react";
 
 const steps = [
@@ -23,15 +23,15 @@ export function HowItWorks() {
       
       <div className="relative mx-auto max-w-7xl">
         <div className="mb-12 md:mb-16 text-center max-w-2xl mx-auto">
-          <motion.h2 
+          <m.h2 
             initial={{ y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-3xl font-semibold tracking-tight text-ink md:text-5xl mb-4"
           >
             The whole loop, in under 5 minutes.
-          </motion.h2>
-          <motion.p 
+          </m.h2>
+          <m.p 
             initial={{ y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -39,7 +39,7 @@ export function HowItWorks() {
             className="text-base md:text-lg text-muted font-normal leading-relaxed"
           >
             Click through the lifecycle to see exactly how state changes on-chain.
-          </motion.p>
+          </m.p>
         </div>
         
         {/* Changed layout for mobile: Interactive UI Preview on top, Timeline below */}
@@ -65,13 +65,13 @@ export function HowItWorks() {
                     <div>
                       <h3 className={`text-sm md:text-base !text-ink font-medium transition-colors ${isActive ? '!text-ink' : 'text-muted group-hover:text-ink'}`}>{s.title}</h3>
                       {isActive && (
-                        <motion.p 
+                        <m.p 
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
                           className="mt-1 md:mt-2 text-xs md:text-sm leading-relaxed text-muted"
                         >
                           {s.detail}
-                        </motion.p>
+                        </m.p>
                       )}
                     </div>
                   </button>
@@ -102,7 +102,7 @@ export function HowItWorks() {
                   
                   {/* Step 1: Connect Wallet */}
                   {activeStep === 1 && (
-                    <motion.div key="step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="text-center w-full max-w-sm">
+                    <m.div key="step1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="text-center w-full max-w-sm">
                       <div className="w-16 h-16 md:w-20 md:h-20 mx-auto bg-base border border-hairline rounded-full flex items-center justify-center mb-4 md:mb-6 shadow-sm">
                         <Wallet size={24} className="md:w-8 md:h-8 text-muted" />
                       </div>
@@ -111,12 +111,12 @@ export function HowItWorks() {
                       <button className="w-full h-10 md:h-12 bg-accent hover:bg-accent-hover rounded-xl text-sm md:text-base font-medium transition-colors shadow-md shadow-accent/20" style={{ color : '#ffffff' }}>
                         Connect Wallet
                       </button>
-                    </motion.div>
+                    </m.div>
                   )}
 
                   {/* Step 2: Create Policy */}
                   {activeStep === 2 && (
-                    <motion.div key="step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-md bg-base rounded-2xl border border-hairline p-5 md:p-6 shadow-sm">
+                    <m.div key="step2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-md bg-base rounded-2xl border border-hairline p-5 md:p-6 shadow-sm">
                       <h3 className="text-base md:text-lg font-medium text-ink mb-4 md:mb-6 border-b border-hairline pb-3 md:pb-4">Create New Policy</h3>
                       <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
                         <div>
@@ -137,12 +137,12 @@ export function HowItWorks() {
                       <button className="w-full h-10 md:h-12 bg-accent text-sm md:text-base rounded-xl font-medium transition-colors flex items-center justify-center gap-2" style={{ color : '#ffffff' }}>
                         Sign Tx <ChevronRight size={16} />
                       </button>
-                    </motion.div>
+                    </m.div>
                   )}
 
                   {/* Step 3: Policy Active */}
                   {activeStep === 3 && (
-                    <motion.div key="step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-md">
+                    <m.div key="step3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-md">
                       <div className="bg-base rounded-2xl border border-hairline p-5 md:p-6 shadow-sm relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1 bg-approved" />
                         <div className="flex justify-between items-start mb-6 md:mb-8">
@@ -159,12 +159,12 @@ export function HowItWorks() {
                           <div className="text-2xl md:text-3xl font-mono text-ink">10.00 <span className="text-xs md:text-sm text-muted">BOT</span></div>
                         </div>
                       </div>
-                    </motion.div>
+                    </m.div>
                   )}
 
                   {/* Step 4: Valid Request */}
                   {activeStep === 4 && (
-                    <motion.div key="step4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-lg space-y-3 md:space-y-4">
+                    <m.div key="step4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-lg space-y-3 md:space-y-4">
                       {/* Terminal execution */}
                       <div className="bg-base rounded-xl p-3 md:p-4 font-mono text-[10px] md:text-xs shadow-xl">
                         <div className="text-white/55 mb-1.5 md:mb-2">// AI Agent executes transaction</div>
@@ -187,12 +187,12 @@ export function HowItWorks() {
                           <div className="text-xs md:text-sm font-mono text-ink">1 / 3</div>
                         </div>
                       </div>
-                    </motion.div>
+                    </m.div>
                   )}
 
                   {/* Step 5: Invalid Request */}
                   {activeStep === 5 && (
-                    <motion.div key="step5" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-lg space-y-3 md:space-y-4">
+                    <m.div key="step5" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-lg space-y-3 md:space-y-4">
                       {/* Terminal execution */}
                       <div className="bg-base rounded-xl p-3 md:p-4 font-mono text-[10px] md:text-xs shadow-xl">
                         <div className="text-white/55 mb-1.5 md:mb-2">// AI Agent executes oversized transaction</div>
@@ -211,12 +211,12 @@ export function HowItWorks() {
                           <div className="text-xs md:text-sm font-mono text-ink">1 / 3</div>
                         </div>
                       </div>
-                    </motion.div>
+                    </m.div>
                   )}
 
                   {/* Step 6: Cancelled */}
                   {activeStep === 6 && (
-                    <motion.div key="step6" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-md">
+                    <m.div key="step6" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-md">
                       <div className="bg-base rounded-2xl border border-hairline p-5 md:p-6 shadow-sm relative overflow-hidden border-muted/30">
                         <div className="absolute top-0 left-0 w-full h-1 bg-accent" />
                         <div className="flex justify-between items-start mb-6 md:mb-8">
@@ -239,7 +239,7 @@ export function HowItWorks() {
                           </div>
                         </div>
                       </div>
-                    </motion.div>
+                    </m.div>
                   )}
 
                 </AnimatePresence>

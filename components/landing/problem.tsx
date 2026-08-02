@@ -1,6 +1,6 @@
 "use client";
 
-import { color, motion } from "framer-motion";
+import { m } from "framer-motion";
 import { ShieldAlert, Bot, Key, User, ArrowRight, XCircle, Clock } from "lucide-react";
 
 export function Problem() {
@@ -11,15 +11,15 @@ export function Problem() {
 
       <div className="relative z-10 mx-auto max-w-6xl">
         <div className="mb-16 md:mb-20 text-center max-w-2xl mx-auto">
-          <motion.h2 
+          <m.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-3xl md:text-5xl font-medium tracking-tight text-ink mb-6"
           >
             The current tradeoff is broken.
-          </motion.h2>
-          <motion.p
+          </m.h2>
+          <m.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -27,14 +27,14 @@ export function Problem() {
             className="text-base md:text-lg text-muted"
           >
             Today's AI agents force you to choose between security and automation.
-          </motion.p>
+          </m.p>
         </div>
 
         {/* Visual Comparison Diagram */}
         <div className="grid lg:grid-cols-2 gap-6 md:gap-12 relative">
           
           {/* Option A: Full Access (High Risk) */}
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -87,10 +87,10 @@ export function Problem() {
             <div className="flex items-center gap-2 text-sm font-medium text-red-500/80">
               <XCircle size={16} /> Zero Security
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Option B: Manual Approval (High Friction) */}
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -143,7 +143,7 @@ export function Problem() {
             <div className="flex items-center gap-2 text-sm font-medium text-accent/80">
               <XCircle size={16} /> Zero Automation
             </div>
-          </motion.div>
+          </m.div>
 
         </div>
       </div>

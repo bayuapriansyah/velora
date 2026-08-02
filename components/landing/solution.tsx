@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Wallet, Bot, Database, CheckCircle2, XCircle, ArrowRight, ShieldCheck, Lock } from "lucide-react";
 
 const fadeUp = {
@@ -26,24 +26,24 @@ export function Solution() {
     <section className="px-6 py-20 md:py-32 border-y border-hairline overflow-hidden bg-black/35 backdrop-blur-md">
       <div className="mx-auto max-w-6xl">
         <div className="mb-16 md:mb-20 max-w-2xl text-center mx-auto">
-          <motion.span 
+          <m.span 
             variants={fadeUp} custom={0} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="text-[10px] md:text-[11px] font-semibold tracking-widest text-muted uppercase"
           >
             The Architecture
-          </motion.span>
-          <motion.h2 
+          </m.span>
+          <m.h2 
             variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="mt-4 md:mt-6 text-3xl font-semibold tracking-tight text-ink md:text-5xl"
           >
             An impenetrable policy layer.
-          </motion.h2>
-          <motion.p
+          </m.h2>
+          <m.p
             variants={fadeUp} custom={2} initial="hidden" whileInView="visible" viewport={{ once: true }}
             className="mt-4 md:mt-6 text-base md:text-lg text-muted max-w-xl mx-auto leading-relaxed"
           >
             Your wallet is completely isolated from the agent. The smart contract holds the budget, enforces your rules, and has the final say.
-          </motion.p>
+          </m.p>
         </div>
         
         {/* The Policy Engine Diagram */}
@@ -57,7 +57,7 @@ export function Solution() {
             <div className="flex flex-row justify-between w-full max-w-3xl gap-4 md:gap-0 relative">
               
               {/* Wallet & Policy Creation */}
-              <motion.div variants={fadeUp} custom={3} initial="hidden" whileInView="visible" viewport={{ once: true }} className="flex flex-col items-center z-20 relative w-1/2 md:w-48">
+              <m.div variants={fadeUp} custom={3} initial="hidden" whileInView="visible" viewport={{ once: true }} className="flex flex-col items-center z-20 relative w-1/2 md:w-48">
                 <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-surface border border-hairline flex items-center justify-center shadow-sm mb-3 md:mb-4">
                   <Wallet size={20} className="text-ink md:w-6 md:h-6" />
                 </div>
@@ -65,7 +65,7 @@ export function Solution() {
                   <h3 className="text-sm md:text-base font-semibold text-ink truncate">1. You (Wallet)</h3>
                   <p className="text-[10px] md:text-xs text-muted mt-1 leading-relaxed hidden md:block">Deposit funds & define the exact rules on-chain.</p>
                 </div>
-              </motion.div>
+              </m.div>
 
               {/* Connecting Line from Wallet to Contract */}
               <div className="hidden md:block absolute top-8 left-[100px] right-1/2 -z-10">
@@ -73,7 +73,7 @@ export function Solution() {
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-base px-2 text-[10px] uppercase tracking-widest text-muted font-mono">
                     Create Policy
                   </div>
-                  <motion.div 
+                  <m.div 
                     className="absolute top-[-4px] left-0 w-2 h-2 rounded-full bg-ink"
                     animate={{ x: [0, 260] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
@@ -86,7 +86,7 @@ export function Solution() {
               <div className="md:hidden absolute top-[48px] right-1/4 w-[1px] h-12 border-l border-dashed border-accent/30 -z-10" />
 
               {/* AI Agent Request */}
-              <motion.div variants={fadeUp} custom={4} initial="hidden" whileInView="visible" viewport={{ once: true }} className="flex flex-col items-center z-20 relative w-1/2 md:w-48">
+              <m.div variants={fadeUp} custom={4} initial="hidden" whileInView="visible" viewport={{ once: true }} className="flex flex-col items-center z-20 relative w-1/2 md:w-48">
                 <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-surface border border-hairline flex items-center justify-center shadow-sm mb-3 md:mb-4 relative">
                   {/* Warning label to emphasize isolation */}
                   <div className="absolute -top-3 md:-right-6 bg-rejected/10 border border-rejected/20 text-rejected text-[8px] md:text-[9px] font-bold uppercase px-1.5 md:px-2 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap">
@@ -98,7 +98,7 @@ export function Solution() {
                   <h3 className="text-sm md:text-base font-semibold text-ink truncate">2. AI Agent</h3>
                   <p className="text-[10px] md:text-xs text-muted mt-1 leading-relaxed hidden md:block">Submits execution requests to the contract.</p>
                 </div>
-              </motion.div>
+              </m.div>
 
               {/* Connecting Line from Agent to Contract */}
               <div className="hidden md:block absolute top-8 left-1/2 right-[100px] -z-10">
@@ -106,7 +106,7 @@ export function Solution() {
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-base px-2 text-[10px] uppercase tracking-widest text-accent font-mono">
                     Request Execution
                   </div>
-                  <motion.div 
+                  <m.div 
                     className="absolute top-[-4px] right-0 w-2 h-2 rounded-full bg-accent"
                     animate={{ x: [0, -260] }}
                     transition={{ duration: 3, delay: 1.5, repeat: Infinity, ease: "linear" }}
@@ -124,7 +124,7 @@ export function Solution() {
             <div className="h-10 md:hidden w-full relative -z-10"></div>
 
             {/* Centerpiece: Velora Policy Engine (Smart Contract) */}
-            <motion.div 
+            <m.div 
               variants={fadeUp} custom={5} initial="hidden" whileInView="visible" viewport={{ once: true }}
               className="relative z-20 group w-full max-w-[280px] md:max-w-md"
             >
@@ -133,7 +133,7 @@ export function Solution() {
               <div className="bg-surface rounded-2xl md:rounded-[24px] border border-accent/50 p-5 md:p-8 shadow-[0_0_30px_-5px_rgba(252,76,2,0.15)] relative overflow-hidden text-center group-hover:border-accent transition-colors duration-500">
                 
                 {/* Scanning Laser Animation */}
-                <motion.div 
+                <m.div 
                   className="absolute top-0 left-0 w-full h-[1px] bg-accent/50 shadow-[0_0_15px_rgba(252,76,2,0.8)]"
                   animate={{ y: [0, 180, 0] }}
                   transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
@@ -155,34 +155,34 @@ export function Solution() {
                   
                   <div className="flex justify-between items-center pt-1 md:pt-2">
                     <span className="text-ink truncate">1. Policy Active</span>
-                    <motion.div variants={pulseTick} custom={0} initial="hidden" animate="visible" className="shrink-0 ml-2">
+                    <m.div variants={pulseTick} custom={0} initial="hidden" animate="visible" className="shrink-0 ml-2">
                       <ShieldCheck size={12} className="text-approved md:w-3.5 md:h-3.5" />
-                    </motion.div>
+                    </m.div>
                   </div>
                   <div className="w-full h-px bg-hairline/50" />
                   
                   <div className="flex justify-between items-center">
                     <span className="text-ink truncate">2. Destination &amp; Action</span>
-                    <motion.div variants={pulseTick} custom={1} initial="hidden" animate="visible" className="shrink-0 ml-2">
+                    <m.div variants={pulseTick} custom={1} initial="hidden" animate="visible" className="shrink-0 ml-2">
                       <ShieldCheck size={12} className="text-approved md:w-3.5 md:h-3.5" />
-                    </motion.div>
+                    </m.div>
                   </div>
                   <div className="w-full h-px bg-hairline/50" />
                   
                   <div className="flex justify-between items-center">
                     <span className="text-ink truncate">3. Budget &amp; Limits</span>
-                    <motion.div variants={pulseTick} custom={2} initial="hidden" animate="visible" className="shrink-0 ml-2">
+                    <m.div variants={pulseTick} custom={2} initial="hidden" animate="visible" className="shrink-0 ml-2">
                       <ShieldCheck size={12} className="text-approved md:w-3.5 md:h-3.5" />
-                    </motion.div>
+                    </m.div>
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Vertical Line down to Execution */}
             <div className="w-full flex justify-center h-8 md:h-12 relative -z-10">
               <div className="w-px h-full border-l border-dashed border-hairline relative">
-                <motion.div 
+                <m.div 
                   className="absolute left-[-4px] top-0 w-2 h-2 rounded-full bg-accent"
                   animate={{ y: [0, 40] }}
                   transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
@@ -191,7 +191,7 @@ export function Solution() {
             </div>
 
             {/* Bottom Row: Validation & Execution */}
-            <motion.div variants={fadeUp} custom={6} initial="hidden" whileInView="visible" viewport={{ once: true }} className="w-full max-w-2xl bg-surface border border-hairline rounded-2xl md:rounded-[24px] relative z-10 overflow-hidden shadow-sm">
+            <m.div variants={fadeUp} custom={6} initial="hidden" whileInView="visible" viewport={{ once: true }} className="w-full max-w-2xl bg-surface border border-hairline rounded-2xl md:rounded-[24px] relative z-10 overflow-hidden shadow-sm">
               <div className="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-hairline">
                 
                 {/* Approved Path */}
@@ -215,7 +215,7 @@ export function Solution() {
                 </div>
 
               </div>
-            </motion.div>
+            </m.div>
 
           </div>
         </div>
