@@ -206,11 +206,11 @@ flowchart TD
 
 | Asset | Link |
 |---|---|
-| **Web App** | https://velora-policies.my.id (alias: `velora-policies.netlify.app`) |
+| **Web App** | https://velora-policies.my.id |
 | **Chain** | BOT Chain Mainnet (Chain ID 677) |
 | **Contract** | `0xcaE9f3569486094b86Fc8b85024050B58815ddFe` — [View on BOTScan](https://scan.botchain.ai/address/0xcaE9f3569486094b86Fc8b85024050B58815ddFe) |
 | **Repository** | https://github.com/bayuapriansyah/velora |
-| **X Post** | TBD — replace with your post URL |
+| **X Post** | https://x.com/bayuzz13/status/2083990186854334467?s=20 |
 
 ---
 
