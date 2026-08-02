@@ -29,9 +29,8 @@ const Glow = ({ className }: { className?: string }) => {
     <m.div
       animate={
         reduce
-          ? { scale: 1, opacity: 0.24 }
+          ? { opacity: 0.24 }
           : {
-              scale: mobile ? [1, 1.03, 1] : [1, 1.1, 1],
               opacity: mobile ? [0.18, 0.28, 0.18] : [0.3, 0.5, 0.3],
             }
       }
@@ -172,14 +171,8 @@ export function Hero() {
               </div>
 
               <div className="relative">
-                {/* Animated connection line */}
-                  <div className="absolute left-[27px] top-6 bottom-6 w-0.5 bg-hairline overflow-hidden">
-                  <m.div 
-                    animate={{ y: [0, 144] }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-                    className="absolute top-0 w-full h-12 bg-gradient-to-b from-transparent via-accent to-transparent"
-                  />
-                </div>
+                {/* Connection line */}
+                <div className="absolute left-[27px] top-6 bottom-6 w-0.5 bg-hairline" />
 
 
                 {/* Nodes */}

@@ -13,10 +13,9 @@ const fadeUp = {
 };
 
 const pulseTick = {
-  hidden: { opacity: 0.3, scale: 0.8 },
+  hidden: { opacity: 0.3 },
   visible: (custom: number) => ({
     opacity: [0.3, 1, 0.3],
-    scale: [0.8, 1.2, 1],
     transition: { delay: custom * 1.5, duration: 1.5, repeat: Infinity }
   })
 };
@@ -73,11 +72,7 @@ export function Solution() {
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-base px-2 text-[10px] uppercase tracking-widest text-muted font-mono">
                     Create Policy
                   </div>
-                  <m.div 
-                    className="absolute top-[-4px] left-0 w-2 h-2 rounded-full bg-ink"
-                    animate={{ x: [0, 260] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                  />
+                  <div className="absolute top-[-4px] left-0 w-2 h-2 rounded-full bg-ink" />
                 </div>
               </div>
 
@@ -106,11 +101,7 @@ export function Solution() {
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-base px-2 text-[10px] uppercase tracking-widest text-accent font-mono">
                     Request Execution
                   </div>
-                  <m.div 
-                    className="absolute top-[-4px] right-0 w-2 h-2 rounded-full bg-accent"
-                    animate={{ x: [0, -260] }}
-                    transition={{ duration: 3, delay: 1.5, repeat: Infinity, ease: "linear" }}
-                  />
+                  <div className="absolute top-[-4px] right-0 w-2 h-2 rounded-full bg-accent" />
                 </div>
               </div>
 
@@ -133,11 +124,7 @@ export function Solution() {
               <div className="bg-surface rounded-2xl md:rounded-[24px] border border-accent/50 p-5 md:p-8 shadow-[0_0_30px_-5px_rgba(252,76,2,0.15)] relative overflow-hidden text-center group-hover:border-accent transition-colors duration-500">
                 
                 {/* Scanning Laser Animation */}
-                <m.div 
-                  className="absolute top-0 left-0 w-full h-[1px] bg-accent/50 shadow-[0_0_15px_rgba(252,76,2,0.8)]"
-                  animate={{ y: [0, 180, 0] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-                />
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-accent/40" />
 
                 <div className="flex items-center justify-center gap-2 md:gap-3 mb-4 md:mb-6">
                   <Database size={24} className="text-accent md:w-7 md:h-7" />
@@ -182,11 +169,7 @@ export function Solution() {
             {/* Vertical Line down to Execution */}
             <div className="w-full flex justify-center h-8 md:h-12 relative -z-10">
               <div className="w-px h-full border-l border-dashed border-hairline relative">
-                <m.div 
-                  className="absolute left-[-4px] top-0 w-2 h-2 rounded-full bg-accent"
-                  animate={{ y: [0, 40] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-                />
+                <div className="absolute left-[-4px] top-0 w-2 h-2 rounded-full bg-accent" />
               </div>
             </div>
 

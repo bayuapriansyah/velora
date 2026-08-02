@@ -189,11 +189,11 @@ body::after {
 @keyframes velora-breathe {
   0%,
   100% {
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0);
     opacity: 0.5;
   }
   50% {
-    transform: translate3d(2.5vw, 1.5vh, 0) scale(1.07);
+    transform: translate3d(2.5vw, 1.5vh, 0);
     opacity: 1;
   }
 }
