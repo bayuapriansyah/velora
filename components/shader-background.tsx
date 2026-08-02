@@ -25,6 +25,22 @@ export function ShaderBackground() {
 
     const isMobile = width < 768;
     const particleCount = isMobile ? 60 : 130;
+    const supportsHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+    const spriteSize = isMobile ? 12 : 14;
+    const particleSprite = document.createElement("canvas");
+    particleSprite.width = spriteSize;
+    particleSprite.height = spriteSize;
+    const spriteCtx = particleSprite.getContext("2d");
+    if (spriteCtx) {
+      const center = spriteSize / 2;
+      const gradient = spriteCtx.createRadialGradient(center, center, 0, center, center, center);
+      gradient.addColorStop(0, "rgba(254,150,140,0.95)");
+      gradient.addColorStop(0.35, "rgba(254,77,71,0.55)");
+      gradient.addColorStop(1, "rgba(254,77,71,0)");
+      spriteCtx.fillStyle = gradient;
+      spriteCtx.fillRect(0, 0, spriteSize, spriteSize);
+    }
 
     const mouse = { x: -9999, y: -9999 };
     let animId: number;
@@ -69,7 +85,9 @@ export function ShaderBackground() {
       cv.height = height;
     };
 
-    window.addEventListener("mousemove", onMouseMove);
+    if (supportsHover) {
+      window.addEventListener("mousemove", onMouseMove);
+    }
     window.addEventListener("resize", onResize);
 
     function drawFrame() {
@@ -102,14 +120,15 @@ export function ShaderBackground() {
         p.vx += Math.cos(angle) * 0.008;
         p.vy += Math.sin(angle) * 0.008;
 
-        // Gentle mouse attraction
-        const dx = mouse.x - p.x;
-        const dy = mouse.y - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 200 && dist > 0) {
-          const force = (200 - dist) / 200;
-          p.vx += (dx / dist) * force * 0.06;
-          p.vy += (dy / dist) * force * 0.06;
+        if (supportsHover) {
+          const dx = mouse.x - p.x;
+          const dy = mouse.y - p.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 200 && dist > 0) {
+            const force = (200 - dist) / 200;
+            p.vx += (dx / dist) * force * 0.06;
+            p.vy += (dy / dist) * force * 0.06;
+          }
         }
 
         p.vx *= 0.97;
@@ -122,28 +141,34 @@ export function ShaderBackground() {
         if (p.y < 0) p.y = height;
         if (p.y > height) p.y = 0;
 
-        // Small tight glow (radius = size * 3.5 max ~5.6px)
         const glowR = p.size * 3.5;
-        const grad = cx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
-        grad.addColorStop(0, `rgba(254,77,71,${p.alpha * 0.7})`);
-        grad.addColorStop(1, "rgba(254,77,71,0)");
-        cx.beginPath();
-        cx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
-        cx.fillStyle = grad;
-        cx.fill();
+        if (spriteCtx) {
+          const drawSize = glowR * 2;
+          cx.globalAlpha = p.alpha;
+          cx.drawImage(particleSprite, p.x - glowR, p.y - glowR, drawSize, drawSize);
+          cx.globalAlpha = 1;
+        } else {
+          cx.beginPath();
+          cx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
+          cx.fillStyle = `rgba(254,77,71,${p.alpha * 0.45})`;
+          cx.fill();
+        }
 
-        // Bright 1-2px core dot
-        cx.beginPath();
-        cx.arc(p.x, p.y, p.size * 0.5, 0, Math.PI * 2);
-        cx.fillStyle = `rgba(254,150,140,${p.alpha})`;
-        cx.fill();
+        if (!isMobile) {
+          cx.beginPath();
+          cx.arc(p.x, p.y, p.size * 0.5, 0, Math.PI * 2);
+          cx.fillStyle = `rgba(254,150,140,${p.alpha})`;
+          cx.fill();
+        }
       }
     }
 
     if (reducedMotion) {
       drawFrame();
       return () => {
-        window.removeEventListener("mousemove", onMouseMove);
+        if (supportsHover) {
+          window.removeEventListener("mousemove", onMouseMove);
+        }
         window.removeEventListener("resize", onResize);
       };
     }
@@ -157,7 +182,9 @@ export function ShaderBackground() {
     loop();
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener("mousemove", onMouseMove);
+      if (supportsHover) {
+        window.removeEventListener("mousemove", onMouseMove);
+      }
       window.removeEventListener("resize", onResize);
     };
   }, []);
