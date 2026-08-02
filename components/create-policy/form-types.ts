@@ -5,9 +5,9 @@ export interface PolicyFormState {
   destination: string;
   action: ActionType;
   expirationHours: number;
-  maxExecutions: number;
+  maxExecutions: string;
   amountPerExecution: string;
-  paymentIntervalDays: number;
+  paymentIntervalDays: string;
   useSeconds: boolean;
 }
 
@@ -16,8 +16,8 @@ export const DEFAULT_FORM_STATE: PolicyFormState = {
   destination: "",
   action: ActionType.Transfer,
   expirationHours: 24,
-  maxExecutions: 3,
+  maxExecutions: "3",
   amountPerExecution: "",
-  paymentIntervalDays: 30,
+  paymentIntervalDays: "30",
   useSeconds: false,
 };

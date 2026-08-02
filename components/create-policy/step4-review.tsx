@@ -22,7 +22,7 @@ function calcFee(amountBot: string, maxExec: number): { feeBot: number; costPerE
 }
 
 export function Step4Review({ form }: { form: PolicyFormState }) {
-  const { feeBot, costPerExecBot, requiredBudgetBot } = calcFee(form.amountPerExecution, form.maxExecutions);
+  const { feeBot, costPerExecBot, requiredBudgetBot } = calcFee(form.amountPerExecution, Number(form.maxExecutions));
 
   const rows = [
     { label: "Name", value: form.name || "—" },
@@ -32,7 +32,7 @@ export function Step4Review({ form }: { form: PolicyFormState }) {
     { label: "Cost per execution", value: `${costPerExecBot} BOT` },
     { label: "Destination", value: form.destination ? truncateAddress(form.destination, 6) : "—" },
     { label: "Action", value: ACTION_LABELS[form.action] },
-    { label: "Frequency", value: `Every ${form.paymentIntervalDays} days` },
+    { label: "Frequency", value: form.useSeconds ? `Every ${form.paymentIntervalDays} seconds` : `Every ${form.paymentIntervalDays} days` },
     { label: "Expiration", value: `${form.expirationHours} hours from deployment` },
     { label: "Max executions", value: String(form.maxExecutions) },
   ];
