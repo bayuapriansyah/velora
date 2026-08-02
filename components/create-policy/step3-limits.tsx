@@ -77,10 +77,11 @@ export function Step3Limits({
         <p className="mt-1 text-sm text-[var(--color-muted)]">How often the agent should execute this policy (1 = Daily, 7 = Weekly, 30 = Monthly).</p>
         <input
           type="number"
-          min="1"
+          min="0"
           step="1"
           value={form.paymentIntervalDays}
-          onChange={(e) => onChange({ paymentIntervalDays: Math.max(1, parseInt(e.target.value || "1", 10)) })}
+          onFocus={(e) => e.target.select()}
+          onChange={(e) => onChange({ paymentIntervalDays: parseInt(e.target.value || "0", 10) })}
           placeholder="30"
           className="mt-2 w-full rounded-xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] px-4 py-3 text-sm font-mono text-[var(--color-ink)] outline-none focus-visible:border-[var(--color-accent)]"
         />
@@ -124,10 +125,11 @@ export function Step3Limits({
         <p className="mt-1 text-sm text-[var(--color-muted)]">How many times this policy can be used before it&apos;s exhausted.</p>
         <input
           type="number"
-          min="1"
+          min="0"
           step="1"
           value={form.maxExecutions}
-          onChange={(e) => onChange({ maxExecutions: Math.max(1, parseInt(e.target.value || "1", 10)) })}
+          onFocus={(e) => e.target.select()}
+          onChange={(e) => onChange({ maxExecutions: parseInt(e.target.value || "0", 10) })}
           className="mt-2 w-full rounded-xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] px-4 py-3 text-sm font-mono text-[var(--color-ink)] outline-none focus-visible:border-[var(--color-accent)]"
         />
       </div>

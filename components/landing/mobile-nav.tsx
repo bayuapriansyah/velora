@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { AnimatePresence, motion, MotionConfig } from "framer-motion";
+import { AnimatePresence, m, MotionConfig } from "framer-motion";
 
 const NAV_LINKS = [
   { label: "Home", href: "#" },
@@ -28,7 +28,7 @@ export function MobileNav() {
         <AnimatePresence>
           <Dialog.Portal>
             <Dialog.Overlay asChild forceMount>
-              <motion.div
+              <m.div
                 className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -38,7 +38,7 @@ export function MobileNav() {
             </Dialog.Overlay>
 
             <Dialog.Content asChild forceMount>
-              <motion.div
+              <m.div
                 className="fixed inset-x-0 top-0 z-[70] flex flex-col border-b border-hairline bg-surface/90 px-6 pb-8 pt-24 backdrop-blur-2xl md:hidden"
                 initial={{ opacity: 0, y: -16 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -78,7 +78,7 @@ export function MobileNav() {
                     <X size={18} strokeWidth={2} />
                   </button>
                 </Dialog.Close>
-              </motion.div>
+              </m.div>
             </Dialog.Content>
           </Dialog.Portal>
         </AnimatePresence>

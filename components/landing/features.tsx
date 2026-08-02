@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import {
-  motion,
+  m,
   useScroll,
   useTransform,
   useReducedMotion,
@@ -77,7 +77,7 @@ export function Features() {
 
         <div className="relative z-10 mx-auto max-w-7xl w-full">
           {/* Intro — left aligned */}
-          <motion.div style={s(headerY, headerOp)} className="max-w-3xl">
+          <m.div style={s(headerY, headerOp)} className="max-w-3xl">
             <span className="text-[10px] md:text-[11px] font-semibold tracking-widest text-muted uppercase">
               Capabilities
             </span>
@@ -89,10 +89,10 @@ export function Features() {
               operates strictly within the mathematical limits you set — nothing
               is decided in the browser.
             </p>
-          </motion.div>
+          </m.div>
 
           {/* Featured band — the policy engine */}
-          <motion.div
+          <m.div
             style={s(bandY, bandOp)}
             className="mt-6 md:mt-8 relative overflow-hidden rounded-[24px] md:rounded-[28px] bg-surface border border-hairline shadow-2xl flex flex-col lg:flex-row"
           >
@@ -146,12 +146,12 @@ export function Features() {
                 <Row k="fee" v="1% → SafetyNet" accent />
               </div>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Feature grid */}
           <div className="mt-4 md:mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
             {FEATURES.map(({ icon: Icon, title, desc, chips }, i) => (
-              <motion.div
+              <m.div
                 key={title}
                 style={s(cardStyles[i].y, cardStyles[i].opacity)}
                 className="group relative overflow-hidden rounded-2xl bg-surface border border-hairline p-5 md:p-6 transition-colors duration-300 hover:border-hairline/70"
@@ -179,7 +179,7 @@ export function Features() {
                     </span>
                   ))}
                 </div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useEffect, useState } from "react";
 import { MobileNav } from "./mobile-nav";
 
@@ -22,7 +22,7 @@ export function Nav() {
   }, []);
 
   return (
-    <motion.header
+    <m.header
       initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -89,6 +89,6 @@ export function Nav() {
         </div>
 
       </div>
-    </motion.header>
+    </m.header>
   );
 }
