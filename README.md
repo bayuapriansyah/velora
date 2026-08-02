@@ -275,7 +275,7 @@ This guide walks you through the **full Velora flow** — from an empty wallet t
 2. Go to **Create Policy** and fill in:
    - **Name** — anything, e.g. `Auto-test`
    - **Destination** — your own wallet address (so the payout comes back to you)
-   - **Action** — `Transfer`
+   - **Action** — `Transfer/Send BOT`
    - **Amount per execution** — `0.001 BOT`
    - **Max executions** — `1`
    - **Interval** — `10s`
