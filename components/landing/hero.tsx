@@ -42,7 +42,7 @@ const Glow = ({ className }: { className?: string }) => {
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden pt-32 pb-16 md:pt-44 md:pb-40" id="hero">
+    <section className="relative overflow-hidden pt-32 pb-16 md:pt-28 md:pb-28" id="hero">
       {/* Deep layered atmospheric background */}
       <div className="absolute inset-0 velora-noise opacity-20 mix-blend-overlay -z-10 pointer-events-none" />
       
