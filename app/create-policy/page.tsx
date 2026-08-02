@@ -39,9 +39,11 @@ function validateStep(step: number, form: PolicyFormState): string | null {
   }
   if (step === 3) {
     if (form.expirationHours <= 0) return "Expiration must be in the future.";
-    if (form.maxExecutions <= 0) return "Max executions must be at least 1.";
+    const maxExec = parseInt(form.maxExecutions, 10);
+    if (!Number.isFinite(maxExec) || maxExec <= 0) return "Max executions must be at least 1.";
     if (!form.amountPerExecution || Number(form.amountPerExecution) <= 0) return "Amount per execution must be greater than 0.";
-    if (form.paymentIntervalDays <= 0) return form.useSeconds ? "Payment frequency must be at least 1 second." : "Payment frequency must be at least 1 day.";
+    const interval = parseInt(form.paymentIntervalDays, 10);
+    if (!Number.isFinite(interval) || interval <= 0) return form.useSeconds ? "Payment frequency must be at least 1 second." : "Payment frequency must be at least 1 day.";
   }
   return null;
 }
@@ -86,10 +88,10 @@ export default function CreatePolicyPage() {
         allowedDestination: form.destination,
         allowedAction: form.action,
         expiration: expirationUnix,
-        maxExecutions: form.maxExecutions,
+        maxExecutions: Number(form.maxExecutions),
         amountPerExecution: form.amountPerExecution,
-        paymentInterval: form.useSeconds ? form.paymentIntervalDays : form.paymentIntervalDays * 24 * 3600,
-        depositWei: calcRequiredBudgetWei(form.amountPerExecution, form.maxExecutions),
+        paymentInterval: form.useSeconds ? Number(form.paymentIntervalDays) : Number(form.paymentIntervalDays) * 24 * 3600,
+        depositWei: calcRequiredBudgetWei(form.amountPerExecution, Number(form.maxExecutions)),
       });
       setDeployed(true);
       setTimeout(() => router.push("/dashboard"), 1600);

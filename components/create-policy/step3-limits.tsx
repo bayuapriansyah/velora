@@ -64,7 +64,7 @@ export function Step3Limits({
                 {(() => {
                   const fee = calcFee(form.amountPerExecution);
                   const amount = parseEther(form.amountPerExecution || "0");
-                  const total = (amount + fee) * BigInt(form.maxExecutions);
+                  const total = (amount + fee) * BigInt(parseInt(form.maxExecutions || "0", 10));
                   return Number(total) / 1e18;
                 })()} BOT
               </span>
@@ -81,7 +81,7 @@ export function Step3Limits({
           step="1"
           value={form.paymentIntervalDays}
           onFocus={(e) => e.target.select()}
-          onChange={(e) => onChange({ paymentIntervalDays: parseInt(e.target.value || "0", 10) })}
+          onChange={(e) => onChange({ paymentIntervalDays: e.target.value })}
           placeholder="30"
           className="mt-2 w-full rounded-xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] px-4 py-3 text-sm font-mono text-[var(--color-ink)] outline-none focus-visible:border-[var(--color-accent)]"
         />
@@ -129,7 +129,7 @@ export function Step3Limits({
           step="1"
           value={form.maxExecutions}
           onFocus={(e) => e.target.select()}
-          onChange={(e) => onChange({ maxExecutions: parseInt(e.target.value || "0", 10) })}
+          onChange={(e) => onChange({ maxExecutions: e.target.value })}
           className="mt-2 w-full rounded-xl border border-[var(--color-rule)] bg-[var(--color-paper-2)] px-4 py-3 text-sm font-mono text-[var(--color-ink)] outline-none focus-visible:border-[var(--color-accent)]"
         />
       </div>
