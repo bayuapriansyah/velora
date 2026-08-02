@@ -43,7 +43,7 @@ export function ShaderBackground() {
     }
 
     const mouse = { x: -9999, y: -9999 };
-    let animId: number;
+    let animId: number | undefined;
     let time = 0;
 
     const particles: {
@@ -163,8 +163,10 @@ export function ShaderBackground() {
       }
     }
 
+    // Initial static frame so the canvas is never blank while paused.
+    drawFrame();
+
     if (reducedMotion) {
-      drawFrame();
       return () => {
         if (supportsHover) {
           window.removeEventListener("mousemove", onMouseMove);
@@ -173,15 +175,57 @@ export function ShaderBackground() {
       };
     }
 
-    function loop() {
-      time += 0.002;
-      drawFrame();
-      animId = requestAnimationFrame(loop);
+    // Only animate while the landing hero is on screen and the tab is visible.
+    // The canvas is position:fixed, so pausing when the hero leaves the viewport
+    // (and on any non-landing page) stops the constant rAF repaint.
+    let running = false;
+    let docVisible = !document.hidden;
+    let heroVisible = false;
+
+    const hero = document.getElementById("hero");
+
+    function start() {
+      if (running) return;
+      running = true;
+      const step = () => {
+        time += 0.002;
+        drawFrame();
+        animId = requestAnimationFrame(step);
+      };
+      step();
     }
 
-    loop();
+    function stop() {
+      running = false;
+      if (animId !== undefined) cancelAnimationFrame(animId);
+    }
+
+    function sync() {
+      if (docVisible && heroVisible) start();
+      else stop();
+    }
+
+    const onVisibility = () => {
+      docVisible = !document.hidden;
+      sync();
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        heroVisible = entries.some((e) => e.isIntersecting);
+        sync();
+      },
+      { rootMargin: "30% 0px 30% 0px" }
+    );
+
+    if (hero) io.observe(hero);
+    document.addEventListener("visibilitychange", onVisibility);
+    sync();
+
     return () => {
-      cancelAnimationFrame(animId);
+      stop();
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
       if (supportsHover) {
         window.removeEventListener("mousemove", onMouseMove);
       }
