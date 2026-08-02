@@ -1,21 +1,45 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ShieldCheck, Activity, Key, Cpu, Zap, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+function useIsMobile() {
+  const [mobile, setMobile] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 767px)");
+    const update = () => setMobile(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  return mobile;
+}
+
 // A glowing orb component for the layered background
-const Glow = ({ className }: { className?: string }) => (
-  <motion.div
-    animate={{ 
-      scale: [1, 1.1, 1],
-      opacity: [0.3, 0.5, 0.3],
-    }}
-    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-    className={`absolute rounded-full blur-[100px] pointer-events-none ${className}`}
-  />
-);
+const Glow = ({ className }: { className?: string }) => {
+  const reduce = useReducedMotion();
+  const mobile = useIsMobile();
+
+  return (
+    <motion.div
+      animate={
+        reduce
+          ? { scale: 1, opacity: 0.24 }
+          : {
+              scale: mobile ? [1, 1.03, 1] : [1, 1.1, 1],
+              opacity: mobile ? [0.18, 0.28, 0.18] : [0.3, 0.5, 0.3],
+            }
+      }
+      transition={{ duration: mobile ? 12 : 8, repeat: Infinity, ease: "easeInOut" }}
+      className={`absolute rounded-full blur-3xl md:blur-[100px] pointer-events-none ${className}`}
+    />
+  );
+};
 
 export function Hero() {
   return (
@@ -149,13 +173,14 @@ export function Hero() {
 
               <div className="relative">
                 {/* Animated connection line */}
-                <div className="absolute left-[27px] top-6 bottom-6 w-0.5 bg-hairline">
+                  <div className="absolute left-[27px] top-6 bottom-6 w-0.5 bg-hairline overflow-hidden">
                   <motion.div 
-                    animate={{ top: ["0%", "100%"] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                    className="absolute w-full h-12 bg-gradient-to-b from-transparent via-accent to-transparent"
+                    animate={{ y: [0, 144] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+                    className="absolute top-0 w-full h-12 bg-gradient-to-b from-transparent via-accent to-transparent"
                   />
                 </div>
+
 
                 {/* Nodes */}
                 <div className="space-y-6 relative z-10">

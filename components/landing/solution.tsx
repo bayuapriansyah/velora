@@ -75,8 +75,8 @@ export function Solution() {
                   </div>
                   <motion.div 
                     className="absolute top-[-4px] left-0 w-2 h-2 rounded-full bg-ink"
-                    animate={{ left: ["0%", "100%"] }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+                    animate={{ x: [0, 260] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                   />
                 </div>
               </div>
@@ -108,8 +108,8 @@ export function Solution() {
                   </div>
                   <motion.div 
                     className="absolute top-[-4px] right-0 w-2 h-2 rounded-full bg-accent"
-                    animate={{ right: ["0%", "100%"] }}
-                    transition={{ duration: 2.5, delay: 1.25, repeat: Infinity, ease: "linear" }}
+                    animate={{ x: [0, -260] }}
+                    transition={{ duration: 3, delay: 1.5, repeat: Infinity, ease: "linear" }}
                   />
                 </div>
               </div>
@@ -135,8 +135,8 @@ export function Solution() {
                 {/* Scanning Laser Animation */}
                 <motion.div 
                   className="absolute top-0 left-0 w-full h-[1px] bg-accent/50 shadow-[0_0_15px_rgba(252,76,2,0.8)]"
-                  animate={{ top: ["0%", "100%", "0%"] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                  animate={{ y: [0, 180, 0] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
                 />
 
                 <div className="flex items-center justify-center gap-2 md:gap-3 mb-4 md:mb-6">
@@ -184,8 +184,8 @@ export function Solution() {
               <div className="w-px h-full border-l border-dashed border-hairline relative">
                 <motion.div 
                   className="absolute left-[-4px] top-0 w-2 h-2 rounded-full bg-accent"
-                  animate={{ top: ["0%", "100%"] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  animate={{ y: [0, 40] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
                 />
               </div>
             </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -48,7 +49,7 @@ export function Sidebar() {
     <div className="flex h-full flex-col mx-3">
       <div className="flex h-16 items-center gap-3 border-b border-[var(--color-velora-rule)] px-6">
         <a href="/">
-          <img src="/velora.png" alt="Velora Logo" className="h-10 w-10 rounded-lg shadow-sm scale-[1.5]" />
+          <Image src="/velora.png" alt="Velora Logo" width={80} height={57} sizes="40px" className="h-10 w-10 rounded-lg object-contain shadow-sm scale-[1.5]" />
         </a>
         <div>
           <span className="text-base font-semibold text-xl tracking-tight text-white">Velora</span>

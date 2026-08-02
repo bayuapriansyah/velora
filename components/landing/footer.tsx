@@ -1,4 +1,4 @@
-import { Shield } from "lucide-react";
+import Image from "next/image";
 
 export function Footer() {
   return (
@@ -12,7 +12,7 @@ export function Footer() {
         
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-hairline text-sm text-muted text-center md:text-left">
           <div className="flex items-center gap-2 font-medium text-ink">
-            <img src="/velora.png" alt="Velora Logo" className="h-9 w-9 rounded-xl" />
+            <Image src="/velora.png" alt="Velora Logo" width={72} height={51} sizes="36px" className="h-9 w-9 rounded-xl object-contain" />
             Velora
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">

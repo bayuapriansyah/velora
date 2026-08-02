@@ -1,7 +1,7 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { Shield } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { MobileNav } from "./mobile-nav";
@@ -42,7 +42,7 @@ export function Nav() {
           href="/"
           className="flex items-center gap-2.5 shrink-0 group"
         >
-          <img src="/velora.png" alt="Velora Logo" className="h-12 w-12 rounded-xl shadow-[0_0_14px_#0f0f14]" />
+          <Image src="/velora.png" alt="Velora Logo" width={96} height={68} sizes="48px" className="h-12 w-12 rounded-xl object-contain shadow-[0_0_14px_#0f0f14]" priority />
           <span className="text-base text-xl font-semibold tracking-tight text-ink group-hover:text-accent transition-colors duration-200">
             Velora
           </span>

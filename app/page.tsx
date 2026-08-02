@@ -8,20 +8,23 @@ import { Features } from "@/components/landing/features";
 import { DemoPreview } from "@/components/landing/demo-preview";
 import { Faq } from "@/components/landing/faq";
 import { Footer } from "@/components/landing/footer";
+import { LandingMotionConfig } from "@/components/landing/motion-config";
 
 export default function LandingPage() {
   return (
-    <main>
-      <Nav />
-      <Hero />
-      <Problem />
-      <Solution />
-      <HowItWorks />
-      <Architecture />
-      <Features />
-      <DemoPreview />
-      {/* <Faq /> */}
-      <Footer />
-    </main>
+    <LandingMotionConfig>
+      <main>
+        <Nav />
+        <Hero />
+        <Problem />
+        <Solution />
+        <HowItWorks />
+        <Architecture />
+        <Features />
+        <DemoPreview />
+        {/* <Faq /> */}
+        <Footer />
+      </main>
+    </LandingMotionConfig>
   );
 }

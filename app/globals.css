@@ -207,6 +207,18 @@ body::after {
   }
 }
 
+@media (max-width: 767px) {
+  body::after {
+    animation: none;
+    background-image: none;
+  }
+
+  .velora-aurora__orb {
+    animation: none;
+    filter: blur(30px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
