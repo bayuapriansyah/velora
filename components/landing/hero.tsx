@@ -1,44 +1,6 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { m, useReducedMotion } from "framer-motion";
 import { ArrowRight, ShieldCheck, Activity, Key, Cpu, Zap, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-function useIsMobile() {
-  const [mobile, setMobile] = useState(false);
-
-  useEffect(() => {
-    const query = window.matchMedia("(max-width: 767px)");
-    const update = () => setMobile(query.matches);
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
-
-  return mobile;
-}
-
-// A glowing orb component for the layered background
-const Glow = ({ className }: { className?: string }) => {
-  const reduce = useReducedMotion();
-  const mobile = useIsMobile();
-
-  return (
-    <m.div
-      animate={
-        reduce
-          ? { opacity: 0.24 }
-          : {
-              opacity: mobile ? [0.18, 0.28, 0.18] : [0.3, 0.5, 0.3],
-            }
-      }
-      transition={{ duration: mobile ? 12 : 8, repeat: Infinity, ease: "easeInOut" }}
-      className={`absolute rounded-full blur-3xl md:blur-[100px] pointer-events-none ${className}`}
-    />
-  );
-};
 
 export function Hero() {
   return (
@@ -46,9 +8,9 @@ export function Hero() {
       {/* Deep layered atmospheric background */}
       <div className="absolute inset-0 velora-noise opacity-20 mix-blend-overlay -z-10 pointer-events-none" />
       
-      <Glow className="top-[-20%] left-[-10%] w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-accent/20" />
-      <Glow className="bottom-[-20%] right-[-10%] w-[500px] md:w-[800px] h-[500px] md:h-[800px] bg-accent/10" />
-      <Glow className="top-[40%] left-[40%] w-[300px] md:w-[400px] h-[300px] md:h-[400px] bg-white/5" />
+      <div className="hero-glow absolute rounded-full blur-3xl md:blur-[100px] pointer-events-none top-[-20%] left-[-10%] w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-accent/20" />
+      <div className="hero-glow absolute rounded-full blur-3xl md:blur-[100px] pointer-events-none bottom-[-20%] right-[-10%] w-[500px] md:w-[800px] h-[500px] md:h-[800px] bg-accent/10" />
+      <div className="hero-glow absolute rounded-full blur-3xl md:blur-[100px] pointer-events-none top-[40%] left-[40%] w-[300px] md:w-[400px] h-[300px] md:h-[400px] bg-white/5" />
 
       <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-12 gap-12 lg:gap-8 items-center relative z-10">
         
@@ -93,8 +55,8 @@ export function Hero() {
           <div className="absolute inset-0 origin-top-left sm:origin-top lg:origin-center scale-[0.65] sm:scale-75 lg:scale-100 w-[500px] lg:w-full">
             {/* Dashboard Preview (Back Layer) */}
             <div
-              className="absolute top-0 right-0 lg:-right-10 w-[500px] h-[400px] bg-base border border-hairline rounded-2xl shadow-2xl overflow-hidden"
-              style={{ transform: "rotateY(-15deg) rotateX(5deg)", transformStyle: 'preserve-3d' }}
+              className="preview-back absolute top-0 right-0 lg:-right-10 w-[500px] h-[400px] bg-base border border-hairline rounded-2xl shadow-2xl overflow-hidden"
+              style={{ transformStyle: 'preserve-3d' }}
             >
               {/* Dashboard Header */}
               <div className="h-12 border-b border-hairline bg-surface/50 flex items-center px-4 gap-2">
@@ -123,7 +85,8 @@ export function Hero() {
                   {[1, 2, 3].map((i) => (
                     <div 
                       key={i}
-                      className="h-16 rounded-xl bg-surface border border-hairline flex items-center px-4 gap-4"
+                      className="preview-row h-16 rounded-xl bg-surface border border-hairline flex items-center px-4 gap-4"
+                      style={{ animationDelay: `${0.5 + (i * 0.1)}s` }}
                     >
                       <div className="w-8 h-8 rounded-full bg-base border border-hairline flex items-center justify-center">
                         <Zap size={14} className="text-accent" />
@@ -141,8 +104,7 @@ export function Hero() {
 
             {/* Blockchain Policy Flow (Front Layer) */}
             <div
-              className="absolute bottom-[-100px] lg:bottom-10 left-0 lg:left-10 w-[420px] rounded-2xl bg-surface/40 backdrop-blur-2xl border border-hairline/80 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] p-6"
-              style={{ transform: "translate3d(-40px, 0, 0)" }}
+              className="preview-front absolute bottom-[-100px] lg:bottom-10 left-0 lg:left-10 w-[420px] rounded-2xl bg-surface/40 backdrop-blur-2xl border border-hairline/80 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] p-6"
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="text-sm font-medium text-ink">Policy Execution Flow</div>
