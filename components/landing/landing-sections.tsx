@@ -26,6 +26,10 @@ export function LandingSections() {
         placeholderClass="min-h-[1550px] md:min-h-[980px] lg:min-h-[1200px]"
       />
       <LazySection
+        loader={() => import("./policy-example").then((m) => ({ default: m.PolicyExample }))}
+        placeholderClass="min-h-[2100px] md:min-h-[1600px]"
+      />
+      <LazySection
         loader={() => import("./demo-preview").then((m) => ({ default: m.DemoPreview }))}
         placeholderClass="min-h-[520px] md:min-h-[560px]"
       />
