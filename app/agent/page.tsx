@@ -21,7 +21,6 @@ import { Button } from "@/components/ui/button";
 import { useWallet } from "@/hooks/useWallet";
 import { usePolicies } from "@/hooks/usePolicies";
 import { botScanLink } from "@/lib/network";
-import { getConfiguredVeloraAddress } from "@/lib/velora-address";
 import { PolicyStatus } from "@/types/policy";
 
 type AgentPolicyResult = {
@@ -162,9 +161,7 @@ export default function AgentPage() {
       const res = await fetch("/api/agent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contractAddress: getConfiguredVeloraAddress() ?? undefined,
-        }),
+        body: JSON.stringify({}),
       });
       const data = (await res.json()) as AgentResponse;
 

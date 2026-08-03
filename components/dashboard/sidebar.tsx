@@ -21,7 +21,6 @@ import { useWallet } from "@/hooks/useWallet";
 import { truncateAddress } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { SettingsDialog } from "@/components/dashboard/settings-dialog";
 
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -82,9 +81,6 @@ export function Sidebar() {
               </Link>
             );
           })}
-        </div>
-        <div className="mt-3 border-t border-[var(--color-velora-rule)] pt-3">
-          <SettingsDialog />
         </div>
       </nav>
 

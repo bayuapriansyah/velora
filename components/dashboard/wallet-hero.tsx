@@ -4,7 +4,7 @@ import { Wallet, Copy, Check, ExternalLink, FileCode2 } from "lucide-react";
 import { formatBot, truncateAddress } from "@/lib/format";
 import { BOT_CHAIN, botScanLink } from "@/lib/network";
 import { resolveVeloraAddress } from "@/lib/velora-address";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface WalletHeroProps {
   account: string;
@@ -14,13 +14,6 @@ interface WalletHeroProps {
 
 export function WalletHero({ account, balance, isCorrectNetwork }: WalletHeroProps) {
   const [copied, setCopied] = useState(false);
-  const [, setSettingsVersion] = useState(0);
-
-  useEffect(() => {
-    const refresh = () => setSettingsVersion((v) => v + 1);
-    window.addEventListener("velora-settings-changed", refresh);
-    return () => window.removeEventListener("velora-settings-changed", refresh);
-  }, []);
 
   const copyAddress = async () => {
     await navigator.clipboard.writeText(account);
