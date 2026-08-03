@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { m } from "framer-motion";
 import { useEffect, useState } from "react";
 import { MobileNav } from "./mobile-nav";
 
@@ -22,12 +21,9 @@ export function Nav() {
   }, []);
 
   return (
-    <m.header
-      initial={{ opacity: 0, y: -12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+    <header
       className={`
-        fixed top-0 left-0 right-0 z-50
+        nav-fade fixed top-0 left-0 right-0 z-50
         transition-all duration-300
         ${scrolled
           ? "bg-black/70 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_1px_0_rgba(0,0,0,0.5),0_6px_32px_rgba(0,0,0,0.6)]"
@@ -89,6 +85,6 @@ export function Nav() {
         </div>
 
       </div>
-    </m.header>
+    </header>
   );
 }

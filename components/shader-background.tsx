@@ -165,6 +165,7 @@ export function ShaderBackground() {
 
     // Initial static frame so the canvas is never blank while paused.
     drawFrame();
+    canvas.style.opacity = "0.5";
 
     if (reducedMotion) {
       return () => {
@@ -236,8 +237,12 @@ export function ShaderBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="pointer-events-none fixed inset-0 z-[-1]"
-      style={{ opacity: 0.5 }}
+      className="pointer-events-none fixed inset-0 z-[-1] transition-opacity duration-700"
+      style={{
+        opacity: 0,
+        background:
+          "radial-gradient(120% 80% at 70% 20%, rgba(254,77,71,0.06), transparent 60%)",
+      }}
       aria-hidden="true"
     />
   );

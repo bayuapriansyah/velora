@@ -43,17 +43,6 @@ const Glow = ({ className }: { className?: string }) => {
 export function Hero() {
   return (
     <section className="relative overflow-hidden pt-32 pb-16 md:pt-28 md:pb-28" id="hero">
-      <style>{`
-        @keyframes heroFadeUp {
-          from { opacity: 0; transform: translate3d(0, 24px, 0); }
-          to   { opacity: 1; transform: translate3d(0, 0, 0); }
-        }
-        .hero-fade-1 { animation: heroFadeUp 0.7s ease-out 0.10s both; }
-        .hero-fade-2 { animation: heroFadeUp 0.7s ease-out 0.25s both; }
-        .hero-fade-3 { animation: heroFadeUp 0.7s ease-out 0.40s both; }
-        .hero-fade-4 { animation: heroFadeUp 0.7s ease-out 0.55s both; }
-      `}</style>
-
       {/* Deep layered atmospheric background */}
       <div className="absolute inset-0 velora-noise opacity-20 mix-blend-overlay -z-10 pointer-events-none" />
       
@@ -99,16 +88,13 @@ export function Hero() {
         </div>
 
         {/* Right Column: Complex Asymmetric Composition */}
-        <div className="lg:col-span-6 relative h-[400px] sm:h-[500px] md:h-[600px] w-full mt-8 lg:mt-0 perspective-1000">
+        <div className="preview-fade lg:col-span-6 relative h-[400px] sm:h-[500px] md:h-[600px] w-full mt-8 lg:mt-0 perspective-1000">
           
           <div className="absolute inset-0 origin-top-left sm:origin-top lg:origin-center scale-[0.65] sm:scale-75 lg:scale-100 w-[500px] lg:w-full">
-            {/* Animated Dashboard Preview (Back Layer) */}
-            <m.div
-              initial={{ opacity: 0, x: 40, rotateY: -10, rotateX: 5 }}
-              animate={{ opacity: 1, x: 0, rotateY: -15, rotateX: 5 }}
-              transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            {/* Dashboard Preview (Back Layer) */}
+            <div
               className="absolute top-0 right-0 lg:-right-10 w-[500px] h-[400px] bg-base border border-hairline rounded-2xl shadow-2xl overflow-hidden"
-              style={{ transformStyle: 'preserve-3d' }}
+              style={{ transform: "rotateY(-15deg) rotateX(5deg)", transformStyle: 'preserve-3d' }}
             >
               {/* Dashboard Header */}
               <div className="h-12 border-b border-hairline bg-surface/50 flex items-center px-4 gap-2">
@@ -135,11 +121,8 @@ export function Hero() {
                 
                 <div className="space-y-3">
                   {[1, 2, 3].map((i) => (
-                    <m.div 
+                    <div 
                       key={i}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.5 + (i * 0.1), duration: 0.5 }}
                       className="h-16 rounded-xl bg-surface border border-hairline flex items-center px-4 gap-4"
                     >
                       <div className="w-8 h-8 rounded-full bg-base border border-hairline flex items-center justify-center">
@@ -150,18 +133,16 @@ export function Hero() {
                         <div className="h-2 w-16 bg-muted/10 rounded-full" />
                       </div>
                       <div className="text-xs font-mono text-muted">{i * 2.5}s ago</div>
-                    </m.div>
+                    </div>
                   ))}
                 </div>
               </div>
-            </m.div>
+            </div>
 
-            {/* Animated Blockchain Policy Flow (Front Layer) */}
-            <m.div
-              initial={{ opacity: 0, y: 40, x: -40 }}
-              animate={{ opacity: 1, y: 0, x: -40 }}
-              transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            {/* Blockchain Policy Flow (Front Layer) */}
+            <div
               className="absolute bottom-[-100px] lg:bottom-10 left-0 lg:left-10 w-[420px] rounded-2xl bg-surface/40 backdrop-blur-2xl border border-hairline/80 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] p-6"
+              style={{ transform: "translate3d(-40px, 0, 0)" }}
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="text-sm font-medium text-ink">Policy Execution Flow</div>
@@ -211,7 +192,7 @@ export function Hero() {
 
                 </div>
               </div>
-            </m.div>
+            </div>
           </div>
 
         </div>
