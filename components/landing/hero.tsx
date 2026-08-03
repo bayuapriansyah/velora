@@ -43,6 +43,17 @@ const Glow = ({ className }: { className?: string }) => {
 export function Hero() {
   return (
     <section className="relative overflow-hidden pt-32 pb-16 md:pt-28 md:pb-28" id="hero">
+      <style>{`
+        @keyframes heroFadeUp {
+          from { opacity: 0; transform: translate3d(0, 24px, 0); }
+          to   { opacity: 1; transform: translate3d(0, 0, 0); }
+        }
+        .hero-fade-1 { animation: heroFadeUp 0.7s ease-out 0.10s both; }
+        .hero-fade-2 { animation: heroFadeUp 0.7s ease-out 0.25s both; }
+        .hero-fade-3 { animation: heroFadeUp 0.7s ease-out 0.40s both; }
+        .hero-fade-4 { animation: heroFadeUp 0.7s ease-out 0.55s both; }
+      `}</style>
+
       {/* Deep layered atmospheric background */}
       <div className="absolute inset-0 velora-noise opacity-20 mix-blend-overlay -z-10 pointer-events-none" />
       
@@ -54,42 +65,29 @@ export function Hero() {
         
         {/* Left Column: Editorial Typography & Copy */}
         <div className="lg:col-span-6 flex flex-col items-start text-left">
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          >
+          <div className="hero-fade-1">
             <span className="mb-6 md:mb-8 inline-flex items-center gap-2 rounded-full bg-surface/80 border border-hairline px-4 py-1.5 text-[11px] font-semibold tracking-widest text-muted backdrop-blur-xl uppercase shadow-sm">
               <ShieldCheck size={14} className="text-accent" /> Built for BOT Chain
             </span>
-          </m.div>
+          </div>
           
-          <m.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="text-5xl font-medium leading-[1.05] tracking-tighter text-ink md:text-7xl lg:text-[88px]"
+          <h1 
+            className="hero-fade-2 text-5xl font-medium leading-[1.05] tracking-tighter text-ink md:text-7xl lg:text-[88px]"
           >
             Delegate tasks,<br />
             <span className="text-muted/80 italic font-serif tracking-tight">not your wallet.</span>
-          </m.h1>
+          </h1>
           
-          <m.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-6 md:mt-8 max-w-md text-base md:text-lg leading-relaxed text-muted font-normal"
+          <p 
+            className="hero-fade-3 mt-6 md:mt-8 max-w-md text-base md:text-lg leading-relaxed text-muted font-normal"
           >
             Safely authorize AI agents through programmable blockchain policies. Your
             private key stays yours — a smart contract independently validates what an agent
             is allowed to do.
-          </m.p>
+          </p>
           
-          <m.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-10 md:mt-12 flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto"
+          <div 
+            className="hero-fade-4 mt-10 md:mt-12 flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto"
           >
             <Link href="/dashboard" className="w-full sm:w-auto">
               <Button size="lg" className="w-full sm:w-auto group h-14 px-8 rounded-full bg-accent text-white hover:bg-accent-hover shadow-[0_0_40px_-10px_rgba(252,76,2,0.5)] transition-all duration-300">
@@ -97,7 +95,7 @@ export function Hero() {
                 <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-          </m.div>
+          </div>
         </div>
 
         {/* Right Column: Complex Asymmetric Composition */}
