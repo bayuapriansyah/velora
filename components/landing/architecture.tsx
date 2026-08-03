@@ -75,7 +75,7 @@ const fadeUp = {
 
 export function Architecture() {
   return (
-    <section className="px-6 py-20 md:py-32 border-y border-hairline bg-black/25 backdrop-blur-[3px]">
+    <section className="px-6 py-20 md:py-32 border-y border-hairline bg-black/15 backdrop-blur-[3px]">
       <div className="mx-auto max-w-5xl">
         <div className="mb-12 md:mb-16 max-w-2xl">
           <m.span

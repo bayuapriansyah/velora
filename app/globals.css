@@ -11,11 +11,11 @@
   --color-velora-muted: #888888;
   --color-velora-rule: #2a2a2a;
 
-  --color-bg-base: #0b0b0b;
-  --color-bg-crimson-deep: rgba(127, 29, 29, 0.16);
-  --color-bg-crimson-soft: rgba(76, 5, 25, 0.13);
-  --color-bg-crimson-glow: rgba(180, 30, 45, 0.08);
-  --color-bg-crimson-haze: rgba(150, 20, 40, 0.05);
+  --color-bg-base: #120e0d;
+  --color-bg-crimson-deep: rgba(127, 29, 29, 0.24);
+  --color-bg-crimson-soft: rgba(76, 5, 25, 0.18);
+  --color-bg-crimson-glow: rgba(180, 30, 45, 0.13);
+  --color-bg-crimson-haze: rgba(150, 20, 40, 0.09);
   --color-bg-grid: rgba(255, 255, 255, 0.025);
   --color-velora-accent: #3b82f6;
   --color-velora-accent-2: #60a5fa;
@@ -108,7 +108,7 @@ body::before {
     radial-gradient(ellipse 55% 42% at 50% 112%, var(--color-bg-crimson-glow) 0%, transparent 62%),
     radial-gradient(ellipse 26% 20% at 16% -4%, var(--color-bg-crimson-haze) 0%, transparent 70%),
     radial-gradient(ellipse 34% 26% at 86% 104%, var(--color-bg-crimson-haze) 0%, transparent 70%),
-    radial-gradient(ellipse at 50% 44%, transparent 58%, rgba(0, 0, 0, 0.3) 100%);
+    radial-gradient(ellipse at 50% 44%, transparent 58%, rgba(0, 0, 0, 0.24) 100%);
   background-size:
     auto, auto, auto, auto, auto, auto;
 }
@@ -164,7 +164,7 @@ body::after {
   aspect-ratio: 1;
   background: radial-gradient(
     circle,
-    rgba(180, 30, 45, 0.17) 0%,
+    rgba(180, 30, 45, 0.22) 0%,
     rgba(180, 30, 45, 0.05) 44%,
     transparent 72%
   );
@@ -179,7 +179,7 @@ body::after {
   aspect-ratio: 1;
   background: radial-gradient(
     circle,
-    rgba(150, 20, 40, 0.14) 0%,
+    rgba(150, 20, 40, 0.19) 0%,
     rgba(150, 20, 40, 0.04) 48%,
     transparent 74%
   );
@@ -190,7 +190,7 @@ body::after {
   0%,
   100% {
     transform: translate3d(0, 0, 0);
-    opacity: 0.5;
+    opacity: 0.62;
   }
   50% {
     transform: translate3d(2.5vw, 1.5vh, 0);

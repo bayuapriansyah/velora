@@ -58,7 +58,7 @@ function ExampleRow({ k, v, note, accent }: { k: string; v: string; note?: strin
 export function PolicyFields() {
   return (
     <section className="relative isolate px-6 py-20 md:py-32 overflow-hidden border-t border-hairline">
-      <div className="absolute top-1/2 left-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[1000px] h-[300px] md:h-[500px] bg-accent/5 blur-[120px] pointer-events-none rounded-[100%]" />
+      <div className="absolute top-1/2 left-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[1000px] h-[300px] md:h-[500px] bg-rejected/5 blur-[120px] pointer-events-none rounded-[100%]" />
 
       <div className="relative mx-auto max-w-7xl">
         <div className="mb-12 md:mb-16 text-center max-w-2xl mx-auto">
