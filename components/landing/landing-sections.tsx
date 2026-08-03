@@ -18,16 +18,16 @@ export function LandingSections() {
         placeholderClass="min-h-[1150px] md:min-h-[860px]"
       />
       <LazySection
+        loader={() => import("./policy-fields").then((m) => ({ default: m.PolicyFields }))}
+        placeholderClass="min-h-[1600px] md:min-h-[900px]"
+      />
+      <LazySection
         loader={() => import("./architecture").then((m) => ({ default: m.Architecture }))}
         placeholderClass="min-h-[1150px] md:min-h-[960px]"
       />
       <LazySection
         loader={() => import("./features").then((m) => ({ default: m.Features }))}
         placeholderClass="min-h-[1550px] md:min-h-[980px] lg:min-h-[1200px]"
-      />
-      <LazySection
-        loader={() => import("./policy-example").then((m) => ({ default: m.PolicyExample }))}
-        placeholderClass="min-h-[2100px] md:min-h-[1600px]"
       />
       <LazySection
         loader={() => import("./demo-preview").then((m) => ({ default: m.DemoPreview }))}
