@@ -192,7 +192,6 @@ flowchart TD
 |---|---|---|
 | **Policy Creation** | Multi-step wizard (name, destination, action, limits, review) | ✅ Live |
 | **On-Chain Rules** | 7 immutable reject reasons enforced by contract | ✅ Live |
-| **Frontend Simulation** | Animated rule timeline + real `executeRequest` transaction | ✅ Live |
 | **Autonomous Agent** | AI-powered (Gemini), runs via UI click or standalone script | ✅ Live |
 | **Gross-up Fee** | 1% SafetyNet fee included in pre-funded deposit, no `msg.value` | ✅ Live |
 | **SafetyNet Pool** | On-chain insurance — claim up to 70% of policy's contributions | ✅ Live |
