@@ -10,7 +10,7 @@ import { ActionType, Policy, PolicyStatus, ACTION_LABELS } from "@/types/policy"
 import { formatBot, truncateAddress } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-const ALL_ACTIONS = [ActionType.Transfer, ActionType.Swap, ActionType.ContractCall];
+const ALL_ACTIONS = [ActionType.Transfer];
 
 interface RequestBuilderProps {
   policies: Policy[];
@@ -130,9 +130,9 @@ export function RequestBuilder({
               <label className="mt-5 block text-sm font-medium text-[var(--color-ink)]">Action to request</label>
               <p className="mt-1 text-xs text-[var(--color-muted)]">
                 Policy allows only <span className="font-medium text-[var(--color-ink)]">{ACTION_LABELS[selected.allowedAction]}</span>.
-                Pick a different one to see the contract reject it.
+                Use &ldquo;Simulate wrong action&rdquo; below to see the contract reject a mismatched action.
               </p>
-              <div className="mt-2 grid grid-cols-3 gap-2">
+              <div className="mt-2 grid grid-cols-1 gap-2">
                 {ALL_ACTIONS.map((a) => (
                   <button
                     key={a}

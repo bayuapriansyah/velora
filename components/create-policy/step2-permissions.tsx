@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { PolicyFormState } from "./form-types";
 
 const actions = [ActionType.Transfer, ActionType.Swap, ActionType.ContractCall];
+const DISABLED_ACTIONS = new Set<ActionType>([ActionType.Swap, ActionType.ContractCall]);
 
 export function Step2Permissions({
   form,
@@ -27,21 +28,28 @@ export function Step2Permissions({
         <label className="text-sm font-medium text-[var(--color-ink)]">Allowed action</label>
         <p className="mt-1 text-sm text-[var(--color-muted)]">The only action type this policy will approve.</p>
         <div className="mt-2 grid grid-cols-3 gap-2">
-          {actions.map((a) => (
-            <button
-              key={a}
-              type="button"
-              onClick={() => onChange({ action: a })}
-              className={cn(
-                "rounded-xl border px-4 py-3 text-sm font-medium transition-colors",
-                form.action === a
-                  ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
-                  : "border-[var(--color-rule)] bg-[var(--color-paper-2)] text-[var(--color-muted)] hover:text-[var(--color-ink)]"
-              )}
-            >
-              {ACTION_LABELS[a]}
-            </button>
-          ))}
+          {actions.map((a) => {
+            const disabled = DISABLED_ACTIONS.has(a);
+            return (
+              <button
+                key={a}
+                type="button"
+                disabled={disabled}
+                onClick={() => onChange({ action: a })}
+                title={disabled ? "Not available yet" : undefined}
+                className={cn(
+                  "rounded-xl border px-4 py-3 text-sm font-medium transition-colors",
+                  form.action === a && !disabled
+                    ? "border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent)]"
+                    : "border-[var(--color-rule)] bg-[var(--color-paper-2)] text-[var(--color-muted)]",
+                  disabled && "cursor-not-allowed opacity-50"
+                )}
+              >
+                {ACTION_LABELS[a]}
+                {disabled && <span className="mt-1 block text-[10px] uppercase tracking-wider text-[var(--color-muted)]">Soon</span>}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>
