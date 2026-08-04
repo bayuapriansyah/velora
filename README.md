@@ -20,6 +20,7 @@
 - [Policy Execution Flow](#-policy-execution-flow)
 - [Contract Decision Tree](#-contract-decision-tree)
 - [Core Features](#-core-features)
+- [Roadmap (v2)](#-roadmap-v2)
 - [Live Deployment](#-live-deployment)
 - [Repository Structure](#-repository-structure)
 - [Getting Started (User)](#-getting-started-user)
@@ -57,7 +58,7 @@ Velora introduces **on-chain policy enforcement**. You define granular, immutabl
 - **AI-powered agent** — uses Google Gemini for execution decisions
 - **Server-side agent** — a small API route hosts the agent's gas wallet and Gemini key; your personal wallet is never touched by the server
 - **Gross-up fee** — SafetyNet fee (1%) included in pre-funded deposit, agent never needs `msg.value`
-- **Policy SafetyNet** — on-chain insurance pool, policy owners can claim compensation
+- **Policy SafetyNet** — fee-recovery pool, policy owners can claim up to 70% of their policy's fee contributions
 
 ---
 
@@ -194,10 +195,18 @@ flowchart TD
 | **On-Chain Rules** | 7 immutable reject reasons enforced by contract | ✅ Live |
 | **Autonomous Agent** | AI-powered (Gemini), runs via UI click or standalone script | ✅ Live |
 | **Gross-up Fee** | 1% SafetyNet fee included in pre-funded deposit, no `msg.value` | ✅ Live |
-| **SafetyNet Pool** | On-chain insurance — claim up to 70% of policy's contributions | ✅ Live |
+| **SafetyNet Pool** | Fee-recovery pool — claim up to 70% of policy's fee contributions | ✅ Live |
 | **Race Protection** | Re-check on-chain before submit — prevents double-execution | ✅ Live |
 | **Demo Mode** | Toggle seconds instead of days for rapid testing | ✅ Live |
 | **Contract Verification** | Source code verified on BOTScan | ✅ Live |
+
+---
+
+## 🗺️ Roadmap (v2)
+
+- **Opt-in SafetyNet** — each policy chooses whether to pay the 1% SafetyNet fee. Large-volume users can enable it and claim back up to 70% of their policy's fee contributions; small users skip the fee entirely.
+- **Agent Bond** — the agent stakes BOT as collateral; proven misbehavior slashes the bond to compensate policy owners.
+- **Per-agent allow-list** — a policy can restrict execution to specific agent addresses, so you decide exactly which agent may act on its behalf.
 
 ---
 
@@ -386,7 +395,7 @@ npm start         # loop forever
 | `_safetyNetFeeBps` | `100` (1%) | Fee per execution added to SafetyNet pool |
 | `_minFeeThreshold` | `100000000000000` (0.0001 BOT) | Minimum amount for fee to apply |
 | `_claimCooldown` | `30` (30 seconds) | Cooldown between claims |
-| `_maxClaimPerTx` | `10000000000000000` (0.01 BOT) | Max amount per claim transaction |
+| `_maxClaimPerTx` | `1000000000000000` (0.001 BOT) | Max amount per claim transaction |
 
 ### Public functions
 
