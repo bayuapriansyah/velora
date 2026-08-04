@@ -22,7 +22,8 @@ const pulseTick = {
 
 export function Solution() {
   return (
-    <section className="px-6 py-20 md:py-32 border-y border-hairline overflow-hidden bg-black/35 backdrop-blur-md">
+    <section className="relative isolate px-6 py-20 md:py-32 border-y border-hairline overflow-hidden bg-black/20 backdrop-blur-md">
+      <div className="absolute top-1/2 left-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[1000px] h-[300px] md:h-[500px] bg-accent/5 blur-[120px] pointer-events-none rounded-[100%]" />
       <div className="mx-auto max-w-6xl">
         <div className="mb-16 md:mb-20 max-w-2xl text-center mx-auto">
           <m.span 

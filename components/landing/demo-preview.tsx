@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export function DemoPreview() {
   return (
-    <section className="px-6 py-24 md:py-32 bg-black/35 backdrop-blur-md">
+    <section className="px-6 py-24 md:py-32 bg-black/20 backdrop-blur-md">
       <div className="mx-auto max-w-4xl rounded-[40px] bg-surface p-12 text-center border border-hairline md:p-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-accent/10 blur-3xl opacity-40 pointer-events-none" />
         
