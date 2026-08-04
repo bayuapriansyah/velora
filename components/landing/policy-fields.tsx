@@ -34,13 +34,13 @@ const fields = [
 ];
 
 const example = [
-  { k: "Destination", v: "0x7A3f\u20269B21", note: "my trading bot" },
+  { k: "Destination", v: "0x9b4\u20261a8c", note: "AI API merchant" },
   { k: "Action", v: "Send BOT", accent: true },
-  { k: "Budget", v: "1,000 BOT" },
-  { k: "Amount per execution", v: "10 BOT" },
-  { k: "Interval", v: "Every 24h" },
-  { k: "Max executions", v: "100" },
-  { k: "Expires", v: "In 30 days" },
+  { k: "Budget", v: "240 BOT" },
+  { k: "Amount per execution", v: "20 BOT" },
+  { k: "Interval", v: "Every 30 days" },
+  { k: "Max executions", v: "12" },
+  { k: "Expires", v: "In 6 months" },
 ];
 
 function ExampleRow({ k, v, note, accent }: { k: string; v: string; note?: string; accent?: boolean }) {
@@ -149,7 +149,7 @@ export function PolicyFields() {
                   <Zap size={16} />
                 </span>
                 <div>
-                  <h3 className="text-base md:text-lg font-semibold text-ink">Trading bot allowance</h3>
+                  <h3 className="text-base md:text-lg font-semibold text-ink">AI API credits</h3>
                   <p className="text-[11px] text-muted font-mono">policy #42</p>
                 </div>
               </div>
@@ -165,9 +165,9 @@ export function PolicyFields() {
             </div>
 
             <p className="mt-6 text-sm md:text-base text-muted leading-relaxed">
-              The agent can send exactly <span className="text-ink font-medium">10 BOT</span> to that
-              bot, at most once a day, 100 times, and only from the locked 1,000 BOT &mdash;
-              never anywhere else.
+              The agent can send exactly <span className="text-ink font-medium">20 BOT</span> to that
+              merchant for AI API credits, at most once a month, 12 times, and only from the locked
+              240 BOT &mdash; never anywhere else.
             </p>
 
             <div className="mt-6 rounded-xl border border-rejected/20 bg-rejected/5 p-4">
