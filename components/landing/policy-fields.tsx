@@ -141,7 +141,7 @@ export function PolicyFields() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="flex flex-col rounded-[24px] md:rounded-[32px] bg-base border border-hairline p-6 md:p-10 shadow-2xl"
+            className="flex flex-col rounded-[24px] md:rounded-[32px] bg-base border border-hairline p-6 md:p-10 shadow-[0_0_50px_-12px_rgba(254,77,71,0.30)]"
           >
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2.5">

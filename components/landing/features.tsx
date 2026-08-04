@@ -94,7 +94,7 @@ export function Features() {
           {/* Featured band — the policy engine */}
           <m.div
             style={s(bandY, bandOp)}
-            className="mt-6 md:mt-8 relative overflow-hidden rounded-[24px] md:rounded-[28px] bg-surface border border-hairline shadow-2xl flex flex-col lg:flex-row"
+            className="mt-6 md:mt-8 relative overflow-hidden rounded-[24px] md:rounded-[28px] bg-surface border border-hairline shadow-[0_0_50px_-12px_rgba(254,77,71,0.28)] flex flex-col lg:flex-row"
           >
             <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-accent/5 blur-3xl pointer-events-none" />
 

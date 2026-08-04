@@ -82,7 +82,7 @@ export function HowItWorks() {
 
           {/* Right Column: Interactive UI Preview */}
           <div className="w-full lg:col-span-8 lg:sticky lg:top-32">
-            <div className="w-full h-[400px] md:h-[500px] bg-surface rounded-[24px] md:rounded-[32px] border border-hairline p-2 shadow-xl md:shadow-2xl relative overflow-hidden flex flex-col">
+            <div className="w-full h-[400px] md:h-[500px] bg-surface rounded-[24px] md:rounded-[32px] border border-hairline p-2 shadow-[0_0_50px_-12px_rgba(254,77,71,0.28)] relative overflow-hidden flex flex-col">
               
               {/* Fake Browser Header */}
               <div className="h-10 md:h-12 border-b border-hairline bg-base/50 rounded-t-[16px] md:rounded-t-[24px] flex items-center px-4 gap-2 mb-2 md:mb-4">

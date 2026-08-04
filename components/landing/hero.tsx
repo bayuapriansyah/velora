@@ -109,7 +109,7 @@ export function Hero() {
               initial={{ opacity: 0, x: 40, rotateY: -10, rotateX: 5 }}
               animate={{ opacity: 1, x: 0, rotateY: -15, rotateX: 5 }}
               transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-0 right-0 lg:-right-10 w-[500px] h-[400px] bg-base border border-hairline rounded-2xl shadow-2xl overflow-hidden"
+              className="absolute top-0 right-0 lg:-right-10 w-[500px] h-[400px] bg-base border border-hairline rounded-2xl shadow-[0_0_60px_-10px_rgba(254,77,71,0.30)] overflow-hidden"
               style={{ transformStyle: 'preserve-3d' }}
             >
               {/* Dashboard Header */}
