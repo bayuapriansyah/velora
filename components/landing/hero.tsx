@@ -71,7 +71,7 @@ export function Hero() {
             className="text-5xl font-medium leading-[1.05] tracking-tighter text-ink md:text-7xl lg:text-[88px]"
           >
             Delegate tasks,<br />
-            <span className="text-muted/80 italic font-serif tracking-tight">not your wallet.</span>
+            <span className="text-white italic font-serif tracking-tight">not your wallet.</span>
           </m.h1>
           
           <m.p 
